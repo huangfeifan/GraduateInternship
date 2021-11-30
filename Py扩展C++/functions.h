@@ -1,8 +1,4 @@
-﻿//
-// Created by Huangff on 2021/11/29.
-//
-// 需要注意 因为只包含头文件,所以实现得放在头文件
-
+﻿
 #pragma once
 
 #include <iostream>
@@ -71,6 +67,7 @@ public:
 
     bool setPrecision(double precision) {
         m_precision = precision;
+        return true;
     };
 
     // fail
@@ -184,7 +181,24 @@ public:
         return false;
     }
 
-    int getWukRegionsPixel() {
+    int getWukRegionsPixel(double precision) {
+        std::vector<std::vector<PolygonSeg>> wukRegions = m_wukRegions;
+        std::vector<std::vector<PolygonSeg>> apdRegions = m_apdRegions;
+
+        //double precision = m_precision;
+
+        // 在某个精度下 计算region的像素点个数
+        int count = 0;
+
+        Paths wuk, apd;
+
+        convertRegionsToPaths(wukRegions, apdRegions, wuk, apd, precision);
+
+        // 计算转换后的wuk的pixel个数
+        for (int i = 0; i < wuk.size(); ++i) {
+            m_wukRegionPixel += polygonScan(precision, wuk[i]);
+        }
+
         return m_wukRegionPixel;
     }
 
@@ -247,6 +261,19 @@ int Functions::countRegionPixel() {
     std::vector<std::vector<PolygonSeg>> wukRegions = m_wukRegions;
     std::vector<std::vector<PolygonSeg>> apdRegions = m_apdRegions;
 
+/*    std::cout << wukRegions.size() << endl;
+    std::cout << apdRegions.size() << endl;
+    std::cout << "----------------" << endl;
+    for (int i = 0; i < apdRegions.size(); ++i) {
+        for (int j = 0; j < apdRegions[i].size(); ++j) {
+            cout<< apdRegions[i][j].startX<<endl;
+            cout<< apdRegions[i][j].startY<<endl;
+            cout<< apdRegions[i][j].isLine<<endl;
+            cout<< apdRegions[i][j].isClockWise<<endl;
+        }
+    }
+    std::cout << "----------------" << endl;*/
+
     double precision = m_precision;
 
     // 在某个精度下 计算region的像素点个数
@@ -263,11 +290,6 @@ int Functions::countRegionPixel() {
     // 根据异或得到的多边形组计算其包含的像素点个数
     for (int i = 0; i < xorResult.size(); ++i) {
         count += polygonScan(precision, xorResult[i]);
-    }
-
-    // 计算转换后的wuk的pixel个数
-    for (int i = 0; i < wuk.size(); ++i) {
-        m_wukRegionPixel += polygonScan(precision, wuk[i]);
     }
 
     return count;
@@ -585,5 +607,49 @@ void Functions::regionXor(Paths apdRegions, Paths wukRegions, Paths &result) {
 bool Functions::convertRegionsToPaths(std::vector<std::vector<PolygonSeg>> wukRegions,
                                       std::vector<std::vector<PolygonSeg>> apdRegions,
                                       Paths &wuk, Paths &apd, double base) {
-    return false;
+
+    /*    std::cout << wukRegions.size() << endl;
+    std::cout << apdRegions.size() << endl;
+    std::cout << "----------------" << endl;
+    for (int i = 0; i < apdRegions.size(); ++i) {
+        for (int j = 0; j < apdRegions[i].size(); ++j) {
+            cout<< apdRegions[i][j].startX<<endl;
+            cout<< apdRegions[i][j].startY<<endl;
+            cout<< apdRegions[i][j].isLine<<endl;
+            cout<< apdRegions[i][j].isClockWise<<endl;
+        }
+    }
+    std::cout << "----------------" << endl;*/
+
+    /**
+     * 预处理region的数据(1.根据精度缩放多边形 2.移动多边形--扫描线算法处理都是正数) 将其变为path 存放到对应的数组中
+     *
+     */
+    //wukRegions--> wukDouble--> wuk
+    //apdRegions--> apdDouble--> apd
+
+    // 存放region转换后的path--double版本
+    vector <vector<doublePoint>> wukDouble, apdDouble;
+    for (int i = 0; i < wukRegions.size(); ++i) {
+        vector <doublePoint> temp;
+        for (int j = 0; j < wukRegions[i].size(); ++j) {
+            temp.push_back(doublePoint(wukRegions[i][j].startX, wukRegions[i][j].startY));
+        }
+        wukDouble.push_back(temp);
+    }
+    for (int i = 0; i < apdRegions.size(); ++i) {
+        vector <doublePoint> temp;
+        for (int j = 0; j < apdRegions[i].size(); ++j) {
+            temp.push_back(doublePoint(apdRegions[i][j].startX, apdRegions[i][j].startY));
+        }
+        apdDouble.push_back(temp);
+    }
+
+    preHandlePaths(base, wuk, apd, wukDouble, apdDouble);
+
+    if (wuk.size() == 0 || apd.size() == 0) {
+        return false;
+    }
+    return true;
+
 }
