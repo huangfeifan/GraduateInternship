@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Place"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="msvc8"/>
+		<Option virtualFolders="CMake Files\;CMake Files\Qt5.12.6\;CMake Files\Qt5.12.6\5.12.6\;CMake Files\Qt5.12.6\5.12.6\msvc2017_64\;CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\;CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\;CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5\;CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Core\;CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\;CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Widgets\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="E:/huangfeifan-Sort/PlaceAlgo/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 all"/>
+					<CompileFile command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Place">
+				<Option output="E:/huangfeifan-Sort/PlaceAlgo/cmake-build-debug/Place.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="E:/huangfeifan-Sort/PlaceAlgo/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="msvc8"/>
+				<Compiler>
+					<Add option="-DQT_CORE_LIB"/>
+					<Add option="-DQT_GUI_LIB"/>
+					<Add option="-DQT_WIDGETS_LIB"/>
+					<Add directory="E:/huangfeifan-Sort/PlaceAlgo/cmake-build-debug/Place_autogen/include"/>
+					<Add directory="E:/huangfeifan-Sort/PlaceAlgo/src"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtCore"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/./mkspecs/win32-msvc"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtGui"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtANGLE"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtWidgets"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\ATLMFC\include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\include"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\ucrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\shared"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\winrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\cppwinrt"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 Place"/>
+					<CompileFile command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Place/fast">
+				<Option output="E:/huangfeifan-Sort/PlaceAlgo/cmake-build-debug/Place.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="E:/huangfeifan-Sort/PlaceAlgo/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="msvc8"/>
+				<Compiler>
+					<Add option="-DQT_CORE_LIB"/>
+					<Add option="-DQT_GUI_LIB"/>
+					<Add option="-DQT_WIDGETS_LIB"/>
+					<Add directory="E:/huangfeifan-Sort/PlaceAlgo/cmake-build-debug/Place_autogen/include"/>
+					<Add directory="E:/huangfeifan-Sort/PlaceAlgo/src"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtCore"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/./mkspecs/win32-msvc"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtGui"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtANGLE"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtWidgets"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\ATLMFC\include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\include"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\ucrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\shared"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\winrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\cppwinrt"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 Place/fast"/>
+					<CompileFile command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="E:/huangfeifan-Sort/PlaceAlgo/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 edit_cache"/>
+					<CompileFile command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="E:/huangfeifan-Sort/PlaceAlgo/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Place_autogen">
+				<Option working_dir="E:/huangfeifan-Sort/PlaceAlgo/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 Place_autogen"/>
+					<CompileFile command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f E:\huangfeifan-Sort\PlaceAlgo\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/cmake-build-debug/Place_autogen/mocs_compilation.cpp">
+			<Option target="Place"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/src/CompCompute.cpp">
+			<Option target="Place"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/src/CompCompute.h">
+			<Option target="Place"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/src/GetLayout.cpp">
+			<Option target="Place"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/src/GetLayout.h">
+			<Option target="Place"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/src/main.cpp">
+			<Option target="Place"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5/Qt5Config.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5/Qt5ConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5/Qt5ModuleLocation.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Core/Qt5CoreConfig.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Core/Qt5CoreConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Core/Qt5CoreConfigExtrasMkspecDir.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Core/Qt5CoreConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Core/Qt5CoreMacros.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5GuiConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QGifPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QICNSPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QICOPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QJpegPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QMinimalIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QOffscreenIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QTgaPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QTiffPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QTuioTouchPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QWbmpPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QWebpPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QWindowsDirect2DIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QWindowsIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QXdgDesktopPortalThemePlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Widgets/Qt5WidgetsConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/PlaceAlgo/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Widgets/Qt5Widgets_QWindowsVistaStylePlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

@@ -152,3 +152,4 @@ class Functions{
 
 
 
+函数类使用扫描线算法结合Clipping库计算Region像素点个数
