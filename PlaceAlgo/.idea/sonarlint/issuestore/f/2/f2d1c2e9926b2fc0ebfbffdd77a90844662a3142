@@ -1,0 +1,8 @@
+
+U	cpp:S1135<"4Complete the task associated to this "todo" comment.(úÓ®çøÿÿÿÿ8þ…‚ƒ×/
+t	cpp:S3539."SRemove this redundant access specifier; it does not change the accessibility level.(ÐòÚÚüÿÿÿÿ8†‚ƒ×/
+t	cpp:S3539O"SRemove this redundant access specifier; it does not change the accessibility level.(÷éûüùÿÿÿÿ8†‚ƒ×/
+t	cpp:S3539^"SRemove this redundant access specifier; it does not change the accessibility level.(ÐòÚÚüÿÿÿÿ8†‚ƒ×/
+t	cpp:S3539q"SRemove this redundant access specifier; it does not change the accessibility level.(ÐòÚÚüÿÿÿÿ8†‚ƒ×/
+P	cpp:S1709"/Add the "explicit" keyword to this constructor.(°™âùÿÿÿÿ8†‚ƒ×/
+^	cpp:S5945["=Use "std::array" or "std::vector" instead of a C-style array.(«ÿê¨þÿÿÿÿ8’†‚ƒ×/

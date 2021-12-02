@@ -119,14 +119,11 @@ if __name__ == '__main__':
 ### 文件夹结构：
 
 1. function.h -- C++扩展函数类
-
 2. python39.lib
-
-3. pybind11/include内所有文件
-
+3. pybind11/include内所有文件（pybind11 Github https://github.com/pybind/pybind11/tree/master/include/pybind11）
 4. functions_wrapper.cpp
-
 5. setup.py
+5. 往Path中添加 D:\Application_Tools\Anaconda也就是Anaconda安装路径，则输入python setup.py build_ext --inplace 不会出现python不是内部或外部命令
 
 ### 参数的传递
 
