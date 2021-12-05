@@ -1,0 +1,104 @@
+﻿关键词：placement  routing PCB  逻辑图的布局布线  Enumeration of the elementary circuits of a directed graph
+
+placement and routing logical
+
+[1] Gupta A, Suzumura T. Finding All Bounded-Length Simple Cycles in a Directed Graph[J]. arXiv preprint arXiv:2105.10094, 2021.
+
+[2] Ho W, Ji P. A genetic algorithm to optimise the component placement process in PCB assembly[J]. The International Journal of Advanced Manufacturing Technology, 2005, 26(11): 1397-1401.
+
+[3] Ma Q, Kong H, Wong M D F, et al. A provably good approximation algorithm for rectangle escape problem with application to PCB routing[C]//16th Asia and South Pacific Design Automation Conference (ASP-DAC 2011). IEEE, 2011: 843-848.
+
+[4] Zhang R. A Study of Routing Algorithms for PCB Design[D]. 早稲田大学, 2016.
+
+[5] Yan T, Ma Q, Wong M D F. Advances in PCB routing[J]. IPSJ Transactions on System LSI Design Methodology, 2012, 5: 14-22.
+
+[6] Guo L, Pang J, Walid A. Joint placement and routing of network function chains in data centers[C]//IEEE INFOCOM 2018-IEEE Conference on Computer Communications. IEEE, 2018: 612-620.
+
+[7] Yu C, Zhang Z. Painting on placement: Forecasting routing congestion using conditional generative adversarial nets[C]//Proceedings of the 56th Annual Design Automation Conference 2019. 2019: 1-6.
+
+[8] Dräxler S, Karl H, Mann Z Á. Jasper: Joint optimization of scaling, placement, and routing of virtual network services[J]. IEEE Transactions on Network and Service Management, 2018, 15(3): 946-960.
+
+[9] Yang S, Li F, Trajanovski S, et al. Delay-aware virtual network function placement and routing in edge clouds[J]. IEEE Transactions on Mobile Computing, 2019.
+
+[10] Walter M, Wille R, Große D, et al. Placement and routing for tile-based field-coupled nanocomputing circuits is np-complete (research note)[J]. ACM Journal on Emerging Technologies in Computing Systems (JETC), 2019, 15(3): 1-10.
+
+[11] Chen S C, Chang Y W. FPGA placement and routing[C]//2017 IEEE/ACM International Conference on Computer-Aided Design (ICCAD). IEEE, 2017: 914-921.
+
+[12] Fontes G, Silva P A R L, Nacif J A M, et al. Placement and routing by overlapping and merging qca gates[C]//2018 IEEE International Symposium on Circuits and Systems (ISCAS). IEEE, 2018: 1-5.
+
+[13] Varasteh A, Hofmann S, Deric N, et al. Mobility-aware joint service placement and routing in space-air-ground integrated networks[C]//ICC 2019-2019 IEEE International Conference on Communications (ICC). IEEE, 2019: 1-7.
+
+[14] Gouareb R, Friderikos V, Aghvami A H. Delay sensitive virtual network function placement and routing[C]//2018 25th international conference on telecommunications (ICT). IEEE, 2018: 394-398.
+
+[15] Gao Z, Zhang J, Yan S, et al. Deep reinforcement learning for BBU placement and routing in C-RAN[C]//2019 Optical Fiber Communications Conference and Exhibition (OFC). IEEE, 2019: 1-3.
+
+[16] Dräxler S, Karl H. SPRING: scaling, placement, and routing of heterogeneous services with flexible structures[C]//2019 IEEE Conference on Network Softwarization (NetSoft). IEEE, 2019: 115-123.
+
+[17] Varasteh A, De Andrade M, Machuca C M, et al. Power-aware virtual network function placement and routing using an abstraction technique[C]//2018 IEEE Global Communications Conference (GLOBECOM). IEEE, 2018: 1-7.
+
+[18] Park D, Lee D, Kang I, et al. SP&R: Simultaneous Placement and Routing framework for standard cell synthesis in sub-7nm[C]//2020 25th Asia and South Pacific Design Automation Conference (ASP-DAC). IEEE, 2020: 345-350.
+
+[19] Kiji N, Sato T, Shinkuma R, et al. Virtual network function placement and routing for multicast service chaining using merged paths[J]. Optical Switching and Networking, 2020, 36: 100554.
+
+[20] Johnson D B. Finding all the elementary circuits of a directed graph[J]. SIAM Journal on Computing, 1975, 4(1): 77-84.
+
+[21] Frezza S T, Levitan S P. SPAR: a schematic place and route system[J]. IEEE transactions on computer-aided design of integrated circuits and systems, 1993, 12(7): 956-973.
+
+[22] Rose M, Wiesel M, Kirkpatrick D, et al. Dense, performance directed, auto place and route[C]//Proceedings of the IEEE 1988 Custom Integrated Circuits Conference. IEEE, 1988: 11.1/1-11.1/4.
+
+[23] Tan Y. Algorithmic studies on PCB routing[D]. University of Illinois at Urbana-Champaign, 2011.
+
+[24] Kong H. New strategies for PCB routing[M]. University of Illinois at Urbana-Champaign, 2010.
+
+[25] Lin T C, Merrill D, Wu Y Y, et al. A Unified Printed Circuit Board Routing Algorithm With Complicated Constraints and Differential Pairs[C]//2021 26th Asia and South Pacific Design Automation Conference (ASP-DAC). IEEE, 2021: 170-175.
+
+[26] Cherng J S, Chen S J, Tsai C C. An efficient approach for via minimization in multi-layer VLSI/PCB routing[C]//Proceedings of the IEEE 1995 Custom Integrated Circuits Conference. IEEE, 1995: 473-476.
+
+[27] 任宏萍, 吴波. 逻辑图自动绘制算法[J]. 计算机工程, 1994, 20(6): 42-44.
+
+[28] 刘立君. 逻辑图生成程序 LODGEN[J]. 微电子学与计算机, 1987, 11.
+
+[29] 彭宇行, 马学英, 杨涛. 由连线表自动产生逻辑电路图的自动布局和布线算法设计[J]. 计算技术与自动化, 1989, 1.
+
+[30] 杨峥嵘, 姚林声. 电路图的自动生成技术[D]. , 1990.
+
+[31] 崔晓天, 曾文斌, 魏道政. 逻辑图自动布局[D]. , 1992.
+
+[32] 高文, 莫云和. 多级逻辑综合及逻辑图自动生成[J]. 计算机辅助设计与图形学学报, 1993, 5(1): 1-8.
+
+[33] 左京燕, 马卫国, 刘松, 等. 整机性逻辑图自动生成中某些问题的解决方法[J]. 北京理工大学学报, 1994, 14(3): 329-333.
+
+[34] 左京燕, 刘明业. 高级综合中的逻辑图自动生成[J]. 北京理工大学学报: 英文版, 1995 (2).
+
+[35] 刘沁楠, 刘明业. 高层次综合的实用化逻辑图自动生成关键技术的研究[J]. 计算机学报, 2001, 24(4): 420-429.
+
+[36] 杨力列. 一种逻辑电路图的布局算法[J]. 太原工业大学学报, 1989, 20(1): 54-60.
+
+[37] 熊德琰. 生成有向图的有向回路基集及全部有向回路的一个搜索算法[J]. 电子学报, 1986, 6.
+
+[38] 洪先龙, 朱祺, 经彤, 等. 非直角互连—布线技术发展的新趋势[D]. , 2003.
+
+[39] 周智, 顾钧. 用 O (tlogt) 的连接图求有障碍时的最短路径[J]. 计算机学报, 1999, 22(5): 519-524.
+
+[40] 王玉英, 陈平, 苏旸. 生成有向图中全部简单回路的一种新算法[J]. 陕西师范大学学报: 自然科学版, 2008, 36(4): 12-15.
+
+[41] 王玉英, 陈平, 苏旸. 生成有向图中全部简单回路的一种有效算法[J]. 计算机应用与软件, 2009, 26(12): 27-29.
+
+[42] 徐兵, 贾仁安. 有向圈的矩阵算法及有关性质[J]. 南昌大学学报: 理科版, 2002, 26(1): 5-11.
+
+[43] 张军, 李进, 涂国平, 等. 常见反馈环计算方法的比较[J]. 科技广场, 2007 (5): 49-51.
+
+[44] May M, Iwainsky A, Mennecke P. Placement and routing for logic schematics[J]. Computer-Aided Design, 1983, 15(3): 115-122.
+
+[45] 水超, 陈涛, 李慧, 等. 基于力导向模型的网络图自动布局算法综述[J]. 计算机工程与科学, 2015, 37(3): 457G465.
+
+[46] Kahng A B, Lienig J, Markov I L, et al. VLSI physical design: from graph partitioning to timing closure[M]. Springer Science & Business Media, 2011.     ---book
+
+
+关键词：扫描线 scan line algorithms
+
+[1] Karlsson R G, Overmars M H. Scanline algorithms on a grid[J]. BIT Numerical Mathematics, 1988, 28(2): 227-241.
+
+[2] Whitted T. A scan line algorithm for computer display of curved surfaces[J]. ACM SIGGRAPH Computer Graphics, 1978, 12(SI): 8-13.
+
+
