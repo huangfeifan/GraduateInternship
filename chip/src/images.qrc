@@ -1,0 +1,10 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="Main">
+    <file>./resources/qt4logo.png</file>
+    <file>./resources/zoomin.png</file>
+    <file>./resources/zoomout.png</file>
+    <file>./resources/rotateleft.png</file>
+    <file>./resources/rotateright.png</file>
+    <file>./resources/fileprint.png</file>
+</qresource>
+</RCC>
