@@ -1,6 +1,5 @@
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include <QWidget>
 
@@ -24,4 +23,4 @@ private:
     QSplitter *h2Splitter;
 };
 
-#endif // MAINWINDOW_H
+

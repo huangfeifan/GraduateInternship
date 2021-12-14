@@ -58,76 +58,108 @@ class Functions {
 public:
     Functions();
 
-    vector<vector<PolygonSeg>> m_wukRegions;
-    vector<vector<PolygonSeg>> m_apdRegions;
+    vector <vector<PolygonSeg>> m_wukRegions;
+    vector <vector<PolygonSeg>> m_apdRegions;
     int m_wukRegionPixel = 0;
-    double m_precision = 1.0;
 
-    double add(double in1, double in2);
-
-    bool setPrecision(double precision) {
-        m_precision = precision;
-        return true;
-    };
-
-    // fail
-    void testVector(std::vector<std::vector<PolygonSeg>> wukRegions, std::vector<std::vector<PolygonSeg>> apdRegions,
-                    double precision);
 
     // python 实际调用的函数
-    int countRegionPixel();
+    int countRegionPixel(double precision);
 
-    // 设置vector包含的region个数
-    bool setWukRegionNum(int num) {
-        if (num <= 0)
-            return false;
-        for (int i = 0; i < num; ++i) {
-            vector<PolygonSeg> region;
-            m_wukRegions.push_back(region);
-        }
-        return true;
-    }
+    int getWukRegionsPixel(double precision);
 
-    bool setApdRegionNum(int num) {
-        if (num <= 0)
-            return false;
-        for (int i = 0; i < num; ++i) {
-            vector<PolygonSeg> region;
-            m_apdRegions.push_back(region);
-        }
-        // 类的成员变量修改后再下次调用时依然存在
-        std::cout << m_wukRegions.size() << std::endl;
-        return true;
-    }
+    bool setApdRegionNum(int num);
 
-    bool setWukRegionISize(int index, int segNum) {
-        if (index < m_wukRegions.size() && index >= 0) {
-            for (int i = 0; i < segNum; ++i) {
-                PolygonSeg seg;
-                m_wukRegions[index].push_back(seg);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    bool setApdRegionISize(int index, int segNum) {
-        //std::cout << m_apdRegions.size() << std::endl;
-
-        if (index < m_apdRegions.size() && index >= 0) {
-            for (int i = 0; i < segNum; ++i) {
-                PolygonSeg seg;
-                m_apdRegions[index].push_back(seg);
-            }
-            return true;
-        }
-        return false;
-    }
+    bool setApdRegionISize(int index, int segNum);
 
     bool
     setApdRegionISegJ(int indexI, int indexJ, bool isLine, double startX, double startY, bool isClockWise,
-                      double centerX, double centerY) {
-        // success
+                      double centerX, double centerY);
+
+    bool setWukRegionNum(int num);    // 设置vector包含的region个数
+    bool setWukRegionISize(int index, int segNum);
+
+    bool
+    setWukRegionISegJ(int indexI, int indexJ, bool isLine, double startX, double startY, bool isClockWise,
+                      double centerX, double centerY);
+
+    //
+    void regionXor(Paths apdRegions, Paths wukRegions, Paths &result);
+
+
+    // todo modify
+    bool
+    transferRegionToPolygon(const std::vector <PolygonSeg> region, const double base, std::vector <IntPoint> &polygon);
+
+    bool regionUnion(Path region1, Path region2, Paths &paths);
+
+    void preHandlePaths(double base, Paths &wuk, Paths &apd, std::vector <std::vector<doublePoint>> wukDouble,
+                        std::vector <std::vector<doublePoint>> apdDouble);
+
+    int polygonScan(double precision, Path vertices);
+
+
+    bool
+    convertRegionsToPaths(std::vector <std::vector<PolygonSeg>> wukRegions,
+                          std::vector <std::vector<PolygonSeg>> apdRegions, Paths &wuk,
+                          Paths &apd, double base);
+};
+
+
+Functions::Functions(void) {
+    //std::cout << "function created !" << std::endl;
+}
+
+bool Functions::setWukRegionNum(int num) {
+    if (num <= 0)
+        return false;
+    for (int i = 0; i < num; ++i) {
+        vector <PolygonSeg> region;
+        m_wukRegions.push_back(region);
+    }
+    return true;
+}
+
+bool Functions::setApdRegionNum(int num) {
+    if (num <= 0)
+        return false;
+    for (int i = 0; i < num; ++i) {
+        vector <PolygonSeg> region;
+        m_apdRegions.push_back(region);
+    }
+    // 类的成员变量修改后再下次调用时依然存在
+    //std::cout << m_wukRegions.size() << std::endl;
+    return true;
+}
+
+bool Functions::setWukRegionISize(int index, int segNum) {
+    if (index < m_wukRegions.size() && index >= 0) {
+        for (int i = 0; i < segNum; ++i) {
+            PolygonSeg seg;
+            m_wukRegions[index].push_back(seg);
+        }
+        return true;
+    }
+    return false;
+}
+
+bool Functions::setApdRegionISize(int index, int segNum) {
+    //std::cout << m_apdRegions.size() << std::endl;
+
+    if (index < m_apdRegions.size() && index >= 0) {
+        for (int i = 0; i < segNum; ++i) {
+            PolygonSeg seg;
+            m_apdRegions[index].push_back(seg);
+        }
+        return true;
+    }
+    return false;
+}
+
+bool Functions::
+setApdRegionISegJ(int indexI, int indexJ, bool isLine, double startX, double startY, bool isClockWise,
+                  double centerX, double centerY) {
+    // success
 /*        std::cout << "------" << std::endl;
         std::cout << isLine << std::endl;
         std::cout << startX << std::endl;
@@ -137,16 +169,16 @@ public:
         std::cout << centerY << std::endl;
         std::cout << "------" << std::endl;*/
 
-        if (indexI >= 0 && indexI < m_apdRegions.size()) {
-            if (indexJ >= 0 && indexJ < m_apdRegions[indexI].size()) {
-                //index有效
-                //PolygonSeg seg;
-                m_apdRegions[indexI][indexJ].isLine = isLine;
-                m_apdRegions[indexI][indexJ].startX = startX;
-                m_apdRegions[indexI][indexJ].startY = startY;
-                m_apdRegions[indexI][indexJ].isClockWise = isClockWise;
-                m_apdRegions[indexI][indexJ].centerX = centerX;
-                m_apdRegions[indexI][indexJ].centerY = centerY;
+    if (indexI >= 0 && indexI < m_apdRegions.size()) {
+        if (indexJ >= 0 && indexJ < m_apdRegions[indexI].size()) {
+            //index有效
+            //PolygonSeg seg;
+            m_apdRegions[indexI][indexJ].isLine = isLine;
+            m_apdRegions[indexI][indexJ].startX = startX;
+            m_apdRegions[indexI][indexJ].startY = startY;
+            m_apdRegions[indexI][indexJ].isClockWise = isClockWise;
+            m_apdRegions[indexI][indexJ].centerX = centerX;
+            m_apdRegions[indexI][indexJ].centerY = centerY;
 
 /*                std::cout << "------" << std::endl;
                 std::cout << m_apdRegions[indexI][indexJ].isLine << std::endl;
@@ -156,96 +188,58 @@ public:
                 std::cout << m_apdRegions[indexI][indexJ].centerX << std::endl;
                 std::cout << m_apdRegions[indexI][indexJ].centerY << std::endl;
                 std::cout << "------" << std::endl;*/
-                return true;
-            }
+            return true;
         }
-        return false;
     }
-
-    bool
-    setWukRegionISegJ(int indexI, int indexJ, bool isLine, double startX, double startY, bool isClockWise,
-                      double centerX, double centerY) {
-        if (indexI >= 0 && indexI < m_wukRegions.size()) {
-            if (indexJ >= 0 && indexJ < m_wukRegions[indexI].size()) {
-                //index有效
-                m_wukRegions[indexI][indexJ].isLine = isLine;
-                m_wukRegions[indexI][indexJ].startX = startX;
-                m_wukRegions[indexI][indexJ].startY = startY;
-                m_wukRegions[indexI][indexJ].isClockWise = isClockWise;
-                m_wukRegions[indexI][indexJ].centerX = centerX;
-                m_wukRegions[indexI][indexJ].centerY = centerY;
-
-                return true;
-            }
-        }
-        return false;
-    }
-
-    int getWukRegionsPixel(double precision) {
-        std::vector<std::vector<PolygonSeg>> wukRegions = m_wukRegions;
-        std::vector<std::vector<PolygonSeg>> apdRegions = m_apdRegions;
-
-        //double precision = m_precision;
-
-        // 在某个精度下 计算region的像素点个数
-        int count = 0;
-
-        Paths wuk, apd;
-
-        convertRegionsToPaths(wukRegions, apdRegions, wuk, apd, precision);
-
-        // 计算转换后的wuk的pixel个数
-        for (int i = 0; i < wuk.size(); ++i) {
-            m_wukRegionPixel += polygonScan(precision, wuk[i]);
-        }
-
-        return m_wukRegionPixel;
-    }
-
-
-    // todo modify
-    bool
-    transferRegionToPolygon(const std::vector<PolygonSeg> region, const double base, std::vector<IntPoint> &polygon);
-
-    bool regionUnion(Path region1, Path region2, Paths &paths);
-
-    void preHandlePaths(double base, Paths &wuk, Paths &apd, std::vector<std::vector<doublePoint>> wukDouble,
-                        std::vector<std::vector<doublePoint>> apdDouble);
-
-    int polygonScan(double precision, Path vertices);
-
-    void regionXor(Paths apdRegions, Paths wukRegions, Paths &result);
-
-    bool
-    convertRegionsToPaths(std::vector<std::vector<PolygonSeg>> wukRegions,
-                          std::vector<std::vector<PolygonSeg>> apdRegions, Paths &wuk,
-                          Paths &apd, double base);
-};
-
-
-Functions::Functions(void) {
-    std::cout << "function created !" << std::endl;
+    return false;
 }
 
-double Functions::add(double in1, double in2) {
-    return in1 + in2;
-}
+bool Functions::
+setWukRegionISegJ(int indexI, int indexJ, bool isLine, double startX, double startY, bool isClockWise,
+                  double centerX, double centerY) {
+    if (indexI >= 0 && indexI < m_wukRegions.size()) {
+        if (indexJ >= 0 && indexJ < m_wukRegions[indexI].size()) {
+            //index有效
+            m_wukRegions[indexI][indexJ].isLine = isLine;
+            m_wukRegions[indexI][indexJ].startX = startX;
+            m_wukRegions[indexI][indexJ].startY = startY;
+            m_wukRegions[indexI][indexJ].isClockWise = isClockWise;
+            m_wukRegions[indexI][indexJ].centerX = centerX;
+            m_wukRegions[indexI][indexJ].centerY = centerY;
 
-void
-Functions::testVector(std::vector<std::vector<PolygonSeg>> wukRegions, std::vector<std::vector<PolygonSeg>> apdRegions,
-                      double precision) {
-    std::cout << " testVector !" << std::endl;
-    std::cout << precision << std::endl;
-
-    for (int i = 0; i < wukRegions.size(); ++i) {
-        for (int j = 0; j < wukRegions[i].size(); ++j) {
-            std::cout << wukRegions[i][j].startX << std::endl;
+            return true;
         }
     }
+    return false;
 }
 
+int Functions::getWukRegionsPixel(double precision) {
+    std::vector <std::vector<PolygonSeg>> wukRegions = m_wukRegions;
+    std::vector <std::vector<PolygonSeg>> apdRegions = m_apdRegions;
 
-int Functions::countRegionPixel() {
+    //double precision = m_precision;
+
+    // 在某个精度下 计算region的像素点个数
+    int count = 0;
+
+    Paths wuk, apd;
+
+    convertRegionsToPaths(wukRegions, apdRegions, wuk, apd, precision);
+
+    // 计算转换后的wuk的pixel个数
+    std::cout << apd.size() <<" wuk_size "<< endl;
+    for (int i = 0; i < apd.size(); ++i) {
+
+        count += polygonScan(precision, apd[i]);
+
+
+    }
+    std::cout << count <<" wukRegion_size_count "<< endl;
+
+    return count;
+}
+
+int Functions::countRegionPixel(double precision) {
     /**
      * input 两个regionList                   wukRegion apdRegion
      *                                            |         |
@@ -258,8 +252,8 @@ int Functions::countRegionPixel() {
 
     //double base = 1;//
 
-    std::vector<std::vector<PolygonSeg>> wukRegions = m_wukRegions;
-    std::vector<std::vector<PolygonSeg>> apdRegions = m_apdRegions;
+    std::vector <std::vector<PolygonSeg>> wukRegions = m_wukRegions;
+    std::vector <std::vector<PolygonSeg>> apdRegions = m_apdRegions;
 
 /*    std::cout << wukRegions.size() << endl;
     std::cout << apdRegions.size() << endl;
@@ -274,7 +268,7 @@ int Functions::countRegionPixel() {
     }
     std::cout << "----------------" << endl;*/
 
-    double precision = m_precision;
+    //double precision = m_precision;
 
     // 在某个精度下 计算region的像素点个数
     int count = 0;
@@ -288,16 +282,17 @@ int Functions::countRegionPixel() {
     regionXor(apd, wuk, xorResult);
 
     // 根据异或得到的多边形组计算其包含的像素点个数
+    std::cout << xorResult.size() <<" xorResult_size "<< endl;
     for (int i = 0; i < xorResult.size(); ++i) {
         count += polygonScan(precision, xorResult[i]);
     }
-
+    std::cout << count <<" xorResult_size_count "<< endl;
     return count;
 
 }
 
-bool Functions::transferRegionToPolygon(const std::vector<PolygonSeg> region, const double base,
-                                        std::vector<IntPoint> &polygon) {
+bool Functions::transferRegionToPolygon(const std::vector <PolygonSeg> region, const double base,
+                                        std::vector <IntPoint> &polygon) {
     // 精度转换
     // 用一系列直线拟合圆弧
 
@@ -348,8 +343,8 @@ bool Functions::regionUnion(Path region1, Path region2, Paths &paths) {
  * @param vertices
  * @return 像素点个数
  */
-void Functions::preHandlePaths(double base, Paths &wuk, Paths &apd, std::vector<std::vector<doublePoint>> wukDouble,
-                               std::vector<std::vector<doublePoint>> apdDouble) {
+void Functions::preHandlePaths(double base, Paths &wuk, Paths &apd, std::vector <std::vector<doublePoint>> wukDouble,
+                               std::vector <std::vector<doublePoint>> apdDouble) {
 /**
      * 精度--网格大小   base = 0.1 表示以0.1为一个单位
      *      1.根据精度调整数值
@@ -448,11 +443,11 @@ void Functions::preHandlePaths(double base, Paths &wuk, Paths &apd, std::vector<
 }
 
 int Functions::polygonScan(double precision, Path vertices) {
-    std::vector<Point> m_pointsList;
+    std::vector <Point> m_pointsList;
     int count = 0;
 
     //边表
-    std::vector<Edge *> ET;
+    std::vector < Edge * > ET;
     //活动边表
     Edge *AET;
 
@@ -467,7 +462,7 @@ int Functions::polygonScan(double precision, Path vertices) {
 
     //初始化ET和AET
     //Edge *pET[windowHeight];
-    std::vector<Edge *> pET;
+    std::vector < Edge * > pET;
     for (int i = 0; i < maxY; i++) {
         Edge *temp = new Edge();
         temp->next = nullptr;
@@ -548,7 +543,7 @@ int Functions::polygonScan(double precision, Path vertices) {
 
                 //   count++;
             }*/
-            count += p->next->next->x - p->next->x + 1;
+            count += p->next->next->x - p->next->x ;
             p = p->next->next;
         }
 
@@ -604,8 +599,8 @@ void Functions::regionXor(Paths apdRegions, Paths wukRegions, Paths &result) {
     clipper.Execute(ClipType::ctXor, result, PolyFillType::pftEvenOdd, PolyFillType::pftEvenOdd);
 }
 
-bool Functions::convertRegionsToPaths(std::vector<std::vector<PolygonSeg>> wukRegions,
-                                      std::vector<std::vector<PolygonSeg>> apdRegions,
+bool Functions::convertRegionsToPaths(std::vector <std::vector<PolygonSeg>> wukRegions,
+                                      std::vector <std::vector<PolygonSeg>> apdRegions,
                                       Paths &wuk, Paths &apd, double base) {
 
     /*    std::cout << wukRegions.size() << endl;
@@ -652,4 +647,17 @@ bool Functions::convertRegionsToPaths(std::vector<std::vector<PolygonSeg>> wukRe
     }
     return true;
 
+}
+
+void testVector(std::vector <std::vector<PolygonSeg>> wukRegions,
+                std::vector <std::vector<PolygonSeg>> apdRegions,
+                double precision) {
+    std::cout << " testVector !" << std::endl;
+    std::cout << precision << std::endl;
+
+    for (int i = 0; i < wukRegions.size(); ++i) {
+        for (int j = 0; j < wukRegions[i].size(); ++j) {
+            std::cout << wukRegions[i][j].startX << std::endl;
+        }
+    }
 }

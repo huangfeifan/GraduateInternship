@@ -6,5 +6,6 @@
     <file>./resources/rotateleft.png</file>
     <file>./resources/rotateright.png</file>
     <file>./resources/fileprint.png</file>
+    <file>./resources/csuGrad.png</file>
 </qresource>
 </RCC>

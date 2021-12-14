@@ -17,23 +17,23 @@ MainWindow::MainWindow(QWidget *parent)
     QSplitter *vSplitter = new QSplitter;
     vSplitter->setOrientation(Qt::Vertical);
     vSplitter->addWidget(h1Splitter);
-    vSplitter->addWidget(h2Splitter);
+    //vSplitter->addWidget(h2Splitter);
 
     View *view = new View("Top left view");
     view->view()->setScene(scene);
     h1Splitter->addWidget(view);
 
-    view = new View("Top right view");
+/*    view = new View("Top right view");
     view->view()->setScene(scene);
-    h1Splitter->addWidget(view);
+    h1Splitter->addWidget(view);*/
 
-    view = new View("Bottom left view");
+/*    view = new View("Bottom left view");
     view->view()->setScene(scene);
     h2Splitter->addWidget(view);
 
     view = new View("Bottom right view");
     view->view()->setScene(scene);
-    h2Splitter->addWidget(view);
+    h2Splitter->addWidget(view);*/
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(vSplitter);
@@ -46,7 +46,7 @@ void MainWindow::populateScene()
 {
     scene = new QGraphicsScene(this);
 
-    QImage image(":/Main/resources/qt4logo.png");
+    QImage image(":/Main/resources/csuGrad.png");
 
     // Populate scene
     int xx = 0;

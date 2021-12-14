@@ -150,13 +150,15 @@ View::View(const QString &name, QWidget *parent)
             this, SLOT(setResetButtonEnabled()));
     connect(selectModeButton, SIGNAL(toggled(bool)), this, SLOT(togglePointerMode()));
     connect(dragModeButton, SIGNAL(toggled(bool)), this, SLOT(togglePointerMode()));
-    connect(antialiasButton, SIGNAL(toggled(bool)), this, SLOT(toggleAntialiasing()));
+
+/*    connect(antialiasButton, SIGNAL(toggled(bool)), this, SLOT(toggleAntialiasing()));
     connect(openGlButton, SIGNAL(toggled(bool)), this, SLOT(toggleOpenGL()));
     connect(rotateLeftIcon, SIGNAL(clicked()), this, SLOT(rotateLeft()));
     connect(rotateRightIcon, SIGNAL(clicked()), this, SLOT(rotateRight()));
+    connect(printButton, SIGNAL(clicked()), this, SLOT(print()));*/
+
     connect(zoomInIcon, SIGNAL(clicked()), this, SLOT(zoomIn()));
     connect(zoomOutIcon, SIGNAL(clicked()), this, SLOT(zoomOut()));
-    connect(printButton, SIGNAL(clicked()), this, SLOT(print()));
 
     setupMatrix();
 }
@@ -201,7 +203,7 @@ void View::togglePointerMode()
     graphicsView->setInteractive(selectModeButton->isChecked());
 }
 
-void View::toggleOpenGL()
+/*void View::toggleOpenGL()
 {
 #ifndef QT_NO_OPENGL
     graphicsView->setViewport(openGlButton->isChecked() ? new QGLWidget(QGLFormat(QGL::SampleBuffers)) : new QWidget);
@@ -211,9 +213,9 @@ void View::toggleOpenGL()
 void View::toggleAntialiasing()
 {
     graphicsView->setRenderHint(QPainter::Antialiasing, antialiasButton->isChecked());
-}
+}*/
 
-void View::print()
+/*void View::print()
 {
 #if QT_CONFIG(printdialog)
     QPrinter printer;
@@ -223,7 +225,20 @@ void View::print()
         graphicsView->render(&painter);
     }
 #endif
+}*/
+
+/*
+void View::rotateLeft()
+{
+    rotateSlider->setValue(rotateSlider->value() - 10);
 }
+
+void View::rotateRight()
+{
+    rotateSlider->setValue(rotateSlider->value() + 10);
+}
+*/
+
 
 void View::zoomIn(int level)
 {
@@ -235,12 +250,3 @@ void View::zoomOut(int level)
     zoomSlider->setValue(zoomSlider->value() - level);
 }
 
-void View::rotateLeft()
-{
-    rotateSlider->setValue(rotateSlider->value() - 10);
-}
-
-void View::rotateRight()
-{
-    rotateSlider->setValue(rotateSlider->value() + 10);
-}

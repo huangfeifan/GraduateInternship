@@ -14,7 +14,6 @@ PYBIND11_MODULE(functions, m) {
     // c++接口
     py::class_<Functions>(m, "Functions")
             .def(py::init())
-            .def("add", &Functions::add)
             .def("setApdRegionNum", &Functions::setApdRegionNum)
             .def("setWukRegionNum", &Functions::setWukRegionNum)
 
