@@ -1,0 +1,49 @@
+
+@cpp:CommentedCode)"Remove the commented out code.(¿Ö½õùÿÿÿÿ
+:cpp:CommentedCodeH"Remove the commented out code.(ººË
+@	cpp:S1103A"&Remove the misleading "//" characters.(ÊéÌúüÿÿÿÿ
+@	cpp:S1103B"&Remove the misleading "//" characters.(ÉïØ¼úÿÿÿÿ
+;	cpp:S1103C"&Remove the misleading "//" characters.(Ÿ¯è‘
+;	cpp:S1103D"&Remove the misleading "//" characters.(ìÀùÃ
+@	cpp:S1103E"&Remove the misleading "//" characters.(ìâÆÒÿÿÿÿÿ
+@	cpp:S1103F"&Remove the misleading "//" characters.(ÔÉ¥×ÿÿÿÿÿ
+@	cpp:S1103G"&Remove the misleading "//" characters.(Ñæ¹úÿÿÿÿ
+:cpp:CommentedCodeS"Remove the commented out code.(ººË
+@	cpp:S1103K"&Remove the misleading "//" characters.(ğ€ÏÛıÿÿÿÿ
+;	cpp:S1103L"&Remove the misleading "//" characters.(´‘á
+;	cpp:S1103M"&Remove the misleading "//" characters.(Æ…â´
+;	cpp:S1103N"&Remove the misleading "//" characters.(ÁµÖ×
+@	cpp:S1103O"&Remove the misleading "//" characters.(ˆ½âıÿÿÿÿ
+@	cpp:S1103P"&Remove the misleading "//" characters.(Â„Áçşÿÿÿÿ
+;	cpp:S1103Q"&Remove the misleading "//" characters.(…óæ°
+@	cpp:S1103R"&Remove the misleading "//" characters.(öÎ³ÿÿÿÿÿ
+:cpp:CommentedCode^"Remove the commented out code.(ººË
+;	cpp:S1103W"&Remove the misleading "//" characters.(µ·ë
+;	cpp:S1103X"&Remove the misleading "//" characters.(àƒ™ˆ
+;	cpp:S1103Y"&Remove the misleading "//" characters.(Ÿ¯è‘
+;	cpp:S1103Z"&Remove the misleading "//" characters.(¤Òµå
+@	cpp:S1103["&Remove the misleading "//" characters.(¡ªìŸøÿÿÿÿ
+@	cpp:S1103\"&Remove the misleading "//" characters.(àÏÄéüÿÿÿÿ
+Acpp:CommentedCode‡"Remove the commented out code.(ºÄ‘ıúÿÿÿÿ
+<cpp:CommentedCodeó"Remove the commented out code.(ò®îÑ
+;cpp:CommentedCodeõ"Remove the commented out code.( ò’8
+Hcpp:CommentedCode™"Remove the commented out code.(ƒÁ±¼şÿÿÿÿ8Íºî–Ü/
+Hcpp:CommentedCode©"Remove the commented out code.(â¹Èúÿÿÿÿ8‹··–Ü/
+7	cpp:S1068Ó"!private field 'count' is not used(æÕ¿¼
+~	cpp:S3230"iDo not assign data members in a constructor. Initialize member "m_numVertices" in an initialization list.(èÔö“
+D	cpp:S1709"/Add the "explicit" keyword to this constructor.(ÖüÂÄ
+]	cpp:S5566-"CChange this raw for-loop to a range for-loop or an "std::for_each".(¥êğ¦ÿÿÿÿÿ
+J	cpp:S1172l"5Remove the unused parameter "end" or make it unnamed.(¼Ìóû
+?	cpp:S5566n"*Change this raw for-loop to "std::any_of".(»öÁ†
+Y	cpp:S5566“"CChange this raw for-loop to a range for-loop or an "std::for_each".(»öÁ†
+o	cpp:S1186æ"YAdd a nested comment explaining why this method is empty, or complete the implementation.(´»š¿
+?	cpp:S5817æ")This function should be declared "const".(´»š¿
+I	cpp:S1172æ"3Remove the unused parameter "v" or make it unnamed.(´»š¿
+^	cpp:S5566í"CChange this raw for-loop to a range for-loop or an "std::for_each".(ãº¿´ûÿÿÿÿ
+S	cpp:S1155ï"=Use "empty()" to check whether the container is empty or not.(ÄÈ¯á
+u	cpp:S3539¶"SRemove this redundant access specifier; it does not change the accessibility level.(ĞòÚÚüÿÿÿÿ8åôÆ–Ü/
+e	cpp:S5566Œ"CChange this raw for-loop to a range for-loop or an "std::for_each".(Ü ñüÿÿÿÿÿ8îŸÆ–Ü/
+e	cpp:S5566’"CChange this raw for-loop to a range for-loop or an "std::for_each".(Ü ñüÿÿÿÿÿ8ôŸÆ–Ü/
+e	cpp:S5566“"CChange this raw for-loop to a range for-loop or an "std::for_each".(«ËÙÓøÿÿÿÿ8»›í–Ü/
+Šcpp:EmptyCompoundStatement®"\Fill this compound statement, remove it, or add a nested comment explaining why it is empty.(±şïâ8óŸÆ–Ü/
+e	cpp:S5566À"CChange this raw for-loop to a range for-loop or an "std::for_each".(Ü ñüÿÿÿÿÿ8¿›í–Ü/

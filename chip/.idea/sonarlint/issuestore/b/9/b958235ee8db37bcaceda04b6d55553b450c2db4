@@ -1,0 +1,20 @@
+
+@cpp:CommentedCode"Remove the commented out code.(…ŠÑ¬úÿÿÿÿ
+@cpp:CommentedCode"Remove the commented out code.(›é¯Óıÿÿÿÿ
+;cpp:CommentedCode"Remove the commented out code.(öíØÔ
+Gcpp:CommentedCode_"Remove the commented out code.(ŞÉ¿úÿÿÿÿ8şÈå—Ü/
+Gcpp:CommentedCodef"Remove the commented out code.(şµğèüÿÿÿÿ8şÈå—Ü/
+Gcpp:CommentedCodei"Remove the commented out code.(…–õİùÿÿÿÿ8şÈå—Ü/
+Gcpp:CommentedCodek"Remove the commented out code.(ì¸áşÿÿÿÿ8şÈå—Ü/
+Gcpp:CommentedCoden"Remove the commented out code.(­¤Áøÿÿÿÿ8şÈå—Ü/
+B	cpp:S1103b"&Remove the misleading "//" characters.(›Üé«8şÈå—Ü/
+6	cpp:S14818"unused variable 'num'(†¬›Äûÿÿÿÿ8Ğ¶ü—Ü/
+d	cpp:S5566+"CChange this raw for-loop to a range for-loop or an "std::for_each".(Ü ñüÿÿÿÿÿ8Ä º—Ü/
+Rcpp:S8860"2Refactor this loop so that it is less error-prone.(Ü ñüÿÿÿÿÿ8 Õ—Ü/
+d	cpp:S55660"CChange this raw for-loop to a range for-loop or an "std::for_each".(Ü ñüÿÿÿÿÿ8Ù½Ï—Ü/
+\	cpp:S2209"AReplace "." with "::" for access to "QApplication::setAttribute".(×£Ù28¢Õ—Ü/
+Rcpp:S8861"2Refactor this loop so that it is less error-prone.(«ËÙÓøÿÿÿÿ8Ù½Ï—Ü/
+d	cpp:S55661"CChange this raw for-loop to a range for-loop or an "std::for_each".(«ËÙÓøÿÿÿÿ8ª‰Ğ—Ü/
+Mcpp:S886G"2Refactor this loop so that it is less error-prone.(¦ù‚¿8ÖéØ—Ü/
+_	cpp:S5566G"CChange this raw for-loop to a range for-loop or an "std::for_each".(¦ù‚¿8ÖéØ—Ü/
+U	cpp:S2209r"9Replace "." with "::" for access to "QApplication::exec".(¡ääó8ÑÏå—Ü/
