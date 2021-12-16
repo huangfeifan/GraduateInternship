@@ -1,5 +1,29 @@
 # Py扩展C++
 
+第二版
+
+项目文件结构
+
+![before](.\Picture\image-20211216160952812.png)
+
+把需要编译的头文件和包装函数类functions_wrapper.cpp放在了src文件夹，双击exe.bat即可将函数类编译成python库。需要注意：
+
+1. 编译后项目文件结构为下图所示，funtions.pyd就是我们需要的python库，将其放到AnacondaDLLs文件夹即可import导入，通过调用接口来实现扩展功能。
+2. 函数类修改了，或者函数包装类修改了，需要二次编译的，需要先删除build文件夹和functions.pyd文件。
+3. 本来想着bat文件实现删除build文件夹和pyd文件，以及将编译后的pyd文件直接放到Anaconda库文件夹去的功能，但是出了点问题。
+
+![after](.\Picture\image-20211216161222764.png)
+
+
+
+
+
+
+
+
+
+第一版
+
 ## 1.函数类
 
 该函数类存放python需要调用的接口函数，该函数类只能放在一个头文件里，也就是说头文件包含函数的声明和实现。
@@ -149,4 +173,4 @@ class Functions{
 
 
 
-函数类使用扫描线算法结合Clipping库计算Region像素点个数
+函数类使用扫描线算法结合Clipping库计算区域像素点个数

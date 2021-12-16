@@ -1,0 +1,5 @@
+
+Bcpp:CommentedCode"Remove the commented out code.(˜ÚÙã8ï‹£†Ü/
+Q	cpp:S1172"5Remove the unused parameter "num" or make it unnamed.(Ôè€Â8¦£†Ü/
+q	cpp:S3490"VUse "=default" instead of the default implementation of this special member functions.(œÖ„&8­£†Ü/
+V	cpp:S1185"5Remove this method "paintEvent" to simply inherit it.(Î©’ˆÿÿÿÿÿ8­£†Ü/

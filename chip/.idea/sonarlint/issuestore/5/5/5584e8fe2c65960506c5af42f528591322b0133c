@@ -1,0 +1,7 @@
+
+Gcpp:CommentedCode"Remove the commented out code.(‘ìñœüÿÿÿÿ8ôÔ¯êÛ/
+Gcpp:CommentedCode"Remove the commented out code.(‘ìñœüÿÿÿÿ8ƒè¯êÛ/
+t	cpp:S3539"SRemove this redundant access specifier; it does not change the accessibility level.(±áßâÿÿÿÿÿ8¢Õ¯êÛ/
+b	cpp:S3539!"ARemove this access specifier; it does not affect any declaration.(ĞòÚÚüÿÿÿÿ8¢Õ¯êÛ/
+K	cpp:S1709"/Add the "explicit" keyword to this constructor.(ãøË—8©Õ¯êÛ/
+S	cpp:S3471"2Annotate this function with "override" or "final".(¬½ıŞúÿÿÿÿ8ªÕ¯êÛ/
