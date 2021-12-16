@@ -952,6 +952,7 @@ CMakeFiles\chip.dir\src\main.cpp.obj: D:\Qt5.12.6\5.12.6\msvc2017_64\include\QtC
 CMakeFiles\chip.dir\src\main.cpp.obj: D:\Qt5.12.6\5.12.6\msvc2017_64\include\QtCore\qpair.h
 CMakeFiles\chip.dir\src\main.cpp.obj: D:\Qt5.12.6\5.12.6\msvc2017_64\include\QtCore\qpoint.h
 CMakeFiles\chip.dir\src\main.cpp.obj: D:\Qt5.12.6\5.12.6\msvc2017_64\include\QtCore\qprocessordetection.h
+CMakeFiles\chip.dir\src\main.cpp.obj: D:\Qt5.12.6\5.12.6\msvc2017_64\include\QtCore\qqueue.h
 CMakeFiles\chip.dir\src\main.cpp.obj: D:\Qt5.12.6\5.12.6\msvc2017_64\include\QtCore\qrect.h
 CMakeFiles\chip.dir\src\main.cpp.obj: D:\Qt5.12.6\5.12.6\msvc2017_64\include\QtCore\qrefcount.h
 CMakeFiles\chip.dir\src\main.cpp.obj: D:\Qt5.12.6\5.12.6\msvc2017_64\include\QtCore\qregexp.h

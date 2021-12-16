@@ -464,6 +464,10 @@ D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtCore/qprocessordetection.h
 QtCore/qglobal.h
 -
 
+D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtCore/qqueue.h
+QtCore/qlist.h
+-
+
 D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtCore/qrect.h
 QtCore/qmargins.h
 -
@@ -1150,6 +1154,8 @@ QApplication
 QDebug
 -
 QTime
+-
+qqueue.h
 -
 mainwindow.h
 E:/huangfeifan-Sort/chip/src/mainwindow.h

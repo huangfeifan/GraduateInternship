@@ -253,11 +253,87 @@ class SCC {
 
 
 // 有向无环图的拓扑排序  用Tarjan算法遍历一次图 若
-class TopologySort{
+class TopologySort {
+
+    TopologySort() {
+
+        // 检查是否有环 Tarjan_algorithm 需要参数  m_connection
 
 
+        initConnect();
+
+
+
+        // 初始化度数
+        for (int i = 0; i < m_connection.size(); ++i) {
+            m_outDegree.push_back(m_connection[i].size());
+            m_inDegree.push_back(0);
+            inStack.push_back(false);
+        }
+        // 初始化入度
+        for (int i = 0; i < m_connection.size(); ++i) {
+            for (int j = 0; j < m_connection[i].size(); ++j) {
+                m_inDegree[m_connection[i][j]]++;
+            }
+        }
+
+        // test
+        //qDebug() << inStack << "  inStack";
+        //qDebug() << m_inDegree << "  inDegree";
+
+        // 有向图的入度为0的
+
+        for (int i = 0; i < m_connection.size(); ++i) {
+            QList<int> temp;
+            if (m_inDegree[i] == 0) {
+                inStack[i] = true;//
+                for (int j = 0; j < m_connection[i].size(); ++j) {
+                    m_inDegree[j]--;
+                }
+                temp.push_back(i);
+            }
+            qDebug() << temp;
+        }
+        //result.push_back(temp);
+
+        int num = 0;
+        while (num < m_connection.size()) {
+            for (int i = 0; i < m_connection.size(); ++i) {
+                if (!inStack[i]) {
+
+                }
+            }
+        }
+
+    }
+
+private:
     QList<QList<int>> m_connection;//有向无环图的邻接表
+    QList<bool> inStack;// 结点i是否遍历过
+    QList<QList<int>> result;// 排序的结果
+    QStack<int> stack;
 
+    QList<int> m_outDegree;//出度
+    QList<int> m_inDegree;//入度
+
+    void initDegree() {
+        for (int i = 0; i < m_connection.size(); ++i) {
+            m_outDegree.push_back(m_connection[i].size());
+        }
+    }
+
+    void initConnect() {
+        // 有向无环图 DAG directed acyclic graph
+        m_connection = {
+                {1, 5},//0
+                {},//1
+                {3, 4},//2
+                {1},//3
+                {},//4
+                {6},//5
+                {}//6
+        };
+    }
 
 
 };

@@ -1,8 +1,0 @@
-
-y	cpp:S3230"]Do not assign data members in a constructor. Initialize member "x" in an initialization list.(İİÈµ8ù°êÛ/
-y	cpp:S3230	"]Do not assign data members in a constructor. Initialize member "y" in an initialization list.(îÁ8ù°êÛ/
-‚	cpp:S3230
-"aDo not assign data members in a constructor. Initialize member "color" in an initialization list.(÷óâ°ûÿÿÿÿ8ú°êÛ/
-‡	cpp:S1116"kModify the macro definition so that it needs to be followed by a semicolon, or remove this empty statement.(¸¹ğ÷8ÿ°êÛ/
-w	cpp:S2209%"\Replace "->" with "::" for access to "QStyleOptionGraphicsItem::levelOfDetailFromTransform".(Ã Çs8€‚°êÛ/
-Y	cpp:S5945a"=Use "std::array" or "std::vector" instead of a C-style array.(úêçŠ8ˆ‚°êÛ/
