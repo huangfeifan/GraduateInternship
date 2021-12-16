@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="chip"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="msvc8"/>
+		<Option virtualFolders="CMake Files\;CMake Files\Qt5.12.6\;CMake Files\Qt5.12.6\5.12.6\;CMake Files\Qt5.12.6\5.12.6\msvc2017_64\;CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\;CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\;CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5\;CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Core\;CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\;CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Widgets\;CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5OpenGL\;CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5PrintSupport\;CMake Files\src\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="E:/huangfeifan-Sort/chip/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 all"/>
+					<CompileFile command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="chip">
+				<Option output="E:/huangfeifan-Sort/chip/cmake-build-debug/chip.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="E:/huangfeifan-Sort/chip/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="msvc8"/>
+				<Compiler>
+					<Add option="-DQT_CORE_LIB"/>
+					<Add option="-DQT_GUI_LIB"/>
+					<Add option="-DQT_WIDGETS_LIB"/>
+					<Add option="-DQT_OPENGL_LIB"/>
+					<Add option="-DQT_PRINTSUPPORT_LIB"/>
+					<Add directory="E:/huangfeifan-Sort/chip/cmake-build-debug/chip_autogen/include"/>
+					<Add directory="E:/huangfeifan-Sort/chip/src"/>
+					<Add directory="E:/huangfeifan-Sort/chip/src/resources"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtCore"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/./mkspecs/win32-msvc"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtGui"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtANGLE"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtWidgets"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtOpenGL"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtPrintSupport"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\ATLMFC\include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\include"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\ucrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\shared"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\winrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\cppwinrt"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 chip"/>
+					<CompileFile command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="chip/fast">
+				<Option output="E:/huangfeifan-Sort/chip/cmake-build-debug/chip.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="E:/huangfeifan-Sort/chip/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="msvc8"/>
+				<Compiler>
+					<Add option="-DQT_CORE_LIB"/>
+					<Add option="-DQT_GUI_LIB"/>
+					<Add option="-DQT_WIDGETS_LIB"/>
+					<Add option="-DQT_OPENGL_LIB"/>
+					<Add option="-DQT_PRINTSUPPORT_LIB"/>
+					<Add directory="E:/huangfeifan-Sort/chip/cmake-build-debug/chip_autogen/include"/>
+					<Add directory="E:/huangfeifan-Sort/chip/src"/>
+					<Add directory="E:/huangfeifan-Sort/chip/src/resources"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtCore"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/./mkspecs/win32-msvc"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtGui"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtANGLE"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtWidgets"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtOpenGL"/>
+					<Add directory="D:/Qt5.12.6/5.12.6/msvc2017_64/include/QtPrintSupport"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\ATLMFC\include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\include"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\ucrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\shared"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\winrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\cppwinrt"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 chip/fast"/>
+					<CompileFile command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="E:/huangfeifan-Sort/chip/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 edit_cache"/>
+					<CompileFile command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="E:/huangfeifan-Sort/chip/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="chip_autogen">
+				<Option working_dir="E:/huangfeifan-Sort/chip/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 chip_autogen"/>
+					<CompileFile command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f E:\huangfeifan-Sort\chip\cmake-build-debug\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="E:/huangfeifan-Sort/chip/cmake-build-debug/chip_autogen/UVLADIE3JM/qrc_images.cpp">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/cmake-build-debug/chip_autogen/UVLADIE3JM/qrc_images.cpp.rule">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/cmake-build-debug/chip_autogen/mocs_compilation.cpp">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/src/AfterPlacement.cpp">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/src/AfterPlacement.h">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/src/BeforeLayout.cpp">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/src/BeforeLayout.h">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/src/JohnsonAlgo.cpp">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/src/JohnsonAlgo.h">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/src/MyChip.cpp">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/src/MyChip.h">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/src/chip.cpp">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/src/chip.h">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/src/images.qrc">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/src/main.cpp">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/src/mainwindow.cpp">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/src/mainwindow.h">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/src/view.cpp">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/src/view.h">
+			<Option target="chip"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5/Qt5Config.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5/Qt5ConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5/Qt5ModuleLocation.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Core/Qt5CoreConfig.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Core/Qt5CoreConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Core/Qt5CoreConfigExtrasMkspecDir.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Core/Qt5CoreConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Core/Qt5CoreMacros.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5GuiConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QGifPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QICNSPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QICOPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QJpegPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QMinimalIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QOffscreenIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QTgaPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QTiffPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QTuioTouchPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QWbmpPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QWebpPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QWindowsDirect2DIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QWindowsIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Gui/Qt5Gui_QXdgDesktopPortalThemePlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Widgets/Qt5WidgetsConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5Widgets/Qt5Widgets_QWindowsVistaStylePlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5OpenGL/Qt5OpenGLConfig.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5OpenGL\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5OpenGL/Qt5OpenGLConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5OpenGL\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5PrintSupport/Qt5PrintSupportConfig.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5PrintSupport\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5PrintSupport/Qt5PrintSupportConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5PrintSupport\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/Qt5.12.6/5.12.6/msvc2017_64/lib/cmake/Qt5PrintSupport/Qt5PrintSupport_QWindowsPrinterSupportPlugin.cmake">
+			<Option virtualFolder="CMake Files\Qt5.12.6\5.12.6\msvc2017_64\lib\cmake\Qt5PrintSupport\"/>
+		</Unit>
+		<Unit filename="E:/huangfeifan-Sort/chip/src/images.qrc">
+			<Option virtualFolder="CMake Files\src\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,4 @@
+D:/Master degree/CLionProjects/Place/cmake-build-release/CMakeFiles/Place.dir
+D:/Master degree/CLionProjects/Place/cmake-build-release/CMakeFiles/edit_cache.dir
+D:/Master degree/CLionProjects/Place/cmake-build-release/CMakeFiles/rebuild_cache.dir
+D:/Master degree/CLionProjects/Place/cmake-build-release/CMakeFiles/Place_autogen.dir

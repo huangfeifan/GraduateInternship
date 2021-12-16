@@ -1,0 +1,20 @@
+
+Bcpp:CommentedCode"Remove the commented out code.( æÿÏ8šõ£Ü/
+Bcpp:CommentedCode<"Remove the commented out code.(ßŸŞ÷8õ£Ü/
+Bcpp:CommentedCodeS"Remove the commented out code.(î™³û8µõ£Ü/
+Bcpp:CommentedCodek"Remove the commented out code.(‚Ùğ’8Àõ£Ü/
+Bcpp:CommentedCoden"Remove the commented out code.(ÑóÆÄ8Áõ£Ü/
+Bcpp:CommentedCode|"Remove the commented out code.(î™³û8Âõ£Ü/
+Hcpp:CommentedCode†"Remove the commented out code.(´âÓÕøÿÿÿÿ8Äõ£Ü/
+Ccpp:CommentedCode“"Remove the commented out code.(Î‘±‚8Æõ£Ü/
+Hcpp:CommentedCode¤"Remove the commented out code.(©ÌãÕûÿÿÿÿ8Çõ£Ü/
+Ccpp:CommentedCodeÂ"Remove the commented out code.(”ÏÉ§8Êõ£Ü/
+B	cpp:S1103Ä"&Remove the misleading "//" characters.(ı¦¼.8Êõ£Ü/
+<	cpp:S1481Ò"unused variable 'receiver'(ùãà÷şÿÿÿÿ8Ëõ£Ü/
+r	cpp:S3490*"VUse "=default" instead of the default implementation of this special member functions.(÷ƒÿæ8˜ÿ£Ü/
+F	cpp:S5817–")This function should be declared "const".(ªÊ»ô8Çÿ£Ü/
+K	cpp:S5817Ÿ")This function should be declared "const".(Ç£ß·ÿÿÿÿÿ8Éÿ£Ü/
+K	cpp:S5817©")This function should be declared "const".(¥²¹¹øÿÿÿÿ8Ëÿ£Ü/
+Šcpp:EmptyCompoundStatement²"\Fill this compound statement, remove it, or add a nested comment explaining why it is empty.(ÁÖİ8Ëÿ£Ü/
+d	cpp:S1854Ò"BValue stored to 'receiver' during its initialization is never read(ùãà÷şÿÿÿÿ8‹¤Ü/
+Hcpp:CommentedCodeØ"Remove the commented out code.(´ñ¼şÿÿÿÿ8‹¤Ü/

@@ -4,6 +4,7 @@
 #include <QTime>
 
 #include "mainwindow.h"
+#include "TarjanAlgo.h"
 
 int main(int argc, char *argv[]) {
     Q_INIT_RESOURCE(images);
@@ -14,9 +15,13 @@ int main(int argc, char *argv[]) {
     //MainWindow window;
     //window.show();
 
-    QTime now = QTime::currentTime();
+/*    QTime now = QTime::currentTime();
     qsrand(now.msec());
-    qDebug() << qrand();
+    qDebug() << qrand();*/
+
+
+    TarjanAlgo tarjanAlgo(7);
+
 
     return app.exec();
 }
