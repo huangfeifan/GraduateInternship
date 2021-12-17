@@ -1,8 +1,8 @@
-﻿
-#include <QApplication>
+﻿#include <QApplication>
 #include <QDebug>
 #include <QTime>
-#include <qqueue.h>
+#include <QQueue>
+
 
 #include "mainwindow.h"
 #include "TarjanAlgo.h"
@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
 
 
     // test topology sort
-    //TopologySort topologySort;
+    TopologySort topologySort;
 
 
 

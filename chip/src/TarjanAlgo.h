@@ -9,6 +9,8 @@
 #include <QDebug>
 
 
+#include "Data.h"
+
 // 递归版本 Trajan_algorithm
 class TarjanAlgo {
     // Time Complexity O(N+E) Space Complexity O(N+E) 邻接表存储数据
@@ -18,6 +20,8 @@ public :
 
     // 递归版本
     TarjanAlgo() {
+
+        qDebug() << "TarjanAlgo----------------------------------------------------";
 
         // 初始化邻接表
         initConnection();
@@ -36,7 +40,12 @@ public :
         for (int i = 0; i < m_sccs.size(); ++i) {
             qDebug() << m_sccs[i];
         }
+
+        qDebug() << "TarjanAlgo----------------------------------------------------";
+
     }
+
+    QList<QList<int>> m_sccs;// strongly connected components 保存强连通分量
 
 private:
     int m_numVertices = 0;// 图顶点个数
@@ -46,57 +55,16 @@ private:
     QVector<bool> m_inStack; // 结点是否在栈内
     QStack<int> m_stack; // 用于回退结点
 
-    QList<QList<int>> m_sccs;// strongly connected components 保存强连通分量
+
     QList<QList<int>> m_connection;//邻接表
 
     void initConnection() {
-        // test data link https://www.bilibili.com/video/BV19J411J7AZ?p=5
-/*        m_connection = {
-                {1, 5},//0
-                {2},//1
-                {3, 4},//2
-                {1},//3
-                {},//4
-                {6},//5
-                {0}//6
-        };*/
 
-/*        m_connection = {
-                {4},//0
-                {0, 2},//1
-                {1, 3},//2
-                {2},//3
-                {1},//4
-                {4, 6},//5
-                {5, 2},//6
-                {7, 6, 3}//7
-        };*/
-
-        // test data link https://segmentfault.com/a/1190000039149539
-        m_connection = {
-                {1, 2},//0
-                {3},//1
-                {3, 4},//2
-                {0, 5},//3
-                {5},//4
-                {},//5
-
-        };
-
-        // 有向无环图 DAG directed acyclic graph
-/*        m_connection = {
-                {1, 5},//0
-                {},//1
-                {3, 4},//2
-                {1},//3
-                {},//4
-                {6},//5
-                {}//6
-        };*/
-
+        m_connection = graphData;
 
         // number 模块数量
         m_numVertices = m_connection.size();
+
     }
 
     void getSCC() {
@@ -241,6 +209,8 @@ class TopologySort {
 public:
     TopologySort() {
 
+        qDebug() << "TopologySort----------------------------------------------------";
+
         // 检查是否有环 Tarjan_algorithm 需要参数  m_connection
         initConnect();
 
@@ -248,11 +218,16 @@ public:
 
         detectVerticesNum();
 
+        qDebug() << "TopologySort----------------------------------------------------";
+
+        initParent();
     }
+
+    QList<QStack<int>> result;// 拓扑排序结果
 
 private:
     QList<QList<int>> m_connection;//有向无环图的邻接表
-    QList<QStack<int>> result;// 拓扑排序结果
+
 
     QList<int> m_inDegree;//入度
     //QList<int> m_outDegree;//出度
@@ -267,25 +242,7 @@ private:
     void initConnect() {
         // 有向无环图 DAG directed acyclic graph
 
-        m_connection = {
-                {},//0
-                {},//1
-                {3, 4},//2
-                {1},//3
-                {},//4
-                {6},//5
-                {4}//6
-        };
-
-        m_connection = {
-                {1, 5},//0
-                {},//1
-                {3, 4},//2
-                {1},//3
-                {},//4
-                {6},//5
-                {}//6
-        };
+        m_connection = graphData;
 
         initDegree();
     }
@@ -354,5 +311,120 @@ private:
             isDAG = false;
         }
     }
+
+    // 根据邻接表计算每个顶点的父节点
+    void initParent() {
+        QList<QList<int>> parent;//
+
+        for (int i = 0; i < m_connection.size(); ++i) {
+            QList<int> temp;
+            parent.push_back(temp);
+        }
+
+        for (int i = 0; i < m_connection.size(); ++i) {
+            for (int j = 0; j < m_connection[i].size(); ++j) {
+                int end = m_connection[i][j];
+                parent[end].push_back(i);
+            }
+        }
+
+        qDebug() << parent;
+    }
+
+
+};
+
+class Placement {
+
+    QList<QList<int>> m_connection;
+    QList<QList<int>> parent;//
+
+    QList<QList<int>> m_sccs;//scc result
+
+    QList<bool> isPlaced;//是否
+    QList<QPoint> position;// 位置
+    QList<QHash<int, int>> isOccupy;//位置被占据
+
+    Placement() {
+        init();
+        TarjanAlgo tarjanAlgo;
+        m_sccs = tarjanAlgo.m_sccs;
+
+        //
+        int size = m_sccs.size();
+        int verticesNum = m_connection.size();
+        int placedModuleNum = 0;
+        // 入度为0放在最左边  没有处理 todo modify
+        if (size > 1) {
+            // 多个强连通分量
+            int index = m_sccs[size - 1][0];// index
+            position[index].setX(verticesNum);//row 行
+            position[index].setY(verticesNum);//column 列
+            isPlaced[index] = true;//修改摆放状态
+            isOccupy[verticesNum].insert(verticesNum,verticesNum);//存储index所占据位置
+
+            placedModuleNum++;// 修改摆放的顶点个数
+
+            // 摆放index的parent
+            placeParent(index, verticesNum, verticesNum);
+
+            // 摆放index的child
+            placeChild(index, verticesNum, verticesNum);
+
+        } else if (size == 1) {
+            // 只有一个强连通分量
+
+        } else if (!size) {
+            qDebug() << "error";
+        }
+
+    }
+
+    void placeParent(int index, int row, int column) {
+
+        for (int i = 0; i < parent[index].size(); ++i) {
+            int first = parent[index][i];
+            if (!isPlaced[first]) {
+
+
+                isPlaced[first] = true;
+
+                //placedModuleNum++;
+            }
+        }
+    }
+
+    void placeChild(int index, int row, int column) {
+
+    }
+
+
+    void init() {
+
+        for (int i = 0; i < m_connection.size(); ++i) {
+
+            parent.push_back(QList<int>());
+
+            isPlaced.push_back(false);
+
+            position.push_back(QPoint());
+        }
+
+        for (int i = 0; i < m_connection.size() * 2; ++i) {
+            isOccupy.push_back(QHash<int, int>());
+        }
+        qDebug() << isOccupy << "  isOccupy";
+
+        for (int i = 0; i < m_connection.size(); ++i) {
+            for (int j = 0; j < m_connection[i].size(); ++j) {
+                int end = m_connection[i][j];
+                parent[end].push_back(i);
+            }
+        }
+
+        qDebug() << parent << " parent";
+
+    }
+
 
 };
