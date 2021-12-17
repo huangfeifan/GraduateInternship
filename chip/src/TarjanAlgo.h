@@ -17,19 +17,10 @@ class TarjanAlgo {
 public :
 
     // 递归版本
-    TarjanAlgo(int number) {
-
-        // number 模块数量
-        m_numVertices = number;
+    TarjanAlgo() {
 
         // 初始化邻接表
         initConnection();
-
-        // 数据匹配不上
-        if (number != m_connection.size()) {
-            qDebug() << "data error \n vertices_num != m_connect_size";
-            return;
-        }
 
         // init
         for (int i = 0; i < m_numVertices; ++i) {
@@ -47,6 +38,7 @@ public :
         }
     }
 
+private:
     int m_numVertices = 0;// 图顶点个数
     int m_count = 0;// 搜索的次序编号(时间戳)
     QVector<int> m_dfn; // 结点i搜索的次序编号(时间戳)  表示真实访问次序
@@ -56,8 +48,6 @@ public :
 
     QList<QList<int>> m_sccs;// strongly connected components 保存强连通分量
     QList<QList<int>> m_connection;//邻接表
-
-
 
     void initConnection() {
         // test data link https://www.bilibili.com/video/BV19J411J7AZ?p=5
@@ -83,7 +73,7 @@ public :
         };*/
 
         // test data link https://segmentfault.com/a/1190000039149539
-/*        m_connection = {
+        m_connection = {
                 {1, 2},//0
                 {3},//1
                 {3, 4},//2
@@ -91,10 +81,10 @@ public :
                 {5},//4
                 {},//5
 
-        };*/
+        };
 
         // 有向无环图 DAG directed acyclic graph
-        m_connection = {
+/*        m_connection = {
                 {1, 5},//0
                 {},//1
                 {3, 4},//2
@@ -102,19 +92,12 @@ public :
                 {},//4
                 {6},//5
                 {}//6
-        };
+        };*/
+
+
+        // number 模块数量
+        m_numVertices = m_connection.size();
     }
-
-    bool isConnected(int start, int end) {
-
-        for (int i = 0; i < m_connection[start].size(); ++i) {
-            if (m_connection[start][i]) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     void getSCC() {
         for (int i = 0; i < m_numVertices; ++i) {
@@ -123,7 +106,6 @@ public :
             }
         }
     }
-
 
     void DFS(int start) {
 
@@ -182,6 +164,7 @@ public :
 // 非递归版本 Tarjan_algorithm
 class SCC {
 
+public:
     // 非递归版本
     SCC() {
 
@@ -199,6 +182,7 @@ class SCC {
         compactSccAdjList();
     }
 
+private:
 
     int numVertices = 0; //adjList.length;  有向图顶点个数
     QList<int> index; //
@@ -251,10 +235,10 @@ class SCC {
     }
 };
 
-
 // 有向无环图的拓扑排序  用Tarjan算法遍历一次图 若
 class TopologySort {
 
+public:
     TopologySort() {
 
         // 检查是否有环 Tarjan_algorithm 需要参数  m_connection
@@ -282,6 +266,17 @@ private:
     // 初始化connect数据
     void initConnect() {
         // 有向无环图 DAG directed acyclic graph
+
+        m_connection = {
+                {},//0
+                {},//1
+                {3, 4},//2
+                {1},//3
+                {},//4
+                {6},//5
+                {4}//6
+        };
+
         m_connection = {
                 {1, 5},//0
                 {},//1
@@ -307,7 +302,7 @@ private:
         }
     }
 
-    void computeResult(){
+    void computeResult() {
         // 有向图的入度为0的
         for (int i = 0; i < m_connection.size(); ++i) {
             QList<int> temp;
@@ -344,7 +339,7 @@ private:
 
         }
         //qDebug() << "while----end";
-        //qDebug() << result;
+        qDebug() << "****    Topology sort result:\n" << result;
     }
 
     void detectVerticesNum() {
