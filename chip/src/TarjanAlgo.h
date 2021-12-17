@@ -258,70 +258,28 @@ class TopologySort {
     TopologySort() {
 
         // 检查是否有环 Tarjan_algorithm 需要参数  m_connection
-
-
         initConnect();
 
+        computeResult();
 
-
-        // 初始化度数
-        for (int i = 0; i < m_connection.size(); ++i) {
-            m_outDegree.push_back(m_connection[i].size());
-            m_inDegree.push_back(0);
-            inStack.push_back(false);
-        }
-        // 初始化入度
-        for (int i = 0; i < m_connection.size(); ++i) {
-            for (int j = 0; j < m_connection[i].size(); ++j) {
-                m_inDegree[m_connection[i][j]]++;
-            }
-        }
-
-        // test
-        //qDebug() << inStack << "  inStack";
-        //qDebug() << m_inDegree << "  inDegree";
-
-        // 有向图的入度为0的
-
-        for (int i = 0; i < m_connection.size(); ++i) {
-            QList<int> temp;
-            if (m_inDegree[i] == 0) {
-                inStack[i] = true;//
-                for (int j = 0; j < m_connection[i].size(); ++j) {
-                    m_inDegree[j]--;
-                }
-                temp.push_back(i);
-            }
-            qDebug() << temp;
-        }
-        //result.push_back(temp);
-
-        int num = 0;
-        while (num < m_connection.size()) {
-            for (int i = 0; i < m_connection.size(); ++i) {
-                if (!inStack[i]) {
-
-                }
-            }
-        }
+        detectVerticesNum();
 
     }
 
 private:
     QList<QList<int>> m_connection;//有向无环图的邻接表
-    QList<bool> inStack;// 结点i是否遍历过
-    QList<QList<int>> result;// 排序的结果
-    QStack<int> stack;
+    QList<QStack<int>> result;// 拓扑排序结果
 
-    QList<int> m_outDegree;//出度
     QList<int> m_inDegree;//入度
+    //QList<int> m_outDegree;//出度
 
-    void initDegree() {
-        for (int i = 0; i < m_connection.size(); ++i) {
-            m_outDegree.push_back(m_connection[i].size());
-        }
-    }
+    QStack<int> stack;
+    QStack<int> qStack;
 
+    bool isDAG = true;//是有向无环图 DAG :=  Directed Acyclic Graph
+
+
+    // 初始化connect数据
     void initConnect() {
         // 有向无环图 DAG directed acyclic graph
         m_connection = {
@@ -333,7 +291,73 @@ private:
                 {6},//5
                 {}//6
         };
+
+        initDegree();
     }
 
+    void initDegree() {
+        for (int i = 0; i < m_connection.size(); ++i) {
+            m_inDegree.push_back(0);
+        }
+        // 初始化入度
+        for (int i = 0; i < m_connection.size(); ++i) {
+            for (int j = 0; j < m_connection[i].size(); ++j) {
+                m_inDegree[m_connection[i][j]]++;
+            }
+        }
+    }
+
+    void computeResult(){
+        // 有向图的入度为0的
+        for (int i = 0; i < m_connection.size(); ++i) {
+            QList<int> temp;
+            if (m_inDegree[i] == 0) {
+                qStack.push_back(i);
+            }
+        }
+        //qDebug() << qStack;
+        result.push_back(qStack);
+
+
+        //qDebug() << "while----";
+        while (!qStack.isEmpty()) {
+            int index = qStack.pop();
+            //qDebug() << qStack;
+            for (int i = 0; i < m_connection[index].size(); ++i) {
+                int temp = m_connection[index][i];
+                m_inDegree[temp]--;
+                if (m_inDegree[temp] == 0) {
+                    stack.push_back(temp);
+                }
+            }
+
+            // 更新qStack
+            if (qStack.isEmpty()) {
+                qStack = stack;
+                //qDebug() << qStack << "-------------";
+                if (!qStack.isEmpty()) {
+                    result.push_back(qStack);
+                }
+                stack.clear();
+            }
+
+
+        }
+        //qDebug() << "while----end";
+        //qDebug() << result;
+    }
+
+    void detectVerticesNum() {
+        // 拓扑排序的顶点数
+        int sortVerticesNum = 0;
+        for (int i = 0; i < result.size(); ++i) {
+            sortVerticesNum += result[i].size();
+        }
+
+        // 拓扑排序顶点数不等于有向图的顶点数  说明有向图有环
+        if (sortVerticesNum != m_connection.size()) {
+            isDAG = false;
+        }
+    }
 
 };

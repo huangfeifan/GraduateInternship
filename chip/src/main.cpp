@@ -25,24 +25,24 @@ int main(int argc, char *argv[]) {
 
     QList<QList<int>> m_connection;//有向无环图的邻接表
     m_connection = {
-            {1, 5},//0
+            {},//0
             {},//1
             {3, 4},//2
             {1},//3
             {},//4
             {6},//5
-            {}//6
+            {4}//6
     };
-    QList<bool> inStack;// 结点i是否遍历过
     QList<int> m_inDegree;//入度
-    QList<QList<int>> result;
+    QList<QStack<int>> result;// 拓扑排序结果
     QStack<int> stack;
     QStack<int> qStack;
-    int time = 0;
+
+    int sortVerticesNum = 0;    // 拓扑排序的顶点数
+    bool isDAG = true;  //是有向无环图 DAG :=  Directed Acyclic Graph
 
     for (int i = 0; i < m_connection.size(); ++i) {
         m_inDegree.push_back(0);
-        inStack.push_back(false);
     }
     // 初始化入度
     for (int i = 0; i < m_connection.size(); ++i) {
@@ -50,21 +50,20 @@ int main(int argc, char *argv[]) {
             m_inDegree[m_connection[i][j]]++;
         }
     }
-    qDebug() << inStack << "  inStack";
-    qDebug() << m_inDegree << "  inDegree";
+    //qDebug() << inStack << "  inStack";
+    //qDebug() << m_inDegree << "  inDegree";
 
-    int num = 0;
     for (int i = 0; i < m_connection.size(); ++i) {
         QList<int> temp;
         if (m_inDegree[i] == 0) {
             qStack.push_back(i);
-            inStack[i] = true;
         }
     }
-    time++;
-    qDebug() << qStack;
+    //qDebug() << qStack;
+    result.push_back(qStack);
 
-    qDebug() << "while----";
+
+    //qDebug() << "while----";
     while (!qStack.isEmpty()) {
         int index = qStack.pop();
         qDebug() << qStack;
@@ -78,16 +77,32 @@ int main(int argc, char *argv[]) {
 
         // 更新qStack
         if (qStack.isEmpty()) {
-
             qStack = stack;
-            qDebug() << qStack<<"-------------";
+            qDebug() << qStack << "-------------";
+            if (!qStack.isEmpty()) {
+                result.push_back(qStack);
+            }
             stack.clear();
-            time++;
         }
 
 
     }
     qDebug() << "while----end";
+    qDebug() << result;
+
+
+    for (int i = 0; i < result.size(); ++i) {
+        sortVerticesNum += result[i].size();
+    }
+
+
+    // 拓扑排序顶点数不等于有向图的顶点数  说明有向图有环
+    if (sortVerticesNum != m_connection.size()) {
+        isDAG = false;
+    }
+
+
+
 
 
 

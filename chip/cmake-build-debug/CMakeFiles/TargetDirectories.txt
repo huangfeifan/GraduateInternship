@@ -1,4 +1,0 @@
-E:/huangfeifan-Sort/chip/cmake-build-debug/CMakeFiles/chip.dir
-E:/huangfeifan-Sort/chip/cmake-build-debug/CMakeFiles/edit_cache.dir
-E:/huangfeifan-Sort/chip/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-E:/huangfeifan-Sort/chip/cmake-build-debug/CMakeFiles/chip_autogen.dir
