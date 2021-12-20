@@ -393,9 +393,11 @@ public:
 
                 isOccupy[verticesNum].insert(row, row);// 存储index所占据位置
 
-                position[index].setX(row);// row 行
-                position[index].setY(verticesNum);// column 列
+                position[index].setX(verticesNum);// column 列
+                position[index].setY(row);  // row 行
                 isPlaced[index] = true;// 修改摆放状态
+
+                //qDebug() << index << " index(column/row) " << verticesNum << " " << row;
 
                 // 摆放index的child
                 placeChild(index, row, verticesNum);
@@ -441,12 +443,14 @@ private:
             }
             isOccupy[column + 1].insert(firstRow, firstRow);
 
-            position[first].setX(column + 1);// row 行
-            position[first].setY(firstRow);// column 列
+            position[first].setX(column + 1);  // column 列
+            position[first].setY(firstRow); // row 行
             isPlaced[first] = true;
 
+            qDebug() << first << " index(column/row) " << column + 1 << " " << firstRow;
+
             // 摆放first的child
-            placeChild(first, row, column + 1);
+            placeChild(first, firstRow, column + 1);
         }
     }
 
