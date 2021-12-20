@@ -336,14 +336,10 @@ private:
 
 class Placement {
 
-    QList<QList<int>> m_connection;
-    QList<QList<int>> parent;//
+public:
 
-    QList<QList<int>> m_sccs;//scc result
-
-    QList<bool> isPlaced;//是否
     QList<QPoint> position;// 位置
-    QList<QHash<int, int>> isOccupy;//位置被占据
+
 
     Placement() {
         init();
@@ -355,51 +351,107 @@ class Placement {
         int verticesNum = m_connection.size();
         int placedModuleNum = 0;
         // 入度为0放在最左边  没有处理 todo modify
+
+        QList<int> traverseOrderList;// 遍历顺序
+        for (int i = m_sccs.size() - 1; i >= 0; --i) {
+            for (int j = 0; j < m_sccs[i].size(); ++j) {
+                traverseOrderList.push_back(m_sccs[i][j]);
+            }
+        }
+        qDebug() << traverseOrderList << " orderList_print";
+
         if (size > 1) {
             // 多个强连通分量
-            int index = m_sccs[size - 1][0];// index
-            position[index].setX(verticesNum);//row 行
-            position[index].setY(verticesNum);//column 列
-            isPlaced[index] = true;//修改摆放状态
-            isOccupy[verticesNum].insert(verticesNum,verticesNum);//存储index所占据位置
-
-            placedModuleNum++;// 修改摆放的顶点个数
-
-            // 摆放index的parent
-            placeParent(index, verticesNum, verticesNum);
-
-            // 摆放index的child
-            placeChild(index, verticesNum, verticesNum);
-
         } else if (size == 1) {
             // 只有一个强连通分量
-
         } else if (!size) {
             qDebug() << "error";
         }
 
+        for (int i = 0; i < traverseOrderList.size(); ++i) {
+
+            int index = i;// index
+            if (isPlaced[index]) {
+                continue;
+            }
+
+            qDebug() << index << "  index_for";
+
+            // 摆放index
+            int row = verticesNum;
+            while (isOccupy[verticesNum].key(row--)) {
+
+            }
+            qDebug() << row << "--row";
+            if (!isOccupy[verticesNum].key(row)) {
+
+                qDebug() << "   tttt ";
+
+                isOccupy[verticesNum].insert(row, row);// 存储index所占据位置
+
+                position[index].setX(row);// row 行
+                position[index].setY(verticesNum);// column 列
+                isPlaced[index] = true;// 修改摆放状态
+
+                // 摆放index的child
+                placeChild(index, row, verticesNum);
+            }
+
+            placedModuleNum++;// 修改摆放的顶点个数
+
+            // 摆放index的parent
+            //placeParent(index, verticesNum, verticesNum);
+
+
+        }
+
+        qDebug() << position << "  position";
+        qDebug() << isOccupy << "  isOccupy";
+        qDebug() << "finish_placement----------------------------------";
+
     }
 
-    void placeParent(int index, int row, int column) {
+private:
 
+    void placeParent(int index, int row, int column) {
+        // 结点index 放在第column列 第row行
+        // 父节点first放在子结点左侧 避免冲突
         for (int i = 0; i < parent[index].size(); ++i) {
             int first = parent[index][i];
             if (!isPlaced[first]) {
-
-
+                // index的父节点first没有访问
+                int firstRow = row - 1;
+                while (isOccupy[column - 1].contains(firstRow)) {
+                    firstRow--;
+                }
+                isOccupy[column - 1].insert(firstRow, firstRow);// 存储index所占据位置
                 isPlaced[first] = true;
 
+                placeParent(first, firstRow, column - 1);
                 //placedModuleNum++;
             }
         }
     }
 
     void placeChild(int index, int row, int column) {
-
+        // 结点index 放在第row行 第column列
+        // 子结点 first放在index右侧
+        for (int i = 0; i < m_connection[index].size(); ++i) {
+            int first = m_connection[index][i];
+            if (!isPlaced[first]) {
+                int firstRow = row + 1;
+                while (!isOccupy[column + 1].contains(firstRow++)) {
+                }
+                isOccupy[column + 1].insert(firstRow, firstRow);
+                isPlaced[first] = true;
+            }
+        }
     }
 
 
     void init() {
+        // FakeData
+        m_connection = graphData;
 
         for (int i = 0; i < m_connection.size(); ++i) {
 
@@ -413,7 +465,7 @@ class Placement {
         for (int i = 0; i < m_connection.size() * 2; ++i) {
             isOccupy.push_back(QHash<int, int>());
         }
-        qDebug() << isOccupy << "  isOccupy";
+
 
         for (int i = 0; i < m_connection.size(); ++i) {
             for (int j = 0; j < m_connection[i].size(); ++j) {
@@ -422,9 +474,24 @@ class Placement {
             }
         }
 
+        /*
+        qDebug() << isOccupy << "  isOccupy";
+        qDebug() << isPlaced << "  isPlaced";
+        qDebug() << position << "  position";
         qDebug() << parent << " parent";
+        */
 
     }
 
+
+private:
+
+    QList<QList<int>> m_connection;
+    QList<QList<int>> parent;//
+
+    QList<QList<int>> m_sccs;//scc result
+
+    QList<bool> isPlaced;// 模块是否被摆放
+    QList<QHash<int, int>> isOccupy;//位置被占据
 
 };

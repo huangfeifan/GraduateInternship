@@ -22,11 +22,13 @@ int main(int argc, char *argv[]) {
 
 
     // test scc algo
-    TarjanAlgo tarjanAlgo;
-
+    //TarjanAlgo tarjanAlgo;
 
     // test topology sort
-    TopologySort topologySort;
+    //TopologySort topologySort;
+
+    // test placement
+    Placement placement;
 
 
 
