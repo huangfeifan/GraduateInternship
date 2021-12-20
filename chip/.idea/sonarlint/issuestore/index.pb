@@ -3,10 +3,6 @@
 src/chip.cpp,4\e\4e90a5e6eaae72e2eef911e002a213ce7cd2176e
 D
 src/BeforeLayout.cpp,2\0\2006b059d43fb3dd38189a8e9c1399bb6bb6f935
-F
-src/AfterPlacement.cpp,2\8\28a658fe1749ae6d7b1a342fbb7f6d4f924caab8
-D
-src/AfterPlacement.h,b\9\b9b7aa7b3759c59a8ff5b952dc9e99e456a0bd91
 >
 src/MyChip.cpp,3\5\35f3ee290465692ee2ca86c170504ba8d08addf4
 B

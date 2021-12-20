@@ -342,6 +342,7 @@ public:
 
 
     Placement() {
+        qDebug() << "TarjanAlgo----------------------------------------------------";
         init();
         TarjanAlgo tarjanAlgo;
         m_sccs = tarjanAlgo.m_sccs;
@@ -370,7 +371,7 @@ public:
 
         for (int i = 0; i < traverseOrderList.size(); ++i) {
 
-            int index = i;// index
+            int index = traverseOrderList[i];// index
             if (isPlaced[index]) {
                 continue;
             }
@@ -379,13 +380,16 @@ public:
 
             // 摆放index
             int row = verticesNum;
-            while (isOccupy[verticesNum].key(row--)) {
+            //qDebug() << row << "-------row--while";
 
+            while (isOccupy[verticesNum].key(row)) {
+                // 第row行 第verticesNum列 被占据
+                row--;
             }
             qDebug() << row << "--row";
             if (!isOccupy[verticesNum].key(row)) {
 
-                qDebug() << "   tttt ";
+                //qDebug() << "   tttt ";
 
                 isOccupy[verticesNum].insert(row, row);// 存储index所占据位置
 
@@ -407,11 +411,44 @@ public:
 
         qDebug() << position << "  position";
         qDebug() << isOccupy << "  isOccupy";
-        qDebug() << "finish_placement----------------------------------";
+        qDebug() << isPlaced << "  isPlaced";
+
+        qDebug() << "TarjanAlgo----------------------------------------------------\n";
+
+        qDebug() << "----------------finish_placement----------------";
+
 
     }
 
 private:
+
+
+    void placeChild(int index, int row, int column) {
+        // 父结点index 放在第row行 第column列
+        // 子结点 first 放在index右侧
+        for (int i = 0; i < m_connection[index].size(); ++i) {
+
+            int first = m_connection[index][i];
+
+            if (isPlaced[first]) {
+                continue;
+            }
+            qDebug() << " parent_index " << index << " child_index " << first;
+
+            int firstRow = row + 1;
+            while (isOccupy[column + 1].contains(firstRow)) {
+                firstRow++;
+            }
+            isOccupy[column + 1].insert(firstRow, firstRow);
+
+            position[first].setX(column + 1);// row 行
+            position[first].setY(firstRow);// column 列
+            isPlaced[first] = true;
+
+            // 摆放first的child
+            placeChild(first, row, column + 1);
+        }
+    }
 
     void placeParent(int index, int row, int column) {
         // 结点index 放在第column列 第row行
@@ -432,22 +469,6 @@ private:
             }
         }
     }
-
-    void placeChild(int index, int row, int column) {
-        // 结点index 放在第row行 第column列
-        // 子结点 first放在index右侧
-        for (int i = 0; i < m_connection[index].size(); ++i) {
-            int first = m_connection[index][i];
-            if (!isPlaced[first]) {
-                int firstRow = row + 1;
-                while (!isOccupy[column + 1].contains(firstRow++)) {
-                }
-                isOccupy[column + 1].insert(firstRow, firstRow);
-                isPlaced[first] = true;
-            }
-        }
-    }
-
 
     void init() {
         // FakeData
