@@ -6,6 +6,8 @@
 
 #include "mainwindow.h"
 #include "TarjanAlgo.h"
+#include "AfterPlacement.h"
+#include "BeforeLayout.h"
 
 int main(int argc, char *argv[]) {
     Q_INIT_RESOURCE(images);
@@ -28,8 +30,13 @@ int main(int argc, char *argv[]) {
     //TopologySort topologySort;
 
     // test placement
-    Placement placement;
+    //Placement placement;
 
+    AfterPlacement a;
+    a.show();
+
+    BeforeLayout b;
+    b.show();
 
 
     return app.exec();

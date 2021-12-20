@@ -129,6 +129,211 @@ private:
 
 };
 
+class Placement {
+
+public:
+
+    QList<QPoint> position;// 位置
+
+
+    Placement() {
+        qDebug() << "Placement----------------------------------------------------";
+        init();
+        TarjanAlgo tarjanAlgo;
+        m_sccs = tarjanAlgo.m_sccs;
+
+        //
+        int size = m_sccs.size();
+        int verticesNum = m_connection.size();
+        // 出度排序 根据出度遍历 todo modify
+
+        QList<int> traverseOrderList;// 遍历顺序
+        for (int i = m_sccs.size() - 1; i >= 0; --i) {
+            for (int j = 0; j < m_sccs[i].size(); ++j) {
+                traverseOrderList.push_back(m_sccs[i][j]);
+            }
+        }
+        qDebug() << traverseOrderList << " orderList_print";
+
+        // todo modify---
+        if (size > 1) {
+            // 多个强连通分量
+        } else if (size == 1) {
+            // 只有一个强连通分量
+        } else if (!size) {
+            qDebug() << "error";
+        }
+
+        for (int i = 0; i < traverseOrderList.size(); ++i) {
+
+            int index = traverseOrderList[i];// index
+            if (isPlaced[index]) {
+                continue;
+            }
+
+            qDebug() << index << "  index_for";
+
+            // 摆放index
+            int row = verticesNum;
+            //qDebug() << row << "-------row--while";
+
+            while (isOccupy[verticesNum].key(row)) {
+                // 第row行 第verticesNum列 被占据
+                row--;
+            }
+            qDebug() << row << "--row";
+            if (!isOccupy[verticesNum].key(row)) {
+
+                //qDebug() << "   tttt ";
+
+                isOccupy[verticesNum].insert(row, row);// 存储index所占据位置
+
+                position[index].setX(verticesNum);// column 列
+                position[index].setY(row);  // row 行
+                isPlaced[index] = true;// 修改摆放状态
+
+                //qDebug() << index << " index(column/row) " << verticesNum << " " << row;
+
+                // 摆放index的child
+                placeChild(index, row, verticesNum);
+            }
+
+            // 摆放index的parent
+            //placeParent(index, verticesNum, verticesNum);
+
+        }
+
+        qDebug() << position << "  position_before_adjust";
+
+        // 计算出来的布局 进行微调
+        adjustPosition();
+
+        qDebug() << position << "  position_after_adjust";
+        qDebug() << isOccupy << "  isOccupy";
+        qDebug() << isPlaced << "  isPlaced";
+
+        qDebug() << "Placement----------------------------------------------------\n";
+
+        qDebug() << "----------------finish_placement----------------";
+
+
+    }
+
+private:
+
+    void adjustPosition() {
+        int minRow = position.size();
+        int minColumn = position.size();
+        for (int i = 0; i < position.size(); ++i) {
+
+            minRow = position[i].y() > minRow ? minRow : position[i].y();
+            minColumn = position[i].x() > minColumn ? minColumn : position[i].x();
+
+        }
+
+        for (int i = 0; i < position.size(); ++i) {
+            position[i].setX(position[i].x() - minColumn);
+            position[i].setY(position[i].y() - minRow);
+        }
+    }
+
+    void placeChild(int index, int row, int column) {
+        // 父结点index 放在第row行 第column列
+        // 子结点 first 放在index右侧
+        for (int i = 0; i < m_connection[index].size(); ++i) {
+
+            int first = m_connection[index][i];
+
+            if (isPlaced[first]) {
+                continue;
+            }
+            qDebug() << " parent_index " << index << " child_index " << first;
+
+            int firstRow = row ;// todo modify  设置偏移量 多少合适呢
+            while (isOccupy[column + 1].contains(firstRow)) {
+                firstRow++;
+            }
+            isOccupy[column + 1].insert(firstRow, firstRow);
+
+            position[first].setX(column + 1);  // column 列
+            position[first].setY(firstRow); // row 行
+            isPlaced[first] = true;
+
+            qDebug() << first << " index(column/row) " << column + 1 << " " << firstRow;
+
+            // 摆放first的child
+            placeChild(first, firstRow, column + 1);
+        }
+    }
+
+    void placeParent(int index, int row, int column) {
+        // 结点index 放在第column列 第row行
+        // 父节点first放在子结点左侧 避免冲突
+        for (int i = 0; i < parent[index].size(); ++i) {
+            int first = parent[index][i];
+            if (!isPlaced[first]) {
+                // index的父节点first没有访问
+                int firstRow = row - 1;
+                while (isOccupy[column - 1].contains(firstRow)) {
+                    firstRow--;
+                }
+                isOccupy[column - 1].insert(firstRow, firstRow);// 存储index所占据位置
+                isPlaced[first] = true;
+
+                placeParent(first, firstRow, column - 1);
+                //placedModuleNum++;
+            }
+        }
+    }
+
+    void init() {
+        // FakeData
+        m_connection = graphData;
+
+        for (int i = 0; i < m_connection.size(); ++i) {
+
+            parent.push_back(QList<int>());
+
+            isPlaced.push_back(false);
+
+            position.push_back(QPoint());
+        }
+
+        for (int i = 0; i < m_connection.size() * 2; ++i) {
+            isOccupy.push_back(QHash<int, int>());
+        }
+
+
+        for (int i = 0; i < m_connection.size(); ++i) {
+            for (int j = 0; j < m_connection[i].size(); ++j) {
+                int end = m_connection[i][j];
+                parent[end].push_back(i);
+            }
+        }
+
+        /*
+        qDebug() << isOccupy << "  isOccupy";
+        qDebug() << isPlaced << "  isPlaced";
+        qDebug() << position << "  position";
+        qDebug() << parent << " parent";
+        */
+
+    }
+
+
+private:
+
+    QList<QList<int>> m_connection;
+    QList<QList<int>> parent;//
+
+    QList<QList<int>> m_sccs;//scc result
+
+    QList<bool> isPlaced;// 模块是否被摆放
+    QList<QHash<int, int>> isOccupy;//位置被占据
+
+};
+
+
 // 非递归版本 Tarjan_algorithm
 class SCC {
 
@@ -203,7 +408,7 @@ private:
     }
 };
 
-// 有向无环图的拓扑排序  用Tarjan算法遍历一次图 若
+// 有向无环图的拓扑排序  用Tarjan算法遍历一次图
 class TopologySort {
 
 public:
@@ -331,192 +536,5 @@ private:
         qDebug() << parent;
     }
 
-
-};
-
-class Placement {
-
-public:
-
-    QList<QPoint> position;// 位置
-
-
-    Placement() {
-        qDebug() << "TarjanAlgo----------------------------------------------------";
-        init();
-        TarjanAlgo tarjanAlgo;
-        m_sccs = tarjanAlgo.m_sccs;
-
-        //
-        int size = m_sccs.size();
-        int verticesNum = m_connection.size();
-        int placedModuleNum = 0;
-        // 入度为0放在最左边  没有处理 todo modify
-
-        QList<int> traverseOrderList;// 遍历顺序
-        for (int i = m_sccs.size() - 1; i >= 0; --i) {
-            for (int j = 0; j < m_sccs[i].size(); ++j) {
-                traverseOrderList.push_back(m_sccs[i][j]);
-            }
-        }
-        qDebug() << traverseOrderList << " orderList_print";
-
-        if (size > 1) {
-            // 多个强连通分量
-        } else if (size == 1) {
-            // 只有一个强连通分量
-        } else if (!size) {
-            qDebug() << "error";
-        }
-
-        for (int i = 0; i < traverseOrderList.size(); ++i) {
-
-            int index = traverseOrderList[i];// index
-            if (isPlaced[index]) {
-                continue;
-            }
-
-            qDebug() << index << "  index_for";
-
-            // 摆放index
-            int row = verticesNum;
-            //qDebug() << row << "-------row--while";
-
-            while (isOccupy[verticesNum].key(row)) {
-                // 第row行 第verticesNum列 被占据
-                row--;
-            }
-            qDebug() << row << "--row";
-            if (!isOccupy[verticesNum].key(row)) {
-
-                //qDebug() << "   tttt ";
-
-                isOccupy[verticesNum].insert(row, row);// 存储index所占据位置
-
-                position[index].setX(verticesNum);// column 列
-                position[index].setY(row);  // row 行
-                isPlaced[index] = true;// 修改摆放状态
-
-                //qDebug() << index << " index(column/row) " << verticesNum << " " << row;
-
-                // 摆放index的child
-                placeChild(index, row, verticesNum);
-            }
-
-            placedModuleNum++;// 修改摆放的顶点个数
-
-            // 摆放index的parent
-            //placeParent(index, verticesNum, verticesNum);
-
-
-        }
-
-        qDebug() << position << "  position";
-        qDebug() << isOccupy << "  isOccupy";
-        qDebug() << isPlaced << "  isPlaced";
-
-        qDebug() << "TarjanAlgo----------------------------------------------------\n";
-
-        qDebug() << "----------------finish_placement----------------";
-
-
-    }
-
-private:
-
-
-    void placeChild(int index, int row, int column) {
-        // 父结点index 放在第row行 第column列
-        // 子结点 first 放在index右侧
-        for (int i = 0; i < m_connection[index].size(); ++i) {
-
-            int first = m_connection[index][i];
-
-            if (isPlaced[first]) {
-                continue;
-            }
-            qDebug() << " parent_index " << index << " child_index " << first;
-
-            int firstRow = row + 1;
-            while (isOccupy[column + 1].contains(firstRow)) {
-                firstRow++;
-            }
-            isOccupy[column + 1].insert(firstRow, firstRow);
-
-            position[first].setX(column + 1);  // column 列
-            position[first].setY(firstRow); // row 行
-            isPlaced[first] = true;
-
-            qDebug() << first << " index(column/row) " << column + 1 << " " << firstRow;
-
-            // 摆放first的child
-            placeChild(first, firstRow, column + 1);
-        }
-    }
-
-    void placeParent(int index, int row, int column) {
-        // 结点index 放在第column列 第row行
-        // 父节点first放在子结点左侧 避免冲突
-        for (int i = 0; i < parent[index].size(); ++i) {
-            int first = parent[index][i];
-            if (!isPlaced[first]) {
-                // index的父节点first没有访问
-                int firstRow = row - 1;
-                while (isOccupy[column - 1].contains(firstRow)) {
-                    firstRow--;
-                }
-                isOccupy[column - 1].insert(firstRow, firstRow);// 存储index所占据位置
-                isPlaced[first] = true;
-
-                placeParent(first, firstRow, column - 1);
-                //placedModuleNum++;
-            }
-        }
-    }
-
-    void init() {
-        // FakeData
-        m_connection = graphData;
-
-        for (int i = 0; i < m_connection.size(); ++i) {
-
-            parent.push_back(QList<int>());
-
-            isPlaced.push_back(false);
-
-            position.push_back(QPoint());
-        }
-
-        for (int i = 0; i < m_connection.size() * 2; ++i) {
-            isOccupy.push_back(QHash<int, int>());
-        }
-
-
-        for (int i = 0; i < m_connection.size(); ++i) {
-            for (int j = 0; j < m_connection[i].size(); ++j) {
-                int end = m_connection[i][j];
-                parent[end].push_back(i);
-            }
-        }
-
-        /*
-        qDebug() << isOccupy << "  isOccupy";
-        qDebug() << isPlaced << "  isPlaced";
-        qDebug() << position << "  position";
-        qDebug() << parent << " parent";
-        */
-
-    }
-
-
-private:
-
-    QList<QList<int>> m_connection;
-    QList<QList<int>> parent;//
-
-    QList<QList<int>> m_sccs;//scc result
-
-    QList<bool> isPlaced;// 模块是否被摆放
-    QList<QHash<int, int>> isOccupy;//位置被占据
 
 };
