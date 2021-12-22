@@ -65,14 +65,14 @@ private:
 
         // todo modify------------
         for (int i = 0; i < m_num; ++i) {
-            int row = 0;
+            /*int row = 0;
             int column = 0;
             // 该位置没有被占据
             isOccupy[column].insert(row, row);
 
             // 设置i的position
             position[i].setX(column);
-            position[i].setY(row);
+            position[i].setY(row);*/
         }
 
         qDebug() << position << "  position";

@@ -18,6 +18,3 @@ B
 src/MyChip.cpp,3\5\35f3ee290465692ee2ca86c170504ba8d08addf4
 <
 src/view.cpp,d\d\dd765e8e083e84b840242e9358051eda3f8c1d1e
-:
-
-src/Data.h,e\f\ef364fbc75a84f6686330aeecfb7d75634a48ee8

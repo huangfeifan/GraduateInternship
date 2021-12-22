@@ -16,7 +16,8 @@ void AfterPlacement::paintEvent(QPaintEvent *event) {
         int y = (position[i].y() * 2 + 1) * grid;
 
         painter.drawRect(x, y, grid, grid);
-        painter.drawText(x, y, QString::number(i));
+        QString str = QString::number(i);
+        painter.drawText(x, y, str);
     }
 
     // 绘制module之间的连线

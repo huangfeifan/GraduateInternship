@@ -35,8 +35,8 @@ int main(int argc, char *argv[]) {
     AfterPlacement a;
     a.show();
 
-    BeforeLayout b;
-    b.show();
+/*    BeforeLayout b;
+    b.show();*/
 
 
     return app.exec();
