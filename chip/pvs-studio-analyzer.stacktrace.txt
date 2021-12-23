@@ -1,0 +1,11 @@
+PVS-Studio version: 7.16.55368.3308
+Base address: 00007FF6A42D0000
+#0   Object "", at 00007FF6A4330B09, in  ?? 
+#1   Object "", at 00007FF6A434127F, in  ?? 
+#2   Object "", at 00007FF6A433FDAD, in  ?? 
+#3   Object "", at 00007FF6A433F0A4, in  ?? 
+#4   Object "", at 00007FF6A42E4C85, in  ?? 
+#5   Object "", at 00007FF6A42F82C8, in  ?? 
+#6   Object "", at 00007FF6A42EA3C7, in  ?? 
+#7   Object "", at 00007FF6A437C198, in  ?? 
+#8   Object "", at 00007FFB105A7974, in BaseThreadInitThunk
