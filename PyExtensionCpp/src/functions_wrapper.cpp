@@ -12,9 +12,9 @@ PYBIND11_MODULE(functions, m) {
     m.doc() = "Simple Class";
     m.def("greet", greet, "Welcome");
     // c++接口
-    py::class_<Functions>(m, "Functions")
-            .def(py::init())
-            .def("setApdRegionNum", &Functions::setApdRegionNum)
+    py::class_<Functions>(m, "Functions")  // 引号括起来的 "Functions" 是 python接口使用的类名
+            .def(py::init())  //不要落下
+            .def("setApdRegionNum", &Functions::setApdRegionNum) // 引号括起来的 "setApdRegionNum" 是 python接口函数名
             .def("setWukRegionNum", &Functions::setWukRegionNum)
 
             .def("setApdRegionISize", &Functions::setApdRegionISize)
@@ -24,7 +24,7 @@ PYBIND11_MODULE(functions, m) {
             .def("setWukRegionISegJ", &Functions::setWukRegionISegJ)
 
             .def("getWukRegionsPixel", &Functions::getWukRegionsPixel)
-            .def("countXorRegionPixel", &Functions::countRegionPixel);
+            .def("countXorRegionPixel", &Functions::countRegionPixel);  // 接口函数结束需要分号
 
 
 }

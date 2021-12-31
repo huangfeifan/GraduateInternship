@@ -1,7 +1,7 @@
 from setuptools import setup, Extension  
   
 functions_module = Extension(  
-    name ='functions',  # 编译后库的名字
+    name ='functions',  # 编译后库的名字  需要和接口函数的类名相同
     sources = ['./src/functions_wrapper.cpp'],#编译的文件路径
     #包含pybind库相关文件
     #包含python.h及其相关文件

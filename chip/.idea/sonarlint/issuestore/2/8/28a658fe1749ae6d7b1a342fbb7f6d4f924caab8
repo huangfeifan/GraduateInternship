@@ -1,0 +1,9 @@
+
+Gcpp:CommentedCode"Remove the commented out code.(éÁµÿÿÿÿÿ8ÅÉ¿ğà/
+Gcpp:CommentedCode"Remove the commented out code.(æÀìÉşÿÿÿÿ8ÅÉ¿ğà/
+Acpp:CommentedCode"Remove the commented out code.(š ÑJ8ÅÉ¿ğà/
+d	cpp:S5566"CChange this raw for-loop to a range for-loop or an "std::for_each".(Ü ñüÿÿÿÿÿ8¸Ï¿ğà/
+d	cpp:S5566"CChange this raw for-loop to a range for-loop or an "std::for_each".(«ËÙÓøÿÿÿÿ8¾Ï¿ğà/
+cpp:EmptyCompoundStatement"\Fill this compound statement, remove it, or add a nested comment explaining why it is empty.(«ËÙÓøÿÿÿÿ8¾Ï¿ğà/
+r	cpp:S3490'"VUse "=default" instead of the default implementation of this special member functions.(ŠÁá•8¿Ï¿ğà/
+Acpp:CommentedCode!"Remove the commented out code.(Á§—w8ùÏ¿ğà/
