@@ -10,7 +10,7 @@
 
 
 #include "Data.h"
-#include "TarjanAlgo.h"
+#include "SchematicPlacement.h"
 
 class AfterPlacement : public QWidget {
 
@@ -50,7 +50,7 @@ public: // variable 变量
         }
 
         Placement placement;
-        position = placement.position;
+        position = placement.m_relativePosition;
     }
 
 protected:

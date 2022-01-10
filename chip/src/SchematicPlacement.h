@@ -12,16 +12,16 @@
 #include "Data.h"
 
 // 递归版本 Trajan_algorithm
-class TarjanAlgo {
+class SchematicPlacement {
     // Time Complexity O(N+E) Space Complexity O(N+E) 邻接表存储数据
     // link https://www.bilibili.com/video/BV19J411J7AZ?p=5 邻接矩阵
     // link https://segmentfault.com/a/1190000039149539  邻接表
 public :
 
     // 递归版本
-    TarjanAlgo() {
+    SchematicPlacement() {
 
-        qDebug() << "TarjanAlgo----------------------------------------------------";
+        qDebug() << "SchematicPlacement----------------------------------------------------";
 
         // 初始化邻接表
         initConnection();
@@ -36,12 +36,12 @@ public :
         //qDebug() << m_connection.size();
         getSCC();
 
-        qDebug() << m_sccs.size() << "  scc_size";
+        //qDebug() << m_sccs.size() << "  scc_size";
         for (int i = 0; i < m_sccs.size(); ++i) {
             qDebug() << m_sccs[i];
         }
 
-        qDebug() << "TarjanAlgo----------------------------------------------------";
+        qDebug() << "SchematicPlacement----------------------------------------------------";
 
     }
 
@@ -129,40 +129,123 @@ private:
 
 };
 
+struct ModuleSize {
+    int width = 0;
+    int height = 0;
+};
+
 class Placement {
 
 public:
 
-    QList<QPoint> position;// 位置
-
+    int m_minWidth = 20;
+    int m_minHeight = 20;
+    int width_gap = 20;
+    int height_gap = 20;
+    int m_moduleCount = 0;
+    QList<QPoint> m_relativePosition;// 改进的行列定位法坐标 相对坐标的计算
+    QList<QPoint> m_realPosition;// 每个模块实际的坐标
+    QList<ModuleSize> m_moduleSize;// 记录模块的大小
+    QList<ModuleSize> m_moduleDegree;// 记录模块的度数
 
     Placement() {
         qDebug() << "Placement----------------------------------------------------";
+        // 初始化所有数据
         init();
-        TarjanAlgo tarjanAlgo;
-        m_sccs = tarjanAlgo.m_sccs;
 
-        //
-        int size = m_sccs.size();
-        int verticesNum = m_connection.size();
+        // 计算模块的相对位置
+        getRelativePosition();
+
+        // 对计算出来的相对位置 进行微调  todo modify
+        adjustRelativePosition();
+
+/*        qDebug() << m_relativePosition << "  position_after_adjust";
+        qDebug() << isOccupy << "  isOccupy";
+        qDebug() << isPlaced << "  isPlaced";*/
+        qDebug() << "----------------finish_placement----------------";
+        //qDebug() << "----------------compute_Module_Size----------------";
+
+        // 计算模块的大小
+        getModuleSize();
+
+
+        //qDebug() << "----------------compute_Module_Size----------------";
+        // 计算模块的绝对位置
+        getModuleRealPosition();
+
+        qDebug() << "Placement----------------------------------------------------\n";
+
+    }
+
+private:
+
+    void getModuleSize() {
+        // 更新模块的大小
+        // 根据模块的出度入度就可以得到模块的宽高 默认只有左右端口 所以宽度默认
+        for (int i = 0; i < m_moduleCount; ++i) {
+            m_moduleSize[i].width = m_minWidth;
+            int height = m_moduleDegree[i].width > m_moduleDegree[i].height ? m_moduleDegree[i].width
+                                                                            : m_moduleDegree[i].height;
+            m_moduleSize[i].height = m_minHeight + height * height_gap;
+        }
+
+        // 打印 Module Size
+        for (int i = 0; i < m_moduleCount; ++i) {
+            //qDebug() << "Module__" << i << " width " << m_moduleSize[i].width << " , height " << m_moduleSize[i].height;
+        }
+    }
+
+    void getModuleRealPosition() {
+        /**
+         * 目的：确定每个元件的布局最终位置
+         *  已有各个模块的大小 模块的相对位置
+         *
+         *  难点：如何根据模块间的连接信息得到模块的最终位置
+         *
+         *  问题分解
+         *      1.类似行列定位的思路 首先确定每一列的宽度 其次确定列与列之间的间距(根据通道的概念 预留出足够的空间) 最后得到每一列的坐标
+         *      2.按照列的方式 依然根据通道的概念 预留出足够的空间 得到每一行的坐标
+         *      3.对通道数据的存储 辅助线探索判断后续的走线  线探索需要处理的事情  Todo : need consider
+         *
+         *  如何计算列与列的通道数
+         *  如何计算行与行的通道数
+         */
+
+
+    }
+
+    QList<int> getTraversalOrder() {
         // 出度排序 根据出度遍历 todo modify
 
-        QList<int> traverseOrderList;// 遍历顺序
-        for (int i = m_sccs.size() - 1; i >= 0; --i) {
-            for (int j = 0; j < m_sccs[i].size(); ++j) {
-                traverseOrderList.push_back(m_sccs[i][j]);
-            }
-        }
-        qDebug() << traverseOrderList << " orderList_print";
+        QList<int> orderList;
 
+        SchematicPlacement tarjanAlgo;
+        m_sccs = tarjanAlgo.m_sccs;
+        // 强连通分量个数
+        int sccSize = m_sccs.size();
         // todo modify---
-        if (size > 1) {
+        if (sccSize > 1) {
             // 多个强连通分量
-        } else if (size == 1) {
+        } else if (sccSize == 1) {
             // 只有一个强连通分量
-        } else if (!size) {
+        } else if (!sccSize) {
             qDebug() << "error";
         }
+
+        for (int i = m_sccs.size() - 1; i >= 0; --i) {
+            for (int j = 0; j < m_sccs[i].size(); ++j) {
+                orderList.push_back(m_sccs[i][j]);
+            }
+        }
+        qDebug() << orderList << " orderList_print";
+
+        return orderList;
+    }
+
+    void getRelativePosition() {
+        // 遍历顺序
+        QList<int> traverseOrderList = getTraversalOrder();
+
 
         for (int i = 0; i < traverseOrderList.size(); ++i) {
 
@@ -171,70 +254,65 @@ public:
                 continue;
             }
 
-            qDebug() << index << "  index_for";
+            //qDebug() << index << "  index_for";
 
             // 摆放index
-            int row = verticesNum;
+            int row = m_moduleCount;
             //qDebug() << row << "-------row--while";
 
-            while (isOccupy[verticesNum].key(row)) {
+            while (isOccupy[m_moduleCount].key(row)) {
                 // 第row行 第verticesNum列 被占据
                 row--;
             }
-            qDebug() << row << "--row";
-            if (!isOccupy[verticesNum].key(row)) {
+            //qDebug() << row << "--row";
+            if (!isOccupy[m_moduleCount].key(row)) {
 
                 //qDebug() << "   tttt ";
 
-                isOccupy[verticesNum].insert(row, row);// 存储index所占据位置
+                isOccupy[m_moduleCount].insert(row, row);// 存储index所占据位置
 
-                position[index].setX(verticesNum);// column 列
-                position[index].setY(row);  // row 行
+                m_relativePosition[index].setX(m_moduleCount);// column 列
+                m_relativePosition[index].setY(row);  // row 行
                 isPlaced[index] = true;// 修改摆放状态
 
-                //qDebug() << index << " index(column/row) " << verticesNum << " " << row;
+                //qDebug() << index << " index(column/row) " << m_moduleCount << " " << row;
 
                 // 摆放index的child
-                placeChild(index, row, verticesNum);
+                placeChild(index, row, m_moduleCount);
             }
 
             // 摆放index的parent
-            //placeParent(index, verticesNum, verticesNum);
+            //placeParent(index, m_moduleCount, m_moduleCount);
 
         }
 
-        qDebug() << position << "  position_before_adjust";
-
-        // 计算出来的布局 进行微调
-        adjustPosition();
-
-        qDebug() << position << "  position_after_adjust";
-        qDebug() << isOccupy << "  isOccupy";
-        qDebug() << isPlaced << "  isPlaced";
-
-        qDebug() << "Placement----------------------------------------------------\n";
-
-        qDebug() << "----------------finish_placement----------------";
-
+        qDebug() << m_relativePosition << "  position_before_adjust";
 
     }
 
-private:
+    void adjustRelativePosition() {
+        /**
+         * 根据图的父子关系得到的布局可能存在父子结点高度差的方差很大
+         * 对后期布线可能有比较大的影响
+         * 为了解决这个问题
+         * 考虑对现有的布局进行一个微调
+         * 来增加布局的美观性
+         */
+        int minRow = m_relativePosition.size();
+        int minColumn = m_relativePosition.size();
+        for (int i = 0; i < m_relativePosition.size(); ++i) {
 
-    void adjustPosition() {
-        int minRow = position.size();
-        int minColumn = position.size();
-        for (int i = 0; i < position.size(); ++i) {
-
-            minRow = position[i].y() > minRow ? minRow : position[i].y();
-            minColumn = position[i].x() > minColumn ? minColumn : position[i].x();
+            minRow = m_relativePosition[i].y() > minRow ? minRow : m_relativePosition[i].y();
+            minColumn = m_relativePosition[i].x() > minColumn ? minColumn : m_relativePosition[i].x();
 
         }
 
-        for (int i = 0; i < position.size(); ++i) {
-            position[i].setX(position[i].x() - minColumn);
-            position[i].setY(position[i].y() - minRow);
+        for (int i = 0; i < m_relativePosition.size(); ++i) {
+            m_relativePosition[i].setX(m_relativePosition[i].x() - minColumn);
+            m_relativePosition[i].setY(m_relativePosition[i].y() - minRow);
         }
+
+
     }
 
     void placeChild(int index, int row, int column) {
@@ -247,19 +325,19 @@ private:
             if (isPlaced[first]) {
                 continue;
             }
-            qDebug() << " parent_index " << index << " child_index " << first;
+            //qDebug() << " parent_index " << index << " child_index " << first;
 
-            int firstRow = row ;// todo modify  设置偏移量 多少合适呢
+            int firstRow = row;// todo modify  设置偏移量 多少合适呢
             while (isOccupy[column + 1].contains(firstRow)) {
                 firstRow++;
             }
             isOccupy[column + 1].insert(firstRow, firstRow);
 
-            position[first].setX(column + 1);  // column 列
-            position[first].setY(firstRow); // row 行
+            m_relativePosition[first].setX(column + 1);  // column 列
+            m_relativePosition[first].setY(firstRow); // row 行
             isPlaced[first] = true;
 
-            qDebug() << first << " index(column/row) " << column + 1 << " " << firstRow;
+            //qDebug() << first << " index(column/row) " << column + 1 << " " << firstRow;
 
             // 摆放first的child
             placeChild(first, firstRow, column + 1);
@@ -290,33 +368,62 @@ private:
         // FakeData
         m_connection = graphData;
 
+        // 模块个数
+        m_moduleCount = m_connection.size();
+
+        // 初始化链表
+        for (int i = 0; i < m_moduleCount; ++i) {
+            m_moduleDegree.push_back(ModuleSize());
+            m_moduleSize.push_back(ModuleSize());
+        }
+
+        for (int i = 0; i < m_moduleCount; ++i) {
+            // width 出度
+            m_moduleDegree[i].width = m_connection[i].size();
+        }
+
+
         for (int i = 0; i < m_connection.size(); ++i) {
 
             parent.push_back(QList<int>());
 
             isPlaced.push_back(false);
 
-            position.push_back(QPoint());
-        }
+            m_relativePosition.push_back(QPoint());
+            m_realPosition.push_back(QPoint());
 
-        for (int i = 0; i < m_connection.size() * 2; ++i) {
-            isOccupy.push_back(QHash<int, int>());
+            // height 入度
+            for (int j = 0; j < m_connection[i].size(); ++j) {
+                int end = m_connection[i][j];
+                // 入度
+                m_moduleDegree[end].height++;
+            }
         }
-
 
         for (int i = 0; i < m_connection.size(); ++i) {
             for (int j = 0; j < m_connection[i].size(); ++j) {
                 int end = m_connection[i][j];
                 parent[end].push_back(i);
             }
+
+            isOccupy.push_back(QHash<int, int>());
         }
 
-        /*
-        qDebug() << isOccupy << "  isOccupy";
+        for (int i = m_connection.size(); i < m_connection.size() * 2; ++i) {
+            isOccupy.push_back(QHash<int, int>());
+        }
+
+        // 打印出入度
+/*        for (int i = 0; i < m_moduleCount; ++i) {
+            qDebug() << "Module__" << i << " out_degree " << m_moduleDegree[i].width << " , in_degree "
+                     << m_moduleDegree[i].height;
+        }*/
+
+
+/*        qDebug() << isOccupy << "  isOccupy";
         qDebug() << isPlaced << "  isPlaced";
-        qDebug() << position << "  position";
-        qDebug() << parent << " parent";
-        */
+        qDebug() << m_relativePosition << "  m_relativePosition";
+        qDebug() << parent << " parent";*/
 
     }
 

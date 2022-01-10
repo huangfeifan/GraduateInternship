@@ -34,7 +34,7 @@ public: // functions 函数
         }
 
 
-        // random position
+        // random m_relativePosition
         randomPosition();
     }
 
@@ -71,11 +71,11 @@ private:
             isOccupy[column].insert(row, row);
 
             // 设置i的position
-            position[i].setX(column);
-            position[i].setY(row);*/
+            m_relativePosition[i].setX(column);
+            m_relativePosition[i].setY(row);*/
         }
 
-        qDebug() << position << "  position";
+        qDebug() << position << "  m_relativePosition";
 
     }
 

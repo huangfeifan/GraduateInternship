@@ -40,7 +40,7 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(functions, m) {
+PYBIND11_MODULE(functions, m) {//functions 注意  
     m.doc() = "Simple Class";
     m.def("greet", greet, "Welcome");
     // c++接口 函数类名Functions

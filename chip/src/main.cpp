@@ -5,7 +5,7 @@
 
 
 #include "mainwindow.h"
-#include "TarjanAlgo.h"
+#include "SchematicPlacement.h"
 #include "AfterPlacement.h"
 #include "BeforeLayout.h"
 
@@ -24,16 +24,16 @@ int main(int argc, char *argv[]) {
 
 
     // test scc algo
-    //TarjanAlgo tarjanAlgo;
+    //SchematicPlacement tarjanAlgo;
 
     // test topology sort
     //TopologySort topologySort;
 
     // test placement
-    //Placement placement;
+    Placement placement;
 
-    AfterPlacement a;
-    a.show();
+/*    AfterPlacement a;
+    a.show();*/
 
 /*    BeforeLayout b;
     b.show();*/
