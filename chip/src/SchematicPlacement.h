@@ -7,7 +7,7 @@
 #include <QVector>
 #include <QStack>
 #include <QDebug>
-
+#include <algorithm>
 
 #include "Data.h"
 
@@ -142,11 +142,23 @@ public:
     int m_minHeight = 20;
     int width_gap = 20;
     int height_gap = 20;
-    int m_moduleCount = 0;
-    QList<QPoint> m_relativePosition;// 改进的行列定位法坐标 相对坐标的计算
-    QList<QPoint> m_realPosition;// 每个模块实际的坐标
-    QList<ModuleSize> m_moduleSize;// 记录模块的大小
-    QList<ModuleSize> m_moduleDegree;// 记录模块的度数
+
+
+    QList<QPoint> getRelativePostion() {
+        return m_relativePosition;
+    };
+
+    QList<QPoint> getRealPosition() {
+        return m_realPosition;
+    }
+
+    QList<ModuleSize> getModuleSize() {
+        return m_moduleSize;
+    }
+
+    QList<ModuleSize> getModuleDegree() {
+        return m_moduleDegree;
+    }
 
     Placement() {
         qDebug() << "Placement----------------------------------------------------";
@@ -154,7 +166,7 @@ public:
         init();
 
         // 计算模块的相对位置
-        getRelativePosition();
+        computeRelativePosition();
 
         // 对计算出来的相对位置 进行微调  todo modify
         adjustRelativePosition();
@@ -166,12 +178,12 @@ public:
         //qDebug() << "----------------compute_Module_Size----------------";
 
         // 计算模块的大小
-        getModuleSize();
+        computeModuleSize();
 
 
         //qDebug() << "----------------compute_Module_Size----------------";
         // 计算模块的绝对位置
-        getModuleRealPosition();
+        computeModuleRealPosition();
 
         qDebug() << "Placement----------------------------------------------------\n";
 
@@ -179,7 +191,7 @@ public:
 
 private:
 
-    void getModuleSize() {
+    void computeModuleSize() {
         // 更新模块的大小
         // 根据模块的出度入度就可以得到模块的宽高 默认只有左右端口 所以宽度默认
         for (int i = 0; i < m_moduleCount; ++i) {
@@ -195,7 +207,7 @@ private:
         }
     }
 
-    void getModuleRealPosition() {
+    void computeModuleRealPosition() {
         /**
          * 目的：确定每个元件的布局最终位置
          *  已有各个模块的大小 模块的相对位置
@@ -214,14 +226,18 @@ private:
 
     }
 
-    QList<int> getTraversalOrder() {
+    static int degreeCompare(const int &degree1, const int &degree2) {
+        return degree1 - degree2;
+    }
+
+    QList<int> computeTraversalOrder() {
         // 出度排序 根据出度遍历 todo modify
 
         QList<int> orderList;
 
         SchematicPlacement tarjanAlgo;
         m_sccs = tarjanAlgo.m_sccs;
-        // 强连通分量个数
+/*        // 强连通分量个数
         int sccSize = m_sccs.size();
         // todo modify---
         if (sccSize > 1) {
@@ -230,21 +246,60 @@ private:
             // 只有一个强连通分量
         } else if (!sccSize) {
             qDebug() << "error";
-        }
+        }*/
+
 
         for (int i = m_sccs.size() - 1; i >= 0; --i) {
+/*            if (m_sccs[i].size() == 0) {
+                // 连通分支只有一个结点
+                orderList.push_back(m_sccs[i][0]);
+            } else {
+                // 对强连通分量的结点进行排序 根据连接关系(包括但不限于出入度) todo modify
+                QList<int> degree;
+                int maxIndex = 0;
+                qDebug() << m_sccs[i] << "   scc_i";
+                for (int j = 1; j < m_sccs[i].size(); ++j) {
+                    int index = m_sccs[i][j];
+                    maxIndex = m_connection[index][0];
+                    if (m_connection[index].size() > m_connection[maxIndex].size()) {
+                        maxIndex = index;
+                        degree.push_front(maxIndex);
+                    } else {
+                        degree.push_back(index);
+                    }
+                }
+                qDebug() << degree;
+
+                for (int j = 0; j < degree.size(); ++j) {
+                    orderList.push_back(degree[j]);
+                }
+            }*/
+
+            // 强连通分支内部不调整次序
             for (int j = 0; j < m_sccs[i].size(); ++j) {
                 orderList.push_back(m_sccs[i][j]);
             }
+
+/*            // 根据输出输出关系 调整强连通分支结点的次序
+            int index = m_sccs[i][0];
+            for (int j = 1; j < m_sccs[i].size(); ++j) {
+                int newIndex = m_sccs[i][j];
+                if (m_connection[index].size() < m_connection[newIndex].size()) {
+                    index = newIndex;
+                }
+            }
+            orderList.push_back(index);*/
+
+
         }
         qDebug() << orderList << " orderList_print";
 
         return orderList;
     }
 
-    void getRelativePosition() {
+    void computeRelativePosition() {
         // 遍历顺序
-        QList<int> traverseOrderList = getTraversalOrder();
+        QList<int> traverseOrderList = computeTraversalOrder();
 
 
         for (int i = 0; i < traverseOrderList.size(); ++i) {
@@ -275,7 +330,7 @@ private:
                 m_relativePosition[index].setY(row);  // row 行
                 isPlaced[index] = true;// 修改摆放状态
 
-                //qDebug() << index << " index(column/row) " << m_moduleCount << " " << row;
+                qDebug() << index << " index(column/row) " << m_moduleCount << " " << row;
 
                 // 摆放index的child
                 placeChild(index, row, m_moduleCount);
@@ -327,7 +382,7 @@ private:
             }
             //qDebug() << " parent_index " << index << " child_index " << first;
 
-            int firstRow = row;// todo modify  设置偏移量 多少合适呢
+            int firstRow = row - 1;// todo modify  设置偏移量 多少合适呢
             while (isOccupy[column + 1].contains(firstRow)) {
                 firstRow++;
             }
@@ -337,7 +392,7 @@ private:
             m_relativePosition[first].setY(firstRow); // row 行
             isPlaced[first] = true;
 
-            //qDebug() << first << " index(column/row) " << column + 1 << " " << firstRow;
+            qDebug() << first << " index(column/row) " << column + 1 << " " << firstRow;
 
             // 摆放first的child
             placeChild(first, firstRow, column + 1);
@@ -437,6 +492,12 @@ private:
 
     QList<bool> isPlaced;// 模块是否被摆放
     QList<QHash<int, int>> isOccupy;//位置被占据
+
+    int m_moduleCount = 0;
+    QList<QPoint> m_relativePosition;// 改进的行列定位法坐标 相对坐标的计算
+    QList<QPoint> m_realPosition;// 每个模块实际的坐标
+    QList<ModuleSize> m_moduleSize;// 记录模块的大小
+    QList<ModuleSize> m_moduleDegree;// 记录模块的度数  width 出度 height 入度
 
 };
 

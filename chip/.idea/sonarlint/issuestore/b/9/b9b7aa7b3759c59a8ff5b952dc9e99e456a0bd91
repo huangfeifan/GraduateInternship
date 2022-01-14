@@ -1,9 +1,0 @@
-
-Gcpp:CommentedCode"Remove the commented out code.(‘ìñœüÿÿÿÿ8ÂÉ¿ğà/
-Gcpp:CommentedCode"Remove the commented out code.(‘ìñœüÿÿÿÿ8Âğ¿ğà/
-t	cpp:S3539""SRemove this redundant access specifier; it does not change the accessibility level.(±áßâÿÿÿÿÿ8Ãõ¿ğà/
-b	cpp:S3539>"ARemove this access specifier; it does not affect any declaration.(ĞòÚÚüÿÿÿÿ8Ãõ¿ğà/
-M	cpp:S3471"2Annotate this function with "override" or "final".(ñíõG8Ìõ¿ğà/
-u	cpp:S1186"YAdd a nested comment explaining why this method is empty, or complete the implementation.(Ÿºôã8Ìõ¿ğà/
-E	cpp:S5817")This function should be declared "const".(Ÿºôã8Ìõ¿ğà/
-Y	cpp:S1172"=Remove the unused parameter "listConnect" or make it unnamed.(Ÿºôã8Ìõ¿ğà/

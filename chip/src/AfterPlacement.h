@@ -34,7 +34,7 @@ public: // functions 函数
 public: // variable 变量
 
     int m_num;// mudule 个数
-    int grid = 30;
+    int grid = 66;
 
     QList<QPoint> position;// 位置
 
@@ -50,13 +50,12 @@ public: // variable 变量
         }
 
         Placement placement;
-        position = placement.m_relativePosition;
+        position = placement.getRelativePostion();
     }
 
 protected:
 
     void paintEvent(QPaintEvent *event) override;
-
 
 
 private:
