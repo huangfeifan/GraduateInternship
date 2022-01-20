@@ -17,7 +17,9 @@ class AfterPlacement : public QWidget {
 Q_OBJECT
 
 public: // functions 函数
-    AfterPlacement() {
+    AfterPlacement(QList<QPoint> positionData, QList<QList<int>> connectionData) {
+        m_connection = connectionData;
+        m_position = positionData;
         init();
 
     }
@@ -36,9 +38,9 @@ public: // variable 变量
     int m_num;// mudule 个数
     int grid = 66;
 
-    QList<QPoint> position;// 位置
+    QList<QPoint> m_position;// 位置
 
-    QList<QList<int>> m_connection = graphData;//邻接表
+    QList<QList<int>> m_connection;//邻接表
 
     void init() {
         m_num = m_connection.size();
@@ -46,12 +48,11 @@ public: // variable 变量
 
         int width = m_num * 2 * grid + grid;
         if (width > 0) {
-            //setFixedSize(width, width);
-            resize(width,width);
+            resize(width, width);
+        } else {
+            qDebug() << "Data Error";
         }
 
-        Placement placement;
-        position = placement.getRelativePostion();
     }
 
 protected:

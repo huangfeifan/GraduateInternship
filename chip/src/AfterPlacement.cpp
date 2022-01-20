@@ -23,8 +23,8 @@ void AfterPlacement::paintEvent(QPaintEvent *event) {
 
     // 绘制矩形
     for (int i = 0; i < m_num; ++i) {
-        int x = (position[i].x() * 2 + 1) * grid;
-        int y = (position[i].y() * 2 + 1) * grid;
+        int x = (m_position[i].x() * 2 + 1) * grid;
+        int y = (m_position[i].y() * 2 + 1) * grid;
 
 
 
@@ -40,11 +40,11 @@ void AfterPlacement::paintEvent(QPaintEvent *event) {
             int start = i;
             int end = m_connection[i][j];
 
-            int lineStartX = (position[start].x() * 2 + 1) * grid + grid;
-            int lineStartY = (position[start].y() * 2 + 1) * grid + grid / 2;
+            int lineStartX = (m_position[start].x() * 2 + 1) * grid + grid;
+            int lineStartY = (m_position[start].y() * 2 + 1) * grid + grid / 2;
 
-            int lineEndX = (position[end].x() * 2 + 1) * grid;
-            int lineEndY = (position[end].y() * 2 + 1) * grid + grid / 2;
+            int lineEndX = (m_position[end].x() * 2 + 1) * grid;
+            int lineEndY = (m_position[end].y() * 2 + 1) * grid + grid / 2;
 
             painter.drawLine(lineStartX, lineStartY, lineEndX, lineEndY);
 
