@@ -46,7 +46,8 @@ public: // variable 变量
 
         int width = m_num * 2 * grid + grid;
         if (width > 0) {
-            setFixedSize(width, width);
+            //setFixedSize(width, width);
+            resize(width,width);
         }
 
         Placement placement;

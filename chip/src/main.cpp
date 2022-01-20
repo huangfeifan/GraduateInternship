@@ -74,8 +74,7 @@ int main(int argc, char *argv[]) {
     b.show();*/
 
 
-    // qt algorithm Sort的使用
-/*
+/*    // qt algorithm Sort的使用
     int 的比较
     QList<int> testSort = {2, 1, 5, 3};
     qDebug()<<testSort;
