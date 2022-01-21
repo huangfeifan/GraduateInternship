@@ -3,9 +3,9 @@
 #include <QTime>
 #include <QQueue>
 
-#include "mainwindow.h"
-#include "SchematicPlacement.h"
-#include "AfterPlacement.h"
+#include "MyWidget/mainwindow.h"
+#include "PlaceAlgo/SchematicPlacement.h"
+#include "MyWidget/AfterPlacement.h"
 
 int main(int argc, char *argv[]) {
     Q_INIT_RESOURCE(images);
@@ -13,8 +13,9 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
 
-    //MainWindow window;
-    //window.show();
+    // graphView
+/*    MainWindow window;
+    window.show();*/
 
 /*    QTime now = QTime::currentTime();
     qsrand(now.msec());
@@ -40,11 +41,11 @@ int main(int argc, char *argv[]) {
     // test placement
     Placement placement;
 
-/*    AfterPlacement a(placement.getRelativePosition(), graphData);
+    AfterPlacement a(placement.getRelativePosition(), graphData,placement.m_nameList);
     a.setWindowTitle("place all module");
-    a.show();*/
+    a.show();
 
-    AfterPlacement b(placement.m_relativePositionScc, placement.m_connectionScc);
+    AfterPlacement b(placement.m_relativePositionScc, placement.m_connectionScc,placement.m_nameListScc);
     b.setWindowTitle("place all scc");
     b.show();
 
@@ -66,7 +67,7 @@ int main(int argc, char *argv[]) {
     qDebug() << list;
 
     // 结构体元素的比较
-    QList <BarAmout> list1 = amout;
+    QList <Bar> list1 = amout;
     for (int i = 0; i < list1.size(); ++i) {
         qDebug() << list1[i].barLevel << " " << list1[i].diameter;
     }
@@ -81,13 +82,13 @@ int main(int argc, char *argv[]) {
 }
 
 
-struct BarAmout {
+struct Bar {
     int barLevel;
     QString diameter;
     double planAmount;
 };
 
-static QList<BarAmout> amout = {
+static QList<Bar> amout = {
         {1, "a"},
         {1, "b"},
         {1, "a"},
@@ -97,15 +98,17 @@ static QList<BarAmout> amout = {
         {2, "a"},
 };
 
-static bool compareBarData(const BarAmout &barAmout, const BarAmout &amout) {
-    if (barAmout.barLevel < amout.barLevel) {
+static bool compareBarData(const Bar &bar, const Bar &bar2) {
+    // 根据多个维度来排序 在指标Ⅰ相同的情况下，根据指标Ⅱ进行排序
+
+    if (bar.barLevel < bar2.barLevel) {
         // 从小到大排序
         return true;
-    } else if (barAmout.barLevel > amout.barLevel) {
+    } else if (bar.barLevel > bar2.barLevel) {
         return false;
     } else {
-        QString strDiameter = barAmout.diameter;
-        QString diameter = amout.diameter;
+        QString strDiameter = bar.diameter;
+        QString diameter = bar2.diameter;
         if (strDiameter > diameter) {
             return true;
         } else {

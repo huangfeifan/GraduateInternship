@@ -13,15 +13,18 @@ set(REQUIRED_LIBS Core Gui Widgets OpenGL PrintSupport )
 set(REQUIRED_LIBS_QUALIFIED Qt5::Core Qt5::Gui Qt5::Widgets Qt5::OpenGL Qt5::PrintSupport )
 
 include_directories(src)
-include_directories(src/resources)
+include_directories(resources)
 
 aux_source_directory(src DIR_SRCS)
-aux_source_directory(src/resources DIR_SRCS)
+aux_source_directory(src/MyWidget DIR_SRCS)
+aux_source_directory(src/PlaceAlgo DIR_SRCS)
+aux_source_directory(resources DIR_SRCS)
 
 add_executable(
         ${PROJECT_NAME}
         ${DIR_SRCS}
-        src/images.qrc
+        images.qrc
+        main.cpp
 )
 
 

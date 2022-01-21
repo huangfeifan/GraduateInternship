@@ -150,6 +150,7 @@ public :
     QList<QList<int>> m_connectionScc;
     QList<ModuleSize> m_moduleDegreeScc;// 记录模块的度数  width 出度 height 入度
     QList<QPoint> m_relativePositionScc;// 改进的行列定位法坐标 相对坐标的计算
+    QStringList m_nameListScc;
 
     void placeIndexAndChild(int index, int row, int column, QList<int> orderList);
 
@@ -160,6 +161,7 @@ public:
     int width_gap = 20;
     int height_gap = 20;
     bool m_upDown = false;
+    QStringList m_nameList;
 
 
     QList<QPoint> getRelativePosition() {

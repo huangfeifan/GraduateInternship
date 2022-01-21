@@ -3,7 +3,29 @@
 //
 
 #include "SchematicPlacement.h"
-#include "AfterPlacement.h"
+#include "MyWidget/AfterPlacement.h"
+
+static bool degreeCompare(const IndexDegree &index1, const IndexDegree &index2) {
+    // 从大到小进行排序
+    return index1.degree > index2.degree;
+}
+
+void SortListByDegree(QList<int> &list, QList<int> degreeList) {
+    // 根据degree对index进行排序
+    QList<IndexDegree> indexList;
+    for (int i = 0; i < list.size(); ++i) {
+        IndexDegree indexDegree;
+        indexDegree.index = list[i];
+        indexDegree.degree = degreeList[i];
+        indexList.push_back(indexDegree);
+    }
+
+    qSort(indexList.begin(), indexList.end(), degreeCompare);
+
+    for (int i = 0; i < list.size(); ++i) {
+        list[i] = indexList[i].index;
+    }
+};
 
 Placement::Placement() {
     m_upDown = true;
@@ -16,7 +38,6 @@ Placement::Placement() {
 
     //初始化scc数据
     initScc();
-
 
     qDebug() << "Placement----------------------------------------------------\n";
 
@@ -452,10 +473,6 @@ void Placement::placeParent(int index, int row, int column) {
     }
 }
 
-static bool degreeCompare(const IndexDegree &index1, const IndexDegree &index2) {
-    // 从大到小进行排序
-    return index1.degree > index2.degree;
-}
 
 void Placement::init() {
     // FakeData
@@ -468,6 +485,10 @@ void Placement::init() {
     for (int i = 0; i < m_moduleCount; ++i) {
         m_moduleDegree.push_back(ModuleSize());
         m_moduleSize.push_back(ModuleSize());
+
+        // 存储最原始的Info
+        QString str("Module_" + QString::number(i));
+        m_nameList.push_back(str);
     }
 
     for (int i = 0; i < m_moduleCount; ++i) {
@@ -547,7 +568,11 @@ void Placement::sortConnectionData() {
         for (int j = 0; j < m_connection[i].size(); ++j) {
             m_connection[i][j] = list[j].index;
         }
+
+        //SortListByDegree();
+
     }
+
     qDebug() << m_connection << "After Sort----ConnectionData";
 }
 
@@ -578,13 +603,31 @@ void Placement::initScc() {
     QHash<int, int> indexHash;
     QList<int> orderList;// index拓扑排序的编号
 
+
+
+    for (int i = 0; i < m_sccs.size(); ++i) {
+        // 存储强连通分支的Info
+        m_nameListScc.push_back(QString());
+    }
+    qDebug() << m_nameListScc.size() << " nameListSccSize";
+
+
     // connect 存在hash中
     for (int i = 0; i < m_sccs.size(); ++i) {
+        QString str("Module");
+
         if (m_sccs[i].size() > 1) {
             for (int j = 0; j < m_sccs[i].size(); ++j) {
                 hash.insert(m_sccs[i][j], m_sccs[i][0]);
+                str = str + "_" + QString::number(m_sccs[i][j]);
+
             }
+        } else {
+            str = str + "_" + QString::number(m_sccs[i][0]);
         }
+
+        m_nameListScc[i] = str;
+
         indexList.push_back(m_sccs[i][0]);
         // 通过index 可以找到在indexList的下表
         indexHash.insert(m_sccs[i][0], i);
@@ -616,6 +659,7 @@ void Placement::initScc() {
     qDebug() << indexHash << "     indexHash";
     qDebug() << indexList << "     indexList";
     qDebug() << m_connectionScc << "     m_connectionScc";
+    qDebug() << m_nameListScc << "     m_nameListScc";
     qDebug() << "   init connectionScc   ";
     // todo simplify m_connectionScc
 
@@ -629,6 +673,8 @@ void Placement::initScc() {
     for (int i = 0; i < m_moduleCountScc; ++i) {
         m_moduleDegreeScc.push_back(ModuleSize());
         //m_moduleSize.push_back(ModuleSize());
+
+
     }
 
     for (int i = 0; i < m_moduleCount; ++i) {

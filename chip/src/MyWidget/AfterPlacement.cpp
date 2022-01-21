@@ -14,7 +14,7 @@ void AfterPlacement::paintEvent(QPaintEvent *event) {
     QStringList nameList;
     //nameList << "11" << "12" << "13" << "21" << "22" << "23" << "31" << "32" << "33";
 
-    QFont font = painter.font() ;
+    QFont font = painter.font();
 
 /* twice the size than the current font size */
     font.setPointSize(font.pointSize() * 2);
@@ -27,10 +27,10 @@ void AfterPlacement::paintEvent(QPaintEvent *event) {
         int y = (m_position[i].y() * 2 + 1) * grid;
 
 
-
         painter.drawRect(x, y, grid, grid);
-        QString str = QString::number(i);
+        QString str = m_nameList[i];
         //str = nameList[i];
+
         painter.drawText(x, y, str);
     }
 
