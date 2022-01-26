@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.19)
-project(chip)
+project(Chip)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_PREFIX_PATH "D:/Qt5.12.6/5.12.6/msvc2017_64")
 set(CMAKE_AUTOMOC ON)
-
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
@@ -20,13 +19,13 @@ aux_source_directory(src/MyWidget DIR_SRCS)
 aux_source_directory(src/PlaceAlgo DIR_SRCS)
 aux_source_directory(resources DIR_SRCS)
 
+
 add_executable(
         ${PROJECT_NAME}
         ${DIR_SRCS}
         images.qrc
         main.cpp
 )
-
 
 if (NOT CMAKE_PREFIX_PATH)
     message(WARNING "CMAKE_PREFIX_PATH is not defined, you may need to set it "
@@ -63,4 +62,3 @@ if (WIN32)
                 "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
     endforeach (QT_LIB)
 endif ()
-

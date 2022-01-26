@@ -10,14 +10,14 @@
 
 
 #include "Data.h"
-#include "PlaceAlgo/SchematicPlacement.h"
+#include "PlaceAlgo/Placer.h"
 
 class AfterPlacement : public QWidget {
 
 Q_OBJECT
 
 public: // functions 函数
-    AfterPlacement(QList<QPoint> positionData, QList<QList<int>> connectionData, QStringList nameList) {
+    AfterPlacement(QVector<QPoint> positionData, QVector<QList<int>> connectionData, QStringList nameList) {
         m_connection = connectionData;
         m_position = positionData;
         m_nameList = nameList;
@@ -42,9 +42,9 @@ public: // variable 变量
     int grid = 66;
     QStringList m_nameList;
 
-    QList<QPoint> m_position;// 位置
+    QVector<QPoint> m_position;// 位置
 
-    QList<QList<int>> m_connection;//邻接表
+    QVector<QList<int>> m_connection;//邻接表
 
     void init() {
         setWindowTitle("AfterPlacement");

@@ -5,7 +5,7 @@
 #pragma once
 
 
-static QList <QList<int>> graphData = {
+static QVector<QList<int>> graphData = {
 
 
 /*

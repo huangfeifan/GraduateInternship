@@ -12,16 +12,16 @@
 #include "Data.h"
 
 // 递归版本 Trajan_algorithm
-class SchematicPlacement {
+class TrajanAlgo {
     // Time Complexity O(N+E) Space Complexity O(N+E) 邻接表存储数据
     // link https://www.bilibili.com/video/BV19J411J7AZ?p=5 邻接矩阵
     // link https://segmentfault.com/a/1190000039149539  邻接表
 public :
 
     // 递归版本
-    SchematicPlacement() {
+    TrajanAlgo() {
 
-        qDebug() << "SchematicPlacement----------------------------------------------------";
+        qDebug() << "TrajanAlgo----------------------------------------------------";
 
         // 初始化邻接表
         initConnection();
@@ -41,7 +41,7 @@ public :
             qDebug() << m_sccs[i];
         }
 
-        qDebug() << "SchematicPlacement----------------------------------------------------";
+        qDebug() << "TrajanAlgo----------------------------------------------------";
 
     }
 
@@ -56,7 +56,7 @@ private:
     QStack<int> m_stack; // 用于回退结点
 
 
-    QList<QList<int>> m_connection;//邻接表
+    QVector<QList<int>> m_connection;//邻接表
 
     void initConnection() {
 
@@ -144,15 +144,34 @@ class Placement {
 
 public :
     // place scc
+    QHash<int, int> m_moduleSccIndex;// module在第几个scc中
     int m_moduleCountScc = 0;
-    QList<bool> m_isPlacedScc;// 模块是否被摆放
-    QList<QHash<int, int>> m_isOccupyScc;// 位置被占据
-    QList<QList<int>> m_connectionScc;
-    QList<ModuleSize> m_moduleDegreeScc;// 记录模块的度数  width 出度 height 入度
-    QList<QPoint> m_relativePositionScc;// 改进的行列定位法坐标 相对坐标的计算
+    QVector<bool> m_isPlacedScc;// 模块是否被摆放  todo delete 可以删除
+    QVector<QHash<int, int>> m_isOccupyScc;// 位置被占据
+    QVector<QList<int>> m_connectionScc;
+    QVector<ModuleSize> m_moduleDegreeScc;// 记录模块的度数  width 出度 height 入度
+    QVector<QPoint> m_relativePositionScc;// 改进的行列定位法坐标 相对坐标的计算
     QStringList m_nameListScc;
 
+    // todo add a function convertConnectData(oldConnect,hash,newConnect)
+
+    // place a strong connect component
+    QVector<QList<int>> sccConnect;
+    QVector<bool> sccPlaced;
+    QVector<QHash<int, int>> isOccupy;
+    QVector<ModuleSize> moduleDegree;
+    QVector<QPoint> relativePosition;
+    QStringList sccList;
+    QHash<int, int> sccIndexHash;// 连通分支内部结点的下标<index,innerIndex>
+    QHash<int, int> sccHash;// 根据原index找到现index
+
+    int sccIndex = 0;// 这是第几个强连通分支 用于调整强连通分支内部的摆放 todo modify
+
+
     void placeIndexAndChild(int index, int row, int column, QList<int> orderList);
+
+
+    void simpleAdjust(QVector<QPoint> &relativePosition);
 
 public:
 
@@ -164,19 +183,19 @@ public:
     QStringList m_nameList;
 
 
-    QList<QPoint> getRelativePosition() {
+    QVector<QPoint> getRelativePosition() {
         return m_relativePosition;
     };
 
-    QList<QPoint> getRealPosition() {
+    QVector<QPoint> getRealPosition() {
         return m_realPosition;
     };
 
-    QList<ModuleSize> getModuleSize() {
+    QVector<ModuleSize> getModuleSize() {
         return m_moduleSize;
     };
 
-    QList<ModuleSize> getModuleDegree() {
+    QVector<ModuleSize> getModuleDegree() {
         return m_moduleDegree;
     };
 
@@ -208,6 +227,7 @@ private:
 
     void init();// 初始化所有数据
     void initScc();// 初始化所有scc
+    void placeAScc();// 计算一个强连通分支的摆放
 
     void sortConnectionData();
 
@@ -218,18 +238,19 @@ private:
 private:
     QList<QList<int>> m_sccs;// strong connected component
 
-    QList<QList<int>> m_parent;//
+    QVector<QList<int>> m_parent;//
 
-    QList<QPoint> m_realPosition;// 每个模块实际的坐标
-    QList<ModuleSize> m_moduleSize;// 记录模块的大小
+    QVector<QPoint> m_realPosition;// 每个模块实际的坐标
+    QVector<ModuleSize> m_moduleSize;// 记录模块的大小
+    QVector<bool> m_isPlaced;// 模块是否被摆放
+
 
 
     int m_moduleCount = 0;
-    QList<bool> m_isPlaced;// 模块是否被摆放
-    QList<QHash<int, int>> m_isOccupy;// 位置被占据
-    QList<QList<int>> m_connection;
-    QList<ModuleSize> m_moduleDegree;// 记录模块的度数  width 出度 height 入度
-    QList<QPoint> m_relativePosition;// 改进的行列定位法坐标 相对坐标的计算
+    QVector<QHash<int, int>> m_isOccupy;// 位置被占据
+    QVector<QList<int>> m_connection;
+    QVector<ModuleSize> m_moduleDegree;// 记录模块的度数  width 出度 height 入度
+    QVector<QPoint> m_relativePosition;// 改进的行列定位法坐标 相对坐标的计算
 
 
 
@@ -315,7 +336,7 @@ private:
 class TopologySort {
 
 public:
-    TopologySort(QList<QList<int>> graphData) {
+    TopologySort(QVector<QList<int>> graphData) {
 
         m_connection = graphData;
 
@@ -336,7 +357,7 @@ public:
     QList<QStack<int>> result;// 拓扑排序结果
 
 private:
-    QList<QList<int>> m_connection;//有向无环图的邻接表
+    QVector<QList<int>> m_connection;//有向无环图的邻接表
 
 
     QList<int> m_inDegree;//入度
@@ -434,5 +455,18 @@ private:
         qDebug() << parent << " IndexParent";
     }
 
+
+};
+
+class PlaceSccI {
+
+};
+
+
+
+
+
+
+class Route {
 
 };

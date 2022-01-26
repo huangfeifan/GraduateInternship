@@ -1,10 +1,11 @@
 ﻿#include <QApplication>
+#include <QPushButton>
 #include <QDebug>
 #include <QTime>
 #include <QQueue>
 
 #include "MyWidget/mainwindow.h"
-#include "PlaceAlgo/SchematicPlacement.h"
+#include "PlaceAlgo/Placer.h"
 #include "MyWidget/AfterPlacement.h"
 
 int main(int argc, char *argv[]) {
@@ -33,7 +34,7 @@ int main(int argc, char *argv[]) {
 */
 
     // test scc algo
-    //SchematicPlacement tarjanAlgo;
+    //TrajanAlgo tarjanAlgo;
 
     // test topology sort
     //TopologySort topologySort;
@@ -41,13 +42,26 @@ int main(int argc, char *argv[]) {
     // test placement
     Placement placement;
 
-    AfterPlacement a(placement.getRelativePosition(), graphData,placement.m_nameList);
+    qDebug() << placement.getRelativePosition().size();
+    qDebug() << placement.m_nameList.size();
+    qDebug() << placement.m_nameListScc.size();
+
+    AfterPlacement a(placement.getRelativePosition(), graphData, placement.m_nameList);
     a.setWindowTitle("place all module");
     a.show();
 
-    AfterPlacement b(placement.m_relativePositionScc, placement.m_connectionScc,placement.m_nameListScc);
+    AfterPlacement b(placement.m_relativePositionScc, placement.m_connectionScc, placement.m_nameListScc);
     b.setWindowTitle("place all scc");
     b.show();
+
+    AfterPlacement c(placement.relativePosition, placement.sccConnect, placement.sccList);
+    c.setWindowTitle("a scc");
+    c.show();
+
+
+    // vector init Sze
+/*    QVector<int> a(10);
+    qDebug() << a;*/
 
 
 /*    BeforeLayout b;

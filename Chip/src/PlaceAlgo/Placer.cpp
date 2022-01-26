@@ -2,7 +2,7 @@
 // Created by Huangff on 2022/1/20.
 //
 
-#include "SchematicPlacement.h"
+#include "TrajanAlgo.h"
 #include "MyWidget/AfterPlacement.h"
 
 static bool degreeCompare(const IndexDegree &index1, const IndexDegree &index2) {
@@ -30,14 +30,17 @@ void SortListByDegree(QList<int> &list, QList<int> degreeList) {
 Placement::Placement() {
     m_upDown = true;
     qDebug() << "Placement----------------------------------------------------";
-    SchematicPlacement tarjanAlgo;
+    TrajanAlgo tarjanAlgo;
     m_sccs = tarjanAlgo.m_sccs;
     m_connection = graphData;
 
-    //simplePlace();
+    simplePlace();
 
-    //初始化scc数据
+    // 初始化scc数据
     initScc();
+
+    // 单独摆放一个强连通分支
+    placeAScc();
 
     qDebug() << "Placement----------------------------------------------------\n";
 
@@ -490,6 +493,7 @@ void Placement::init() {
         QString str("Module_" + QString::number(i));
         m_nameList.push_back(str);
     }
+    qDebug() << m_nameList.size() << " nameListSize ";
 
     for (int i = 0; i < m_moduleCount; ++i) {
         // width 出度
@@ -582,7 +586,7 @@ void Placement::sortIndexList(QList<IndexDegree> &list) {
 }
 
 void Placement::computeSccInfo() {
-    SchematicPlacement tarjanAlgo;
+    TrajanAlgo tarjanAlgo;
     m_sccs = tarjanAlgo.m_sccs;
     if (m_sccs.size() == m_moduleCount) {
         // 有向无环图
@@ -596,13 +600,14 @@ void Placement::computeSccInfo() {
 }
 
 void Placement::initScc() {
+    qDebug() << "InitScc---------------------------------";
+
     // sccData
     QHash<int, int> hash;// 用于生成m_connectionScc
-    QList<QList<int>> temp = m_connection;
-    QList<int> indexList;
+    QVector<QList<int>> temp = m_connection;
+    QList<int> indexList; // todo modify QList to QVector
     QHash<int, int> indexHash;
-    QList<int> orderList;// index拓扑排序的编号
-
+    QList<int> orderList;// index拓扑排序的编号 // todo modify QList to QVector
 
 
     for (int i = 0; i < m_sccs.size(); ++i) {
@@ -611,23 +616,31 @@ void Placement::initScc() {
     }
     qDebug() << m_nameListScc.size() << " nameListSccSize";
 
+    int sccCount = 0;// 有几个强连通分支需要重新计算connectData
+    QList<int> sccSize;
 
     // connect 存在hash中
     for (int i = 0; i < m_sccs.size(); ++i) {
         QString str("Module");
-
         if (m_sccs[i].size() > 1) {
+            sccCount++;
+            sccIndex = i;// 第i个强连通分支
+            sccSize.push_back(m_sccs[i].size());
             for (int j = 0; j < m_sccs[i].size(); ++j) {
                 hash.insert(m_sccs[i][j], m_sccs[i][0]);
                 str = str + "_" + QString::number(m_sccs[i][j]);
+                // todo modify
+                sccList.push_back(QString::number(m_sccs[i][j]));
+                sccIndexHash.insert(m_sccs[i][j], j);
 
+                m_moduleSccIndex.insert(m_sccs[i][j], i);
             }
         } else {
             str = str + "_" + QString::number(m_sccs[i][0]);
+            m_moduleSccIndex.insert(m_sccs[i][0], i);
+
         }
-
         m_nameListScc[i] = str;
-
         indexList.push_back(m_sccs[i][0]);
         // 通过index 可以找到在indexList的下表
         indexHash.insert(m_sccs[i][0], i);
@@ -635,6 +648,15 @@ void Placement::initScc() {
         m_connectionScc.push_back(list);
         orderList.push_back(0);
     }
+
+    qDebug() << sccCount << " Scc_count";
+    qDebug() << sccList << " sccList";
+    qDebug() << sccIndexHash << " sccIndexHash";
+    qDebug() << m_moduleSccIndex << " m_moduleSccIndex";
+    //qDebug() << sccSize << " sccSize";  // todo modify 先只计算一个强连通分支内部的摆放
+    QVector<QVector<QList<int>>> allSccConnect(sccCount);//
+    //qDebug() << allSccConnect.size() << " allSccConnect";
+
     //qDebug() << m_connectionScc << "     m_connectionScc  " << m_connectionScc.size();
     // 通过hash 构造出m_connectionScc
     for (int i = 0; i < m_connection.size(); ++i) {
@@ -739,20 +761,7 @@ void Placement::initScc() {
 
 
     // 调整相对位置 相对位置从(0,0)开始
-    int minRow = m_relativePositionScc.size();
-    int minColumn = m_relativePositionScc.size();
-    for (int i = 0; i < m_relativePositionScc.size(); ++i) {
-
-        minRow = m_relativePositionScc[i].y() > minRow ? minRow : m_relativePositionScc[i].y();
-        minColumn = m_relativePositionScc[i].x() > minColumn ? minColumn : m_relativePositionScc[i].x();
-
-    }
-
-    for (int i = 0; i < m_relativePositionScc.size(); ++i) {
-        m_relativePositionScc[i].setX(m_relativePositionScc[i].x() - minColumn);
-        m_relativePositionScc[i].setY(m_relativePositionScc[i].y() - minRow);
-    }
-
+    simpleAdjust(m_relativePositionScc);
 
 
 /*    AfterPlacement placement(m_relativePositionScc, m_connectionScc);
@@ -809,7 +818,6 @@ void Placement::placeIndexAndChild(int index, int row, int column, QList<int> or
         qDebug() << index << " index " << row << " row " << column << " column";
     }
 
-
     // placeChild
     QList<int> childList;
     for (int i = 0; i < m_connectionScc[index].size(); ++i) {
@@ -821,7 +829,6 @@ void Placement::placeIndexAndChild(int index, int row, int column, QList<int> or
 
     for (int i = 0; i < childList.size(); ++i) {
         int child = childList[i];
-
         //row = row - childList.size()/2;
         while (m_isOccupyScc[column + 1].contains(row)) {
             row++;
@@ -833,5 +840,128 @@ void Placement::placeIndexAndChild(int index, int row, int column, QList<int> or
         qDebug() << child << " child " << row << " row " << column + 1 << " column";
     }
     qDebug() << m_isPlacedScc << " isPlacedScc";
+}
 
+void Placement::placeAScc() {
+    qDebug() << "---------------------------------------PlaceAScc";
+    int sccNumber = sccList.size();// 当前强连通分支结点个数
+    sccPlaced = QVector<bool>(sccNumber);
+    isOccupy = QVector<QHash<int, int>>(sccNumber);
+    moduleDegree = QVector<ModuleSize>(sccNumber);
+    relativePosition = QVector<QPoint>(sccNumber);
+    sccConnect = QVector<QList<int>>(sccNumber);
+
+    QVector<int> indexParentIndex(sccNumber);// 父节点所在的行数
+
+    // 强连通分支内部的下标 <oldIndex--key,newIndex--value>
+    qDebug() << sccIndexHash << "  SccIndexHash";
+    // 计算connection 摒弃原序号 启用新序号0-sccNumber
+    for (int i = 0; i < sccNumber; ++i) {
+        int start = sccList[i].toInt();
+        qDebug() << start << "   startIndex----";
+        for (int j = 0; j < m_connection[start].size(); ++j) {
+            int end = m_connection[start][j];
+            int newEnd = sccIndexHash.value(end);
+            qDebug() << end << "       end ";
+            qDebug() << newEnd << "       newEnd ";
+            if (m_moduleSccIndex.value(end) == sccIndex) {
+                sccConnect[i].push_back(newEnd);
+            }
+        }
+    }
+    qDebug() << sccConnect << " sccConnect";
+    // 找出度数最大的
+    int degree = sccConnect[0].size();// 结点0的度数
+    int maxIndex = 0;// 假设结点0度数最大
+    for (int i = 1; i < sccConnect.size(); ++i) {
+        if (sccConnect[i].size() > degree) {
+            // 较大度数出现 更新最大度数的结点
+            maxIndex = i;
+            degree = sccConnect[i].size();
+        }
+    }
+
+    qDebug() << maxIndex << "     maxDegreeIndex";
+    qDebug() << sccPlaced << "  sccPlaced";
+    qDebug() << isOccupy << "  isOccupy";
+    // 思想： 先摆放度数最大的点 然后摆放其所有子节点 然后摆放所有子节点的子节点
+    int row = sccConnect.size();    // 摆放权重(度数)最大的
+    int column = 0;
+    while (isOccupy[column].key(row)) {
+        row++;
+    }
+    isOccupy[column].insert(row, row);// 存储index占据的位置
+    relativePosition[maxIndex].setX(column++);// 列
+    relativePosition[maxIndex].setY(row);// 行
+    sccPlaced[maxIndex] = true;// 修改状态
+
+    qDebug() << relativePosition << "   relativePosition";
+
+    QStack<int> currentStack, nextStack;// stack存放的都是新下标
+    // 修改最大度数结点的子节点的父节点行号 indexParentIndex 用于描述父节点所在行数
+    for (int i = 0; i < sccConnect[maxIndex].size(); ++i) {
+        int child = sccConnect[maxIndex][i];// 新moduleIndex
+        qDebug() << " child Index " << child;
+        indexParentIndex[child] = maxIndex;
+        // child没有被摆放 则将其添加到stack中 便于后续摆放
+        if (!sccPlaced[child]) {
+            currentStack.push(child);
+        }
+    }
+    qDebug() << currentStack << "   CurrentStack";
+
+    qDebug() << row << " FRow--";
+    while (!currentStack.isEmpty()) {
+        // 摆放topIndex
+        int topIndex = currentStack.pop();
+        int topParentIndex = indexParentIndex[topIndex];
+        qDebug() << topIndex << "   " << topParentIndex << " " << sccConnect[topParentIndex].size();
+        row = relativePosition[topParentIndex].y() - sccConnect[topParentIndex].size() * 0.382;
+
+        while (isOccupy[column].contains(row)) {
+            row++;
+        }
+        qDebug() << row << " RRRow";
+        isOccupy[column].insert(row, row);
+        relativePosition[topIndex].setX(column);// 列
+        relativePosition[topIndex].setY(row);// 行
+        sccPlaced[topIndex] = true;
+
+        qDebug() << topIndex << " topIndex";
+        for (int i = 0; i < sccConnect[topIndex].size(); ++i) {
+            // update nextStack;
+            int child = sccConnect[topIndex][i];
+            // 将未摆放的子节点入栈
+            if (!sccPlaced[child]) {
+                qDebug() << child << " childChild";
+                nextStack.push(child);
+                indexParentIndex[child] = topIndex;
+            }
+        }
+        // 当前列摆放结束  接着摆放下一列
+        if (currentStack.isEmpty()) {
+            currentStack = nextStack;
+            nextStack.clear();
+            column++;// 当前列摆放结束 继续摆放下一列
+        }
+        qDebug() << column << " Column------Current   " << row;
+        qDebug() << currentStack << " currentStack";
+        qDebug() << nextStack << " nextStack";
+    }
+    qDebug() << relativePosition << "   relativePosition";
+    simpleAdjust(relativePosition);
+}
+
+void Placement::simpleAdjust(QVector<QPoint> &relativePosition) {
+    // 调整相对位置 相对位置从(0,0)开始
+    int minRow = relativePosition.size();
+    int minColumn = relativePosition.size();
+    for (int i = 0; i < relativePosition.size(); ++i) {
+        minRow = relativePosition[i].y() > minRow ? minRow : relativePosition[i].y();
+        minColumn = relativePosition[i].x() > minColumn ? minColumn : relativePosition[i].x();
+    }
+    for (int i = 0; i < relativePosition.size(); ++i) {
+        relativePosition[i].setX(relativePosition[i].x() - minColumn);
+        relativePosition[i].setY(relativePosition[i].y() - minRow);
+    }
 }
