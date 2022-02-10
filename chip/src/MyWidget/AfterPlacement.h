@@ -8,7 +8,6 @@
 #include <QPainter>
 #include <QDebug>
 
-
 #include "Data.h"
 #include "PlaceAlgo/Placer.h"
 
@@ -28,22 +27,17 @@ public: // functions 函数
     }
 
     ~AfterPlacement();
-
     //void setListRect(QList<QRect> listRect);
-
     void setListConnect(QList<QPoint> listConnect) {
 
     }
-
 
 public: // variable 变量
 
     int m_num;// mudule 个数
     int grid = 66;
     QStringList m_nameList;
-
     QVector<QPoint> m_position;// 位置
-
     QVector<QList<int>> m_connection;//邻接表
 
     void init() {
@@ -55,15 +49,12 @@ public: // variable 变量
         } else {
             qDebug() << "Data Error";
         }
-
     }
 
 protected:
 
     void paintEvent(QPaintEvent *event) override;
 
-
 private:
-
 
 };

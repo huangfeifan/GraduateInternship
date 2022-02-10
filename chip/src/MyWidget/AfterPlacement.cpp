@@ -4,8 +4,6 @@
 
 #include "AfterPlacement.h"
 
-
-
 void AfterPlacement::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     painter.save();
@@ -61,3 +59,6 @@ void AfterPlacement::paintEvent(QPaintEvent *event) {
 AfterPlacement::~AfterPlacement() {
 
 }
+
+
+

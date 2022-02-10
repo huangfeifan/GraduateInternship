@@ -2,7 +2,6 @@
 #include <QPushButton>
 #include <QDebug>
 #include <QTime>
-#include <QQueue>
 
 #include "MyWidget/mainwindow.h"
 #include "PlaceAlgo/Placer.h"

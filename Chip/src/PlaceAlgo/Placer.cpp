@@ -2,8 +2,9 @@
 // Created by Huangff on 2022/1/20.
 //
 
-#include "TrajanAlgo.h"
-#include "MyWidget/AfterPlacement.h"
+#include "Placer.h"
+#include "PlaceAScc.h"
+//#include "MyWidget/AfterPlacement.h"
 
 static bool degreeCompare(const IndexDegree &index1, const IndexDegree &index2) {
     // 从大到小进行排序
@@ -30,8 +31,8 @@ void SortListByDegree(QList<int> &list, QList<int> degreeList) {
 Placement::Placement() {
     m_upDown = true;
     qDebug() << "Placement----------------------------------------------------";
-    TrajanAlgo tarjanAlgo;
-    m_sccs = tarjanAlgo.m_sccs;
+    GetGraphSccs tarjanAlgo(graphData);
+    m_sccs = tarjanAlgo.getGraphAllScc();
     m_connection = graphData;
 
     simplePlace();
@@ -476,7 +477,6 @@ void Placement::placeParent(int index, int row, int column) {
     }
 }
 
-
 void Placement::init() {
     // FakeData
     //m_connection = graphData;
@@ -586,17 +586,13 @@ void Placement::sortIndexList(QList<IndexDegree> &list) {
 }
 
 void Placement::computeSccInfo() {
-    TrajanAlgo tarjanAlgo;
-    m_sccs = tarjanAlgo.m_sccs;
+    GetGraphSccs tarjanAlgo(graphData);
+    m_sccs = tarjanAlgo.getGraphAllScc();
     if (m_sccs.size() == m_moduleCount) {
         // 有向无环图
     } else {
         // 有向有环图
-
-
     }
-
-
 }
 
 void Placement::initScc() {
@@ -695,8 +691,6 @@ void Placement::initScc() {
     for (int i = 0; i < m_moduleCountScc; ++i) {
         m_moduleDegreeScc.push_back(ModuleSize());
         //m_moduleSize.push_back(ModuleSize());
-
-
     }
 
     for (int i = 0; i < m_moduleCount; ++i) {
@@ -740,7 +734,7 @@ void Placement::initScc() {
     //      Step2.根据拓扑序列摆放Module
     //            根据父子关系摆放
     TopologySort topologySort(m_connectionScc);
-    QList<QStack<int>> tSort = topologySort.result;
+    QList<QStack<int>> tSort = topologySort.m_result;
     //qDebug() << m_connectionScc << "    m_connectionScc";
     qDebug() << tSort << "    topologySort";
     for (int i = 0; i < tSort.size(); ++i) {
@@ -950,6 +944,14 @@ void Placement::placeAScc() {
     }
     qDebug() << relativePosition << "   relativePosition";
     simpleAdjust(relativePosition);
+
+/*    /// 测试 PlaceAScc
+    QVector<int> oldIndexList(sccList.size());
+    for (int i = 0; i < sccList.size(); ++i) {
+        oldIndexList[i] = sccList[i].toInt();
+    }
+
+    PlaceAScc placeAScc(oldIndexList, m_connection);*/
 }
 
 void Placement::simpleAdjust(QVector<QPoint> &relativePosition) {
