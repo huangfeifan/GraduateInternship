@@ -6,6 +6,8 @@
 #include "MyWidget/mainwindow.h"
 #include "PlaceAlgo/Placer.h"
 #include "MyWidget/AfterPlacement.h"
+#include "PlaceAlgo/ComputePosition.h"
+#include "PlaceAlgo/SchematicPlacement.h"
 
 int main(int argc, char *argv[]) {
     Q_INIT_RESOURCE(images);
@@ -36,10 +38,10 @@ int main(int argc, char *argv[]) {
     //TrajanAlgo tarjanAlgo;
 
     // test topology sort
-    //TopologySort topologySort;
+    //GetTopologySort topologySort;
 
     // test placement
-    Placement placement;
+/*    Placement placement;
 
     qDebug() << placement.getRelativePosition().size();
     qDebug() << placement.m_nameList.size();
@@ -55,7 +57,16 @@ int main(int argc, char *argv[]) {
 
     AfterPlacement c(placement.relativePosition, placement.sccConnect, placement.sccList);
     c.setWindowTitle("a scc");
-    c.show();
+    c.show();*/
+
+
+    QVector<QPoint> size = QVector<QPoint>(graphData.size());
+    for (int i = 0; i < graphData.size(); ++i) {
+        size[i].setX(10);
+        size[i].setY(10);
+    }
+
+    SchematicPlacement sp(graphData, size);
 
 
     // vector init Sze

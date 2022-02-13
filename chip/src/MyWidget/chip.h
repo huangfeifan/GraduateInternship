@@ -22,7 +22,7 @@ protected:
 private:
     int x;
     int y;
-    QColor color;
+    QColor m_color;
     QVector<QPointF> stuff;
 };
 

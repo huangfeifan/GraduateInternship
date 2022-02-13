@@ -3,34 +3,28 @@
 
 #include <QtWidgets>
 
-Chip::Chip(const QColor &color, int x, int y)
-{
-    this->x = x;
-    this->y = y;
-    this->color = color;
+Chip::Chip(const QColor &color, int x, int y) : m_color(color), x(x), y(y) {// more efficient way
+    //    this->m_color = color;
     setZValue((x + y) % 2);
 
     setFlags(ItemIsSelectable | ItemIsMovable);
     setAcceptHoverEvents(true);
 }
 
-QRectF Chip::boundingRect() const
-{
+QRectF Chip::boundingRect() const {
     return QRectF(0, 0, 110, 70);
 }
 
-QPainterPath Chip::shape() const
-{
+QPainterPath Chip::shape() const {
     QPainterPath path;
     path.addRect(14, 14, 82, 42);
     return path;
 }
 
-void Chip::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
+void Chip::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(widget);
 
-    QColor fillColor = (option->state & QStyle::State_Selected) ? color.dark(150) : color;
+    QColor fillColor = (option->state & QStyle::State_Selected) ? m_color.dark(150) : m_color;
     if (option->state & QStyle::State_MouseOver)
         fillColor = fillColor.light(125);
 
@@ -95,12 +89,12 @@ void Chip::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     }
     if (lod >= 0.4) {
         const QLineF lineData[] = {
-            QLineF(25, 35, 35, 35),
-            QLineF(35, 30, 35, 40),
-            QLineF(35, 30, 45, 35),
-            QLineF(35, 40, 45, 35),
-            QLineF(45, 30, 45, 40),
-            QLineF(45, 35, 55, 35)
+                QLineF(25, 35, 35, 35),
+                QLineF(35, 30, 35, 40),
+                QLineF(35, 30, 45, 35),
+                QLineF(35, 40, 45, 35),
+                QLineF(45, 30, 45, 40),
+                QLineF(45, 35, 55, 35)
         };
         lines.append(lineData, 6);
     }
@@ -120,14 +114,12 @@ void Chip::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     }
 }
 
-void Chip::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
+void Chip::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     QGraphicsItem::mousePressEvent(event);
     update();
 }
 
-void Chip::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
-{
+void Chip::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     if (event->modifiers() & Qt::ShiftModifier) {
         stuff << event->pos();
         update();
@@ -136,8 +128,7 @@ void Chip::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsItem::mouseMoveEvent(event);
 }
 
-void Chip::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
+void Chip::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     QGraphicsItem::mouseReleaseEvent(event);
     update();
 }

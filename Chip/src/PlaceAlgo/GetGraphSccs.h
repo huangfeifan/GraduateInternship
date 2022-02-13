@@ -14,9 +14,9 @@ class GetGraphSccs {
     // link https://segmentfault.com/a/1190000039149539  邻接表
 public :
     // 递归版本
-    GetGraphSccs(QVector<QList<int>> graphData) {
+    GetGraphSccs(QVector<QList<int>> graphData): m_connection(graphData) {
         // 初始化邻接表
-        m_connection = graphData;
+        //m_connection = graphData;
         // number 模块数量
         m_numVertices = m_connection.size();
         // init

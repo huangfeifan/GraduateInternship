@@ -10,18 +10,18 @@
 
 // DAG :=  Directed Acyclic Graph
 // 有向无环图的拓扑排序  用Tarjan算法遍历一次图  拓扑排序可以确定哪些结点在同一列
-class TopologySort {
+class GetTopologySort {
 
 public:
-    TopologySort(QVector<QList<int>> graphData) {
+    GetTopologySort(QVector<QList<int>> graphData) :m_connection(graphData){
 
-        m_connection = graphData;
-        qDebug() << "TopologySort----------------------------------------------------";
+        //m_connection = graphData;
+        qDebug() << "GetTopologySort----------------------------------------------------";
         // 检查是否有环 Tarjan_algorithm 需要参数  m_connection
         initConnect();
         computeResult();
         detectVerticesNum();
-        qDebug() << "TopologySort----------------------------------------------------";
+        qDebug() << "GetTopologySort----------------------------------------------------";
         //initParent();
     }
 

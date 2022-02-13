@@ -10,9 +10,6 @@ void AfterPlacement::paintEvent(QPaintEvent *event) {
     painter.setPen(Qt::black);
     //painter.setBrush(Qt::red);
 
-    QStringList nameList;
-    //nameList << "11" << "12" << "13" << "21" << "22" << "23" << "31" << "32" << "33";
-
     QFont font = painter.font();
 
 /* twice the size than the current font size */

@@ -11,8 +11,7 @@
 
 #include "Data.h"
 #include "GetGraphSccs.h"
-#include "TopologySort.h"
-#include "PlaceAScc.h"
+#include "GetTopologySort.h"
 #include "ImprovedTarjanAlgo.h"
 
 struct ModuleSize {
@@ -50,7 +49,7 @@ public :
     int sccIndex = 0;// 这是第几个强连通分支 用于调整强连通分支内部的摆放 todo modify
 
     void placeIndexAndChild(int index, int row, int column, QList<int> orderList);
-    void simpleAdjust(QVector<QPoint> &relativePosition);
+    //void simpleAdjust(QVector<QPoint> &relativePosition);
 
 public:
 
@@ -81,14 +80,12 @@ public:
 
 private:
     void computeModuleSize();
-    void computeModuleRealPosition();
     QList<int> computeTraversalOrder();
     QList<int> computeTraversalOrder1();
     void breadthPlacement();
     void placeChildStack(QList<int> childList, int row, int column);
     void simplePlace();
     void deepPlacement();
-    void adjustRelativePosition();
     void placeChildRecursion(int index, int row, int column);
     void placeParent(int index, int row, int column);
     void init();// 初始化所有数据
@@ -96,7 +93,6 @@ private:
     void placeAScc();// 计算一个强连通分支的摆放
     void sortConnectionData();
     void sortIndexList(QList<IndexDegree> &list);
-    void computeSccInfo();
 
 private:
     QList<QList<int>> m_sccs;// strong connected component

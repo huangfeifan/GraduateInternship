@@ -16,10 +16,11 @@ class AfterPlacement : public QWidget {
 Q_OBJECT
 
 public: // functions 函数
-    AfterPlacement(QVector<QPoint> positionData, QVector<QList<int>> connectionData, QStringList nameList) {
-        m_connection = connectionData;
-        m_position = positionData;
-        m_nameList = nameList;
+    AfterPlacement(QVector<QPoint> positionData, QVector<QList<int>> connectionData, QStringList nameList)
+            : m_connection(connectionData), m_position(positionData), m_nameList(nameList) {
+        //m_connection = connectionData;
+        //m_position = positionData;
+        //m_nameList = nameList;
         m_num = m_connection.size();
 
         init();
@@ -27,6 +28,7 @@ public: // functions 函数
     }
 
     ~AfterPlacement();
+
     //void setListRect(QList<QRect> listRect);
     void setListConnect(QList<QPoint> listConnect) {
 

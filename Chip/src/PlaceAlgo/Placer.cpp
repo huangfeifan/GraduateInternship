@@ -3,8 +3,8 @@
 //
 
 #include "Placer.h"
-#include "PlaceAScc.h"
-//#include "MyWidget/AfterPlacement.h"
+#include "ComputePosition.h"
+#include "SchematicPlacement.h"
 
 static bool degreeCompare(const IndexDegree &index1, const IndexDegree &index2) {
     // 从大到小进行排序
@@ -35,7 +35,7 @@ Placement::Placement() {
     m_sccs = tarjanAlgo.getGraphAllScc();
     m_connection = graphData;
 
-    simplePlace();
+    simplePlace();/// 深度摆放
 
     // 初始化scc数据
     initScc();
@@ -62,29 +62,6 @@ void Placement::computeModuleSize() {
     for (int i = 0; i < m_moduleCount; ++i) {
         //qDebug() << "Module__" << i << " width " << m_moduleSize[i].width << " , height " << m_moduleSize[i].height;
     }
-}
-
-void Placement::computeModuleRealPosition() {
-    /**
-     * 目的：确定每个元件的布局最终位置
-     *  已有各个模块的大小 模块的相对位置
-     *
-     *  难点：如何根据模块间的连接信息得到模块的最终位置
-     *
-     *  问题分解
-     *      1.类似行列定位的思路 首先确定每一列的宽度 其次确定列与列之间的间距(根据通道的概念 预留出足够的空间) 最后得到每一列的坐标
-     *      2.按照列的方式 依然根据通道的概念 预留出足够的空间 得到每一行的坐标
-     *      3.对通道数据的存储 辅助线探索判断后续的走线  线探索需要处理的事情  Todo : need consider
-     *
-     *  如何计算列与列的通道数     粗略计算  todo modify
-     *  如何计算行与行的通道数     粗略计算
-     */
-
-    // 计算行列宽度和间距 最终得到模块的最终位置
-/*    for (int i = 0; i < m_moduleCount; ++i) {
-        m_moduleSize
-    }*/
-
 }
 
 QList<int> Placement::computeTraversalOrder() {
@@ -401,31 +378,6 @@ void Placement::deepPlacement() {
 
 }
 
-void Placement::adjustRelativePosition() {
-    /**
-     * 根据图的父子关系得到的布局可能存在父子结点高度差的方差很大
-     * 对后期布线可能有比较大的影响
-     * 为了解决这个问题
-     * 考虑对现有的布局进行一个微调
-     * 来增加布局的美观性
-     */
-    int minRow = m_relativePosition.size();
-    int minColumn = m_relativePosition.size();
-    for (int i = 0; i < m_relativePosition.size(); ++i) {
-
-        minRow = m_relativePosition[i].y() > minRow ? minRow : m_relativePosition[i].y();
-        minColumn = m_relativePosition[i].x() > minColumn ? minColumn : m_relativePosition[i].x();
-
-    }
-
-    for (int i = 0; i < m_relativePosition.size(); ++i) {
-        m_relativePosition[i].setX(m_relativePosition[i].x() - minColumn);
-        m_relativePosition[i].setY(m_relativePosition[i].y() - minRow);
-    }
-
-
-}
-
 void Placement::placeChildRecursion(int index, int row, int column) {
     // 父结点index 放在第row行 第column列
     // 子结点 first 放在index右侧
@@ -546,7 +498,7 @@ void Placement::init() {
 
 /*      qDebug() << m_isOccupy << "  m_isOccupy";
         qDebug() << m_isPlaced << "  m_isPlaced";
-        qDebug() << m_relativePosition << "  m_relativePosition";
+        qDebug() << m_relativePos << "  m_relativePos";
         qDebug() << m_parent << " m_parent";*/
 
 }
@@ -583,16 +535,6 @@ void Placement::sortConnectionData() {
 void Placement::sortIndexList(QList<IndexDegree> &list) {
 
     qSort(list.begin(), list.end(), degreeCompare);
-}
-
-void Placement::computeSccInfo() {
-    GetGraphSccs tarjanAlgo(graphData);
-    m_sccs = tarjanAlgo.getGraphAllScc();
-    if (m_sccs.size() == m_moduleCount) {
-        // 有向无环图
-    } else {
-        // 有向有环图
-    }
 }
 
 void Placement::initScc() {
@@ -658,11 +600,11 @@ void Placement::initScc() {
     for (int i = 0; i < m_connection.size(); ++i) {
         for (int j = 0; j < m_connection[i].size(); ++j) {
             int startIndex = i;
-            int endIndex = m_connection[i][j];
             if (hash.contains(startIndex)) {
                 startIndex = hash.value(startIndex);
             }
             startIndex = indexHash.value(startIndex);
+            int endIndex = m_connection[i][j];
             if (hash.contains(endIndex)) {
                 endIndex = hash.value(endIndex);
             }
@@ -692,13 +634,10 @@ void Placement::initScc() {
         m_moduleDegreeScc.push_back(ModuleSize());
         //m_moduleSize.push_back(ModuleSize());
     }
-
     for (int i = 0; i < m_moduleCount; ++i) {
         // width 出度
         //m_moduleDegree[i].width = m_connection[i].size();
     }
-
-
     for (int i = 0; i < m_connectionScc.size(); ++i) {
 
         //m_parent.push_back(QList<int>());
@@ -715,7 +654,6 @@ void Placement::initScc() {
             m_moduleDegree[end].height++;
         }*/
     }
-
     for (int i = 0; i < m_connectionScc.size(); ++i) {
         /*for (int j = 0; j < m_connectionScc[i].size(); ++j) {
             int end = m_connectionScc[i][j];
@@ -724,7 +662,6 @@ void Placement::initScc() {
 
         m_isOccupyScc.push_back(QHash<int, int>());
     }
-
     for (int i = m_connectionScc.size(); i < m_connectionScc.size() * 2; ++i) {
         m_isOccupyScc.push_back(QHash<int, int>());
     }
@@ -733,7 +670,7 @@ void Placement::initScc() {
     //      Step1.计算拓扑排序序列
     //      Step2.根据拓扑序列摆放Module
     //            根据父子关系摆放
-    TopologySort topologySort(m_connectionScc);
+    GetTopologySort topologySort(m_connectionScc);
     QList<QStack<int>> tSort = topologySort.m_result;
     //qDebug() << m_connectionScc << "    m_connectionScc";
     qDebug() << tSort << "    topologySort";
@@ -755,7 +692,7 @@ void Placement::initScc() {
 
 
     // 调整相对位置 相对位置从(0,0)开始
-    simpleAdjust(m_relativePositionScc);
+    PlaceSccs::simpleAdjust(m_relativePositionScc);
 
 
 /*    AfterPlacement placement(m_relativePositionScc, m_connectionScc);
@@ -780,7 +717,8 @@ void Placement::simplePlace() {
     deepPlacement();// deep Placement   参照图的深度遍历
 
     // 对计算出来的相对位置 进行微调  todo modify
-    adjustRelativePosition();
+    //adjustRelativePosition();
+    PlaceSccs::simpleAdjust(m_relativePosition);
 
     qDebug() << m_relativePosition << "  position_after_adjust";
     qDebug() << m_isOccupy << "  m_isOccupy";
@@ -788,13 +726,15 @@ void Placement::simplePlace() {
     qDebug() << "----------------finish_placement----------------";
     //qDebug() << "----------------compute_Module_Size----------------";
 
-    // 计算模块的大小
-    computeModuleSize();
+
+    // 计算模块的大小  假定模块大小给定
+    //computeModuleSize();
 
 
     //qDebug() << "----------------compute_Module_Size----------------";
-    // 计算模块的绝对位置
-    computeModuleRealPosition();
+    /// 计算模块的绝对位置  Todo add function
+
+
 }
 
 void Placement::placeIndexAndChild(int index, int row, int column, QList<int> orderList) {
@@ -943,27 +883,7 @@ void Placement::placeAScc() {
         qDebug() << nextStack << " nextStack";
     }
     qDebug() << relativePosition << "   relativePosition";
-    simpleAdjust(relativePosition);
+    PlaceSccs::simpleAdjust(relativePosition);
 
-/*    /// 测试 PlaceAScc
-    QVector<int> oldIndexList(sccList.size());
-    for (int i = 0; i < sccList.size(); ++i) {
-        oldIndexList[i] = sccList[i].toInt();
-    }
-
-    PlaceAScc placeAScc(oldIndexList, m_connection);*/
 }
 
-void Placement::simpleAdjust(QVector<QPoint> &relativePosition) {
-    // 调整相对位置 相对位置从(0,0)开始
-    int minRow = relativePosition.size();
-    int minColumn = relativePosition.size();
-    for (int i = 0; i < relativePosition.size(); ++i) {
-        minRow = relativePosition[i].y() > minRow ? minRow : relativePosition[i].y();
-        minColumn = relativePosition[i].x() > minColumn ? minColumn : relativePosition[i].x();
-    }
-    for (int i = 0; i < relativePosition.size(); ++i) {
-        relativePosition[i].setX(relativePosition[i].x() - minColumn);
-        relativePosition[i].setY(relativePosition[i].y() - minRow);
-    }
-}
