@@ -6,7 +6,7 @@
 #include "MyWidget/mainwindow.h"
 #include "PlaceAlgo/Placer.h"
 #include "MyWidget/AfterPlacement.h"
-#include "PlaceAlgo/ComputePosition.h"
+#include "PlaceAlgo/ComputeAbsolutePos.h"
 #include "PlaceAlgo/SchematicPlacement.h"
 
 int main(int argc, char *argv[]) {
@@ -41,30 +41,34 @@ int main(int argc, char *argv[]) {
     //GetTopologySort topologySort;
 
     // test placement
-/*    Placement placement;
+    Placement placement;
 
-    qDebug() << placement.getRelativePosition().size();
-    qDebug() << placement.m_nameList.size();
-    qDebug() << placement.m_nameListScc.size();
+/*    qDebug() << placement.getRelativePosition().sccSize();
+    qDebug() << placement.m_nameList.sccSize();
+    qDebug() << placement.m_nameListScc.sccSize();*/
 
     AfterPlacement a(placement.getRelativePosition(), graphData, placement.m_nameList);
     a.setWindowTitle("place all module");
-    a.show();
+    //a.show();
 
     AfterPlacement b(placement.m_relativePositionScc, placement.m_connectionScc, placement.m_nameListScc);
     b.setWindowTitle("place all scc");
-    b.show();
+    //b.show();
 
     AfterPlacement c(placement.relativePosition, placement.sccConnect, placement.sccList);
     c.setWindowTitle("a scc");
-    c.show();*/
+    //c.show();
 
+
+    qDebug() << "-------------------------\n\n\n";
 
     QVector<QPoint> size = QVector<QPoint>(graphData.size());
     for (int i = 0; i < graphData.size(); ++i) {
         size[i].setX(10);
         size[i].setY(10);
     }
+
+    //qDebug() << size;
 
     SchematicPlacement sp(graphData, size);
 
@@ -92,13 +96,13 @@ int main(int argc, char *argv[]) {
 
     // 结构体元素的比较
     QList <Bar> list1 = amout;
-    for (int i = 0; i < list1.size(); ++i) {
+    for (int i = 0; i < list1.sccSize(); ++i) {
         qDebug() << list1[i].barLevel << " " << list1[i].diameter;
     }
 
     qDebug() << "-----";
     qSort(list1.begin(), list1.end(), compareBarData);
-    for (int i = 0; i < list1.size(); ++i) {
+    for (int i = 0; i < list1.sccSize(); ++i) {
         qDebug() << list1[i].barLevel << " " << list1[i].diameter;
     }*/
 

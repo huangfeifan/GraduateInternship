@@ -25,9 +25,9 @@ public :
             m_low.push_back(-1);
             m_inStack.push_back(false);
         }
-        //qDebug() << m_connection.size();
+        //qDebug() << m_connection.sccSize();
         getSCC();
-        //qDebug() << m_sccs.size() << "  scc_size";
+        //qDebug() << m_sccs.sccSize() << "  scc_size";
         for (int i = 0; i < m_sccs.size(); ++i) {
             qDebug() << m_sccs[i];
         }

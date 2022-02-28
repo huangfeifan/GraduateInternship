@@ -12,7 +12,7 @@ void AfterPlacement::paintEvent(QPaintEvent *event) {
 
     QFont font = painter.font();
 
-/* twice the size than the current font size */
+/* twice the sccSize than the current font sccSize */
     font.setPointSize(font.pointSize() * 2);
 /* set the modified font to the painter */
     painter.setFont(font);

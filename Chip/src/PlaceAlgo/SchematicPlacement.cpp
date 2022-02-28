@@ -7,8 +7,10 @@
 
 SchematicPlacement::SchematicPlacement(QVector<QList<int>> graphData, QVector<QPoint> moduleSize) : m_moduleConnectData(
         graphData), m_size(moduleSize) {
+    // passed
     preHandleData();
 
+    // bug 数组越界 Fix
     computePosition();
 }
 

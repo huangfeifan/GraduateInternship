@@ -11,30 +11,26 @@ class PlaceAScc {
     /// 一个强连通分量的摆放  计算一个强连通分量内部结点的相对坐标
 
 public:
-    PlaceAScc(const QVector<int> &oldIndexList, const QList<QPoint> &connectData) {
+    PlaceAScc(const QVector<QList<int>> &connectData) {
 
-        qDebug() << "________________________PlaceAScc________________________";
+        qDebug() << "\n****************************PlaceAScc****************************";
 
         /// 初始化所有变量
-        preHandleData(oldIndexList, connectData);
+        preHandleData(connectData);
 
         /// 计算相对位置
         computePos();
 
         // 简单调整相对位置
         PlaceSccs::simpleAdjust(m_relativePos);
-        qDebug() << m_relativePos << "  m_relativePos";
+        qDebug() << m_relativePos << " after Simple adjust:  AScc_relativePos";
 
-        qDebug() << "________________________PlaceAScc________________________End";
+        qDebug() << "****************************PlaceAScc****************************End\n";
     };
 
-    QVector<QPoint> getSccRelativePosition() {
+    QVector<QPoint> getRelativePos() {
         return m_relativePos;
     };
-
-    QHash<int, int> getSccIndexHash() {
-        return m_sccIndexHash;
-    }
 
 private:
 
@@ -65,7 +61,7 @@ private:
 
         qDebug() << m_relativePos << "   relativePosition";
 
-        QStack<int> currentStack, nextStack;// stack存放的都是新下标
+        QStack<int> currentStack, nextStack;
         // 修改最大度数结点的子节点的父节点行号 indexParentIndex 用于描述父节点所在行数
         for (int i = 0; i < m_connectData[maxIndex].size(); ++i) {
             int child = m_connectData[maxIndex][i];// 新moduleIndex
@@ -116,45 +112,45 @@ private:
             qDebug() << currentStack << " currentStack";
             qDebug() << nextStack << " nextStack";
         }
-        qDebug() << m_relativePos << "   relativePosition";
+        qDebug() << m_relativePos << " before Simple adjust:  AScc_relativePos";
     }
 
     int findMaxDegreeIndex() {
         return -1;
     };
 
-    void preHandleData(const QVector<int> &oldIndexList, const QList<QPoint> &connectData) {
-        // 根据原结点序号 计算出强连通分支内部的connectData
-        m_moduleCount = oldIndexList.size();
-        for (int i = 0; i < m_moduleCount; ++i) {
-            m_sccIndexHash.insert(oldIndexList[i], i);//  <oldIndex,newIndex>
-        }
+    void preHandleData(const QVector<QList<int>> &connectData) {
+        /// 模块个数
+        m_moduleCount = connectData.size();
 
+        /// 初始化数组
         m_isPlaced = QVector<bool>(m_moduleCount);
         m_degree = QVector<QPoint>(m_moduleCount);
         m_relativePos = QVector<QPoint>(m_moduleCount);
         m_isPosOccupied = QVector<QHash<int, int>>(m_moduleCount);
         m_weight = QVector<double>(m_moduleCount);
-        m_connectData = QVector<QList<int>>(m_moduleCount);
+
+        /// connect数据
+        m_connectData = connectData;
 
         // 从原连接数据构造新的新连接数据 同时更新新结点度数
-        for (size_t i = 0; i < connectData.size(); ++i) {
-            int start = connectData[i].x();
-            int end = connectData[i].y();
-            int newStart = m_sccIndexHash.value(start);
-            int newEnd = m_sccIndexHash.value(end);
-
-            m_connectData[newStart].push_back(newEnd);
-            // 更新入度
-            m_degree[newEnd].setY(m_degree[newEnd].y() + 1);
-
+        /// 计算出入度和权重 Todo add
+        for (int i = 0; i < m_connectData.size(); ++i) {
             // 更新出度
-            m_degree[newStart].setX(m_degree[newStart].x() + 1);
+            m_degree[i].setX(m_connectData[i].size());
+            for (int j = 0; j < m_connectData[i].size(); ++j) {
+                // 起点i 终点end
+                int end = m_connectData[i][j];
+                // x() 出度   y()入度
+                int in = m_degree[end].y();
+                // 更新入度
+                m_degree[end].setY(in + 1);
+            }
         }
 
         qDebug() << m_connectData << "  NewConnectData";
         qDebug() << m_degree << "  NewDegree";
-        // 权重的计算
+        // 权重的计算  Todo consider 权重的聚类
         for (int i = 0; i < m_moduleCount; ++i) {
             // 出度越大越靠左 入度越大越靠右
             m_weight[i] = (m_degree[i].x() - m_degree[i].y()) * IN_OUT_WEIGHT;
@@ -163,7 +159,6 @@ private:
     };
 
 private:
-    QHash<int, int> m_sccIndexHash;// 根据原index找到现在的index
     int m_moduleCount = 0;
     QVector<bool> m_isPlaced;// newIndex 是否被摆放
     QVector<QPoint> m_degree;// 出入度

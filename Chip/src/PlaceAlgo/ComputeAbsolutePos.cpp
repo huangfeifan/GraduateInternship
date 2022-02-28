@@ -2,9 +2,9 @@
 // Created by Huangff on 2022/2/10.
 //
 
-#include "ComputePosition.h"
+#include "ComputeAbsolutePos.h"
 
-void ComputePosition::computeBlockSize() {
+void ComputeAbsolutePos::computeBlockSize() {
     /// 计算所有模块占据的版图大小
     int column = m_columnPosition.size() - 1;
     m_size.setX(m_columnPosition[column] + m_columnSpacing[column + 1]);
@@ -14,12 +14,12 @@ void ComputePosition::computeBlockSize() {
     qDebug() << m_size << "     m_size";
 }
 
-void ComputePosition::computePosition() {
+void ComputeAbsolutePos::computePosition() {
     /// 计算模块的绝对位置
-    for (int i = 0; i < m_relativePosition.size(); ++i) {
+    for (int i = 0; i < m_relativePos.size(); ++i) {
         int row, column;
-        row = m_relativePosition[i].y();
-        column = m_relativePosition[i].x();
+        row = m_relativePos[i].y();
+        column = m_relativePos[i].x();
         // 左边距
         int leftXSpacing = (m_columnWidth[column] - m_moduleSize[i].x()) / 2;
         // 上边距
@@ -27,13 +27,13 @@ void ComputePosition::computePosition() {
 
         int xPos = leftXSpacing + m_columnPosition[column];
         int yPos = upYSpacing + m_rowPosition[row];
-        m_absolutePosition[i].setX(xPos);
-        m_absolutePosition[i].setY(yPos);
+        m_absolutePos[i].setX(xPos);
+        m_absolutePos[i].setY(yPos);
     }
-    qDebug() << m_absolutePosition << "     m_absolutePosition";
+    qDebug() << m_absolutePos << "     m_absolutePos";
 }
 
-void ComputePosition::computeColumnAndRowPosition() {
+void ComputeAbsolutePos::computeColumnAndRowPosition() {
     /// 计算每行每列的位置
     m_columnPosition[0] = m_columnSpacing[0];
     for (int i = 1; i < m_columnPosition.size(); ++i) {
@@ -46,16 +46,16 @@ void ComputePosition::computeColumnAndRowPosition() {
     }
 }
 
-void ComputePosition::computeColumnAndRowSpacing() {
+void ComputeAbsolutePos::computeColumnAndRowSpacing() {
     /// 计算每行每列的间距
     for (int i = 0; i < m_graph.size(); ++i) {
         for (int j = 0; j < m_graph[i].size(); ++j) {
             /// i 起点    终点 graph[i][j]
             int startRow, startColumn, endColumn, endRow;
-            startRow = m_relativePosition[i].y();
-            startColumn = m_relativePosition[i].x();
-            endRow = m_relativePosition[m_graph[i][j]].y();
-            endColumn = m_relativePosition[m_graph[i][j]].x();
+            startRow = m_relativePos[i].y();
+            startColumn = m_relativePos[i].x();
+            endRow = m_relativePos[m_graph[i][j]].y();
+            endColumn = m_relativePos[m_graph[i][j]].x();
 
             /// TODO modify 时间复杂度较大 是否存在改进的可能
 
@@ -92,25 +92,29 @@ void ComputePosition::computeColumnAndRowSpacing() {
     qDebug() << m_columnPosition << "   m_columnPosition";
 }
 
-void ComputePosition::computeColumnAndRow() {
+void ComputeAbsolutePos::computeColumnAndRow() {
     /// 计算行宽列高
-    for (int i = 0; i < m_relativePosition.size(); ++i) {
-        int column = m_relativePosition[i].x();// 列
-        int row = m_relativePosition[i].y();// 行
+    for (int i = 0; i < m_relativePos.size(); ++i) {
+        int column = m_relativePos[i].x();// 列
+        int row = m_relativePos[i].y();// 行
         m_columnWidth[column] =
                 m_columnWidth[column] > m_moduleSize[i].x() ? m_columnWidth[column] : m_moduleSize[i].x();
-        m_rowHeight[row] = m_columnWidth[row] > m_moduleSize[i].y() ? m_columnWidth[row] : m_moduleSize[i].y();
+        qDebug() << m_rowHeight[row] << " " << m_moduleSize[i].y();
+        m_rowHeight[row] = m_rowHeight[row] > m_moduleSize[i].y() ? m_rowHeight[row] : m_moduleSize[i].y();
+        qDebug() << m_rowHeight[row];
     }
     qDebug() << m_rowHeight << "  m_rowHeight";
     qDebug() << m_columnWidth << "  m_columnWidth";
 }
 
-void ComputePosition::initColumnRowInfo() {
+void ComputeAbsolutePos::initColumnRowInfo() {
     /// 初始化行列相关数据
+    m_absolutePos = QVector<QPoint>(m_relativePos.size());
+
     int rowMin = 0, rowMax = 0, columnMin = 0, columnMax = 0;
-    for (int i = 0; i < m_relativePosition.size(); ++i) {
-        int column = m_relativePosition[i].x();
-        int row = m_relativePosition[i].y();
+    for (int i = 0; i < m_relativePos.size(); ++i) {
+        int column = m_relativePos[i].x();
+        int row = m_relativePos[i].y();
         rowMax = rowMax > row ? rowMax : row;
         rowMin = rowMin < row ? rowMin : row;
 
@@ -131,33 +135,18 @@ void ComputePosition::initColumnRowInfo() {
     // 列间距共计temp+1个
     m_rowSpacing = QVector<int>(temp + 1);
 
-    qDebug() << m_rowHeight << " gridHeight";
-    qDebug() << m_columnWidth << " gridWidth";
 
 }
 
-QPoint ComputePosition::getSccBlockSize() {
+QPoint ComputeAbsolutePos::getSccBlockSize() {
     return m_size;
 }
 
-void ComputePosition::setGridSize(int grid) {
-    m_grid = grid;
-}
-
-void ComputePosition::setGraphData(QVector<QList<int>> graph) {
-    m_graph = graph;
-}
-
-void ComputePosition::setModuleSize(const QVector<QPoint> size) {
-    m_moduleSize = size;
-}
-
-void ComputePosition::setRelativePosition(const QVector<QPoint> position) {
-    m_relativePosition = position;
-    m_absolutePosition = QVector<QPoint>(m_relativePosition.size());
-}
-
-ComputePosition::ComputePosition() {
+ComputeAbsolutePos::ComputeAbsolutePos(const QVector<QList<int>> &graph, const QVector<QPoint> &size,
+                                         const QVector<QPoint> &relativePos, int grid) : m_graph(graph),
+                                                                                         m_moduleSize(size),
+                                                                                         m_relativePos(relativePos),
+                                                                                         m_grid(grid) {
     /**
      * 目的：确定每个元件的布局最终位置
      *  已有各个模块的大小 模块的相对位置
@@ -173,4 +162,24 @@ ComputePosition::ComputePosition() {
      *  如何计算行与行的通道数     粗略计算
      */
 
+    qDebug() << relativePos << "  relativePos";
+
+
+    // 初始化数据
+    initColumnRowInfo();
+
+    // 计算行宽列高
+    computeColumnAndRow();
+
+    // 计算每行每列的间距
+    computeColumnAndRowSpacing();
+
+    // 计算每行每列的位置
+    computeColumnAndRowPosition();
+
+    // 计算模块的绝对位置
+    computePosition();
+
+    // 计算所有模块占据的版图大小
+    computeBlockSize();
 }

@@ -16,12 +16,12 @@ public:
     GetTopologySort(QVector<QList<int>> graphData) :m_connection(graphData){
 
         //m_connection = graphData;
-        qDebug() << "GetTopologySort----------------------------------------------------";
+        qDebug() << "\nGetTopologySort---------";
         // 检查是否有环 Tarjan_algorithm 需要参数  m_connection
         initConnect();
         computeResult();
         detectVerticesNum();
-        qDebug() << "GetTopologySort----------------------------------------------------";
+        qDebug() << "GetTopologySort---------\n";
         //initParent();
     }
 

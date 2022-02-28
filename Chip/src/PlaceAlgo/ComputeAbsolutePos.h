@@ -7,28 +7,24 @@
 #include <QVector>
 #include <QDebug>
 
-class ComputePosition {
+class ComputeAbsolutePos {
 public:
     /// 计算模块的绝对位置
-    ComputePosition();
+    ComputeAbsolutePos(const QVector<QList<int>> &graph, const QVector<QPoint> &size,
+                        const QVector<QPoint> &relativePos, int grid);
 
 public:
     // width=x   height=y
-    void setModuleSize(const QVector<QPoint> size);
 
-    void setRelativePosition(const QVector<QPoint> position);
-
-    void setGraphData(QVector<QList<int>> graph);
-
-    void setGridSize(int grid);
+    QVector<QPoint> getAbsolutePos() {
+        return m_absolutePos;
+    }
 
     // 返回所有模块占据的矩形大小
     QPoint getSccBlockSize();
 
-    /// init GridIWidth and GridJHeight
-    void initColumnRowInfo();
-
 private:
+    void initColumnRowInfo();/// init GridIWidth and GridJHeight
     void computeColumnAndRow();/// 计算行宽列高
     void computeColumnAndRowSpacing();/// 计算每行每列的间距
     void computeColumnAndRowPosition();/// 计算每行每列的位置
@@ -38,9 +34,8 @@ private:
 private:
 
     QVector<QList<int>> m_graph;// 邻接表
-
-    QVector<QPoint> m_absolutePosition;// 模块绝对位置
-    QVector<QPoint> m_relativePosition;// 模块相对位置
+    QVector<QPoint> m_absolutePos;// 模块绝对位置
+    QVector<QPoint> m_relativePos;// 模块相对位置
     QVector<QPoint> m_moduleSize;// 模块大小
     QVector<int> m_columnWidth;// 列宽
     QVector<int> m_rowHeight;// 行高

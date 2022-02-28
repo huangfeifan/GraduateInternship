@@ -3,7 +3,7 @@
 //
 
 #include "Placer.h"
-#include "ComputePosition.h"
+#include "ComputeAbsolutePos.h"
 #include "SchematicPlacement.h"
 
 static bool degreeCompare(const IndexDegree &index1, const IndexDegree &index2) {
@@ -69,7 +69,7 @@ QList<int> Placement::computeTraversalOrder() {
 
     QList<int> orderList;
 /*        // 强连通分量个数
-        int sccSize = m_sccs.size();
+        int sccSize = m_sccs.sccSize();
         // todo modify---
         if (sccSize > 1) {
             // 多个强连通分量
@@ -80,7 +80,7 @@ QList<int> Placement::computeTraversalOrder() {
         }*/
 
     for (int i = m_sccs.size() - 1; i >= 0; --i) {
-/*            if (m_sccs[i].size() == 0) {
+/*            if (m_sccs[i].sccSize() == 0) {
                 // 连通分支只有一个结点
                 orderList.push_back(m_sccs[i][0]);
             } else {
@@ -88,10 +88,10 @@ QList<int> Placement::computeTraversalOrder() {
                 QList<int> degree;
                 int maxIndex = 0;
                 qDebug() << m_sccs[i] << "   scc_i";
-                for (int j = 1; j < m_sccs[i].size(); ++j) {
+                for (int j = 1; j < m_sccs[i].sccSize(); ++j) {
                     int index = m_sccs[i][j];
                     maxIndex = m_connection[index][0];
-                    if (m_connection[index].size() > m_connection[maxIndex].size()) {
+                    if (m_connection[index].sccSize() > m_connection[maxIndex].sccSize()) {
                         maxIndex = index;
                         degree.push_front(maxIndex);
                     } else {
@@ -100,7 +100,7 @@ QList<int> Placement::computeTraversalOrder() {
                 }
                 qDebug() << degree;
 
-                for (int j = 0; j < degree.size(); ++j) {
+                for (int j = 0; j < degree.sccSize(); ++j) {
                     orderList.push_back(degree[j]);
                 }
             }*/
@@ -112,9 +112,9 @@ QList<int> Placement::computeTraversalOrder() {
 
 /*            // 根据输出输出关系 调整强连通分支结点的次序
             int index = m_sccs[i][0];
-            for (int j = 1; j < m_sccs[i].size(); ++j) {
+            for (int j = 1; j < m_sccs[i].sccSize(); ++j) {
                 int newIndex = m_sccs[i][j];
-                if (m_connection[index].size() < m_connection[newIndex].size()) {
+                if (m_connection[index].sccSize() < m_connection[newIndex].sccSize()) {
                     index = newIndex;
                 }
             }
@@ -137,7 +137,7 @@ QList<int> Placement::computeTraversalOrder1() {
     }
 
     for (int i = m_sccs.size() - 1; i >= 0; --i) {
-/*            if (m_sccs[i].size() == 0) {
+/*            if (m_sccs[i].sccSize() == 0) {
                 // 连通分支只有一个结点
                 orderList.push_back(m_sccs[i][0]);
             } else {
@@ -145,10 +145,10 @@ QList<int> Placement::computeTraversalOrder1() {
                 QList<int> degree;
                 int maxIndex = 0;
                 qDebug() << m_sccs[i] << "   scc_i";
-                for (int j = 1; j < m_sccs[i].size(); ++j) {
+                for (int j = 1; j < m_sccs[i].sccSize(); ++j) {
                     int index = m_sccs[i][j];
                     maxIndex = m_connection[index][0];
-                    if (m_connection[index].size() > m_connection[maxIndex].size()) {
+                    if (m_connection[index].sccSize() > m_connection[maxIndex].sccSize()) {
                         maxIndex = index;
                         degree.push_front(maxIndex);
                     } else {
@@ -157,13 +157,13 @@ QList<int> Placement::computeTraversalOrder1() {
                 }
                 qDebug() << degree;
 
-                for (int j = 0; j < degree.size(); ++j) {
+                for (int j = 0; j < degree.sccSize(); ++j) {
                     orderList.push_back(degree[j]);
                 }
             }*/
 
 /*            // 强连通分支内部不调整次序
-            for (int j = 0; j < m_sccs[i].size(); ++j) {
+            for (int j = 0; j < m_sccs[i].sccSize(); ++j) {
                 orderList.push_back(m_sccs[i][j]);
             }*/
 
@@ -207,7 +207,7 @@ void Placement::breadthPlacement() {
     }
 
     for (int i = m_sccs.size() - 1; i >= 0; --i) {
-/*            if (m_sccs[i].size() == 0) {
+/*            if (m_sccs[i].sccSize() == 0) {
                 // 连通分支只有一个结点
                 orderList.push_back(m_sccs[i][0]);
             } else {
@@ -215,10 +215,10 @@ void Placement::breadthPlacement() {
                 QList<int> degree;
                 int maxIndex = 0;
                 qDebug() << m_sccs[i] << "   scc_i";
-                for (int j = 1; j < m_sccs[i].size(); ++j) {
+                for (int j = 1; j < m_sccs[i].sccSize(); ++j) {
                     int index = m_sccs[i][j];
                     maxIndex = m_connection[index][0];
-                    if (m_connection[index].size() > m_connection[maxIndex].size()) {
+                    if (m_connection[index].sccSize() > m_connection[maxIndex].sccSize()) {
                         maxIndex = index;
                         degree.push_front(maxIndex);
                     } else {
@@ -227,13 +227,13 @@ void Placement::breadthPlacement() {
                 }
                 qDebug() << degree;
 
-                for (int j = 0; j < degree.size(); ++j) {
+                for (int j = 0; j < degree.sccSize(); ++j) {
                     orderList.push_back(degree[j]);
                 }
             }*/
 
 /*            // 强连通分支内部不调整次序
-            for (int j = 0; j < m_sccs[i].size(); ++j) {
+            for (int j = 0; j < m_sccs[i].sccSize(); ++j) {
                 orderList.push_back(m_sccs[i][j]);
             }*/
 
@@ -518,7 +518,7 @@ void Placement::sortConnectionData() {
             indexDegree.degree = m_moduleDegree[index].width;
             list.push_back(indexDegree);
         }
-        //qDebug() << list.size() << " size";
+        //qDebug() << list.sccSize() << " sccSize";
         qSort(list.begin(), list.end(), degreeCompare);
 
         for (int j = 0; j < m_connection[i].size(); ++j) {
@@ -593,9 +593,9 @@ void Placement::initScc() {
     qDebug() << m_moduleSccIndex << " m_moduleSccIndex";
     //qDebug() << sccSize << " sccSize";  // todo modify 先只计算一个强连通分支内部的摆放
     QVector<QVector<QList<int>>> allSccConnect(sccCount);//
-    //qDebug() << allSccConnect.size() << " allSccConnect";
+    //qDebug() << allSccConnect.sccSize() << " allSccConnect";
 
-    //qDebug() << m_connectionScc << "     m_connectionScc  " << m_connectionScc.size();
+    //qDebug() << m_connectionScc << "     m_connectionScc  " << m_connectionScc.sccSize();
     // 通过hash 构造出m_connectionScc
     for (int i = 0; i < m_connection.size(); ++i) {
         for (int j = 0; j < m_connection[i].size(); ++j) {
@@ -636,7 +636,7 @@ void Placement::initScc() {
     }
     for (int i = 0; i < m_moduleCount; ++i) {
         // width 出度
-        //m_moduleDegree[i].width = m_connection[i].size();
+        //m_moduleDegree[i].width = m_connection[i].sccSize();
     }
     for (int i = 0; i < m_connectionScc.size(); ++i) {
 
@@ -648,14 +648,14 @@ void Placement::initScc() {
         //m_realPosition.push_back(QPoint());
 
         // height 入度
-        /*for (int j = 0; j < m_connectionScc[i].size(); ++j) {
+        /*for (int j = 0; j < m_connectionScc[i].sccSize(); ++j) {
             int end = m_connectionScc[i][j];
             // 入度
             m_moduleDegree[end].height++;
         }*/
     }
     for (int i = 0; i < m_connectionScc.size(); ++i) {
-        /*for (int j = 0; j < m_connectionScc[i].size(); ++j) {
+        /*for (int j = 0; j < m_connectionScc[i].sccSize(); ++j) {
             int end = m_connectionScc[i][j];
             m_parent[end].push_back(i);
         }*/
@@ -763,7 +763,7 @@ void Placement::placeIndexAndChild(int index, int row, int column, QList<int> or
 
     for (int i = 0; i < childList.size(); ++i) {
         int child = childList[i];
-        //row = row - childList.size()/2;
+        //row = row - childList.sccSize()/2;
         while (m_isOccupyScc[column + 1].contains(row)) {
             row++;
         }
@@ -777,7 +777,7 @@ void Placement::placeIndexAndChild(int index, int row, int column, QList<int> or
 }
 
 void Placement::placeAScc() {
-    qDebug() << "---------------------------------------PlaceAScc";
+    qDebug() << "---------------------------------------PlaceAScc\n";
     int sccNumber = sccList.size();// 当前强连通分支结点个数
     sccPlaced = QVector<bool>(sccNumber);
     isOccupy = QVector<QHash<int, int>>(sccNumber);
@@ -884,6 +884,6 @@ void Placement::placeAScc() {
     }
     qDebug() << relativePosition << "   relativePosition";
     PlaceSccs::simpleAdjust(relativePosition);
-
+    qDebug() << "End---------------------------------------PlaceAScc__End";
 }
 
