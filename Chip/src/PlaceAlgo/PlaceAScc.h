@@ -6,7 +6,6 @@
 
 #include "PlaceSccs.h"
 
-
 class PlaceAScc {
     /// 一个强连通分量的摆放  计算一个强连通分量内部结点的相对坐标
 

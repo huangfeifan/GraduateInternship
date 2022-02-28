@@ -44,6 +44,9 @@ public:
     ~SchematicPlacement();
 
 public:
+    QVector<QPoint> getModulePos() {
+        return m_modulePos;
+    }
 
 private:
     void computeScc() {
@@ -72,7 +75,8 @@ private:
                 // 模块大小
                 moduleSize[j] = m_size[m_sccs[i][j]];
             }
-            // 差sccSize 后续会计算
+
+            m_sccsInfo[i + 1].sccSize = moduleSize[0];// 先初始化一个sccSize 后续会修改 Todo modify
             m_sccsInfo[i + 1].absolutePos = QVector<QPoint>(m_sccs[i].size());
             m_sccsInfo[i + 1].relativePos = QVector<QPoint>(m_sccs[i].size());
             m_sccsInfo[i + 1].sccIndexHash = sccIndexHash;
@@ -81,7 +85,8 @@ private:
             m_sccsInfo[i + 1].graph = QVector<QList<int>>(m_sccs[i].size());
             m_sccsInfo[i + 1].moduleSize = moduleSize;
         }
-        // 差sccSize 后续会计算
+
+        m_sccsInfo[0].sccSize = QPoint(0, 0);// 先初始化一个sccSize 后续会修改 Todo modify
         m_sccsInfo[0].absolutePos = QVector<QPoint>(m_sccs.size());
         m_sccsInfo[0].relativePos = QVector<QPoint>(m_sccs.size());
         m_sccsInfo[0].sccIndexHash = sccHash;
@@ -115,11 +120,10 @@ private:
                 int end = m_sccsInfo[i].sccIndexHash.value(m_sccsConnectData[i][j].y());
                 //qDebug() << m_sccsInfo[i].sccIndexHash;
                 //qDebug() << " before " << m_sccsConnectData[i][j].x() << m_sccsConnectData[i][j].y() << " after "
-                         //<< start << " " << end;
+                //<< start << " " << end;
                 m_sccsInfo[i].graph[start].push_back(end);
             }
         }
-
     }
 
     void preHandleData() {
@@ -149,23 +153,67 @@ private:
     void computeSccsAbsolutePosition() {
         /// 计算强连通分支间的绝对位置
 
+        qDebug() << "------------------------------------------------------compute Sccs AbsolutePosition";
+
         // 每个强连通分支的大小
         QVector<QPoint> moduleSize = QVector<QPoint>(m_sccs.size());
         for (int i = 1; i < m_sccsInfo.size(); ++i) {
             moduleSize[i - 1] = m_sccsInfo[i].sccSize;
         }
 
+        // pass
+        //qDebug() << moduleSize << " ModuleSize----Sccs";
+
         ComputeAbsolutePos absolutePos(m_sccsInfo[0].graph, moduleSize,
-                                        m_sccsInfo[0].relativePos, m_grid);
+                                       m_sccsInfo[0].relativePos, m_grid);
         m_sccsInfo[0].absolutePos = absolutePos.getAbsolutePos();
+        m_sccsInfo[0].sccSize = absolutePos.getSccBlockSize();
+
+        // pass
+        qDebug() << "  absolutePos  " << m_sccsInfo[0].absolutePos;
+        qDebug() << "  sccSize  " << m_sccsInfo[0].sccSize;
 
         //qDebug() << m_sccsInfo[0].absolutePos.size() << " ";
+        qDebug() << "------------------------------------------------------compute Sccs AbsolutePosition End";
+    }
 
+    void computeASccPosition() {
+        /// 计算强连通分支内部的相对位置和绝对位置
+        // pass
+        for (size_t i = 1; i < m_sccs.size(); ++i) {
+            if (m_sccs[i].size() > 1) {
+                // 该强连通分量不止一个结点 则考虑连通分支内的模块的位置的计算
+                int index = i + 1;
+                // 计算相对位置并保存
+                PlaceAScc placeAScc(m_sccsInfo[index].graph);
+                m_sccsInfo[index].relativePos = placeAScc.getRelativePos();
+
+                // 计算绝对位置并保存
+                ComputeAbsolutePos absolutePos(m_sccsInfo[index].graph, m_sccsInfo[index].moduleSize,
+                                               m_sccsInfo[index].relativePos, m_grid);
+                m_sccsInfo[index].absolutePos = absolutePos.getAbsolutePos();
+                // 更新单个强连通分支的大小
+                m_sccsInfo[index].sccSize = absolutePos.getSccBlockSize();
+
+                qDebug() << index << "  absolutePos  " << m_sccsInfo[index].absolutePos;
+                qDebug() << index << "  sccSize  " << m_sccsInfo[index].sccSize;
+            }
+        }
+    }
+
+    void computePortPos() {
+
+    }
+
+    void computeASccInnerPosition() {
+        qDebug() << "------------------------------------------------------compute A SccInner Position";
+
+        /// 计算每个强连通分支内部结点的绝对位置
         // 根据强连通分支间 以及 强连通分支内部的绝对位置来计算出每个module的最终位置
         for (int i = 0; i < m_sccs.size(); ++i) {
             for (int j = 0; j < m_sccs[i].size(); ++j) {
                 // 模块index
-                int index = m_sccs[i][j];
+                int index = m_sccs[i][j];// 原index
                 int newIndex = m_sccsInfo[i + 1].sccIndexHash.value(index);
                 // bug solved
                 QPoint absolutePos = m_sccsInfo[i + 1].absolutePos[newIndex];
@@ -176,33 +224,10 @@ private:
             }
         }
         qDebug() << m_modulePos << " ModulePos";
-
-        m_sccsInfo[0].sccSize = absolutePos.getSccBlockSize();
-        //
-    }
-
-    void computeASccPosition() {
-        /// 计算强连通分支内部的相对位置和绝对位置
-        for (size_t i = 1; i < m_sccs.size(); ++i) {
-            if (m_sccs[i].size() > 1) {
-                // 该强连通分量不止一个结点 则考虑连通分支内的模块的位置的计算
-                int index = i + 1;
-                PlaceAScc placeAScc(m_sccsInfo[index].graph);
-                // 保存相对位置数据
-                m_sccsInfo[index].relativePos = placeAScc.getRelativePos();
-
-                ComputeAbsolutePos absolutePos(m_sccsInfo[index].graph, m_sccsInfo[index].moduleSize,
-                                                m_sccsInfo[index].relativePos, m_grid);
-                m_sccsInfo[index].absolutePos = absolutePos.getAbsolutePos();
-                m_sccsInfo[index].sccSize = absolutePos.getSccBlockSize();
-
-            }
-        }
-    }
-
-    void computePortPos() {
+        qDebug() << "------------------------------------------------------compute A SccInner Position End";
 
     }
+
 
     void computePosition() {
 
@@ -234,20 +259,19 @@ private:
         }
          */
 
-        // bug TODO HANDLE 疑难杂症
-        // relativePos --sccInfo
-        // absolutePos  --sccInfo
-        // sccIndexHash --sccInfo                        Fix
-        // computeSccsAbsolutePosition()  函数可能也有问题 Fix
-        // 计算SccInfo可能有问题
-        //computeSccsAbsolutePosition();// 计算强连通分支间的绝对位置
+        // bug 疑难杂症 Fix Time:2022.0228
+        // 计算SccInfo 需要注意
+        computeSccsAbsolutePosition();// 计算强连通分支间的绝对位置
+
+        // 计算每个强连通分支内部结点的位置
+        computeASccInnerPosition();
 
         // todo add
         //computePortPos();// 计算单独port的绝对位置
 
-
-
     }
+
+
 
 private:
 

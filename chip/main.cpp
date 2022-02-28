@@ -4,8 +4,10 @@
 #include <QTime>
 
 #include "MyWidget/mainwindow.h"
-#include "PlaceAlgo/Placer.h"
+#include "MyWidget/MyPaint.h"
 #include "MyWidget/AfterPlacement.h"
+
+#include "PlaceAlgo/Placer.h"
 #include "PlaceAlgo/ComputeAbsolutePos.h"
 #include "PlaceAlgo/SchematicPlacement.h"
 
@@ -49,29 +51,35 @@ int main(int argc, char *argv[]) {
 
     AfterPlacement a(placement.getRelativePosition(), graphData, placement.m_nameList);
     a.setWindowTitle("place all module");
-    //a.show();
+    a.show();
 
     AfterPlacement b(placement.m_relativePositionScc, placement.m_connectionScc, placement.m_nameListScc);
     b.setWindowTitle("place all scc");
-    //b.show();
+    b.show();
 
     AfterPlacement c(placement.relativePosition, placement.sccConnect, placement.sccList);
     c.setWindowTitle("a scc");
-    //c.show();
+    c.show();
 
 
     qDebug() << "-------------------------\n\n\n";
 
     QVector<QPoint> size = QVector<QPoint>(graphData.size());
     for (int i = 0; i < graphData.size(); ++i) {
+        //size[i].setX(10 * (i + 1));
         size[i].setX(10);
+
         size[i].setY(10);
+        //size[i].setY(10 * (1 + i));
     }
 
     //qDebug() << size;
 
     SchematicPlacement sp(graphData, size);
 
+
+    MyPaint myPaint(sp.getModulePos(),size);
+    myPaint.show();
 
     // vector init Sze
 /*    QVector<int> a(10);
