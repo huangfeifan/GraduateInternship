@@ -34,18 +34,20 @@ class PlaceSccs;
 
 class PlaceAScc;
 
-class CompueteAbsolutePos;
-
 class SchematicPlacement {
 
 public:
     SchematicPlacement(QVector<QList<int>> graphData, QVector<QPoint> moduleSize);
 
-    ~SchematicPlacement();
+    ~SchematicPlacement() = default;
 
-public:
     QVector<QPoint> getModulePos() {
         return m_modulePos;
+    }
+
+    QVector<QPoint> getPortPos() {
+        // 返回不属于module的port的位置信息
+        return m_portPos;
     }
 
 private:
@@ -62,12 +64,12 @@ private:
         m_sccsInfo = QVector<ASccInfo>(m_sccs.size() + 1);
 
         QHash<int, int> sccHash;// 强连通分支间的hash
-        for (size_t i = 0; i < m_sccs.size(); ++i) {
+        for (int i = 0; i < m_sccs.size(); ++i) {
             sccHash.insert(m_sccs[i][0], i);// 原index 新index
 
             QVector<QPoint> moduleSize = QVector<QPoint>(m_sccs[i].size());
             QHash<int, int> sccIndexHash;// 根据原index找在强连通分支的新index
-            for (size_t j = 0; j < m_sccs[i].size(); ++j) {
+            for (int j = 0; j < m_sccs[i].size(); ++j) {
                 // 原index = m_sccs[i][j] 在第i个强连通分支中
                 m_moduleSccIndex[m_sccs[i][j]] = i;
 
@@ -76,7 +78,7 @@ private:
                 moduleSize[j] = m_size[m_sccs[i][j]];
             }
 
-            m_sccsInfo[i + 1].sccSize = moduleSize[0];// 先初始化一个sccSize 后续会修改 Todo modify
+            m_sccsInfo[i + 1].sccSize = moduleSize[0];// 先初始化一个sccSize 后续会修改
             m_sccsInfo[i + 1].absolutePos = QVector<QPoint>(m_sccs[i].size());
             m_sccsInfo[i + 1].relativePos = QVector<QPoint>(m_sccs[i].size());
             m_sccsInfo[i + 1].sccIndexHash = sccIndexHash;
@@ -86,7 +88,7 @@ private:
             m_sccsInfo[i + 1].moduleSize = moduleSize;
         }
 
-        m_sccsInfo[0].sccSize = QPoint(0, 0);// 先初始化一个sccSize 后续会修改 Todo modify
+        m_sccsInfo[0].sccSize = QPoint(0, 0);// 先初始化一个sccSize 后续会修改
         m_sccsInfo[0].absolutePos = QVector<QPoint>(m_sccs.size());
         m_sccsInfo[0].relativePos = QVector<QPoint>(m_sccs.size());
         m_sccsInfo[0].sccIndexHash = sccHash;
@@ -95,8 +97,8 @@ private:
         // 差graph
 
         // success
-        for (size_t i = 0; i < m_moduleConnectData.size(); ++i) {
-            for (size_t j = 0; j < m_moduleConnectData[i].size(); ++j) {
+        for (int i = 0; i < m_moduleConnectData.size(); ++i) {
+            for (int j = 0; j < m_moduleConnectData[i].size(); ++j) {
                 int end = m_moduleConnectData[i][j];// endModuleIndex
                 int sccIndex = m_moduleSccIndex[i];// 起点i所在的sccIndex
                 int endSccIndex = m_moduleSccIndex[end];
@@ -180,9 +182,10 @@ private:
     void computeASccPosition() {
         /// 计算强连通分支内部的相对位置和绝对位置
         // pass
-        for (size_t i = 1; i < m_sccs.size(); ++i) {
+        for (int i = 0; i < m_sccs.size(); ++i) {
             if (m_sccs[i].size() > 1) {
-                // 该强连通分量不止一个结点 则考虑连通分支内的模块的位置的计算
+                /// 该强连通分量不止一个结点 则考虑连通分支内的模块的位置的计算
+
                 int index = i + 1;
                 // 计算相对位置并保存
                 PlaceAScc placeAScc(m_sccsInfo[index].graph);
@@ -202,7 +205,7 @@ private:
     }
 
     void computePortPos() {
-
+        // todo add something 用于计算port的位置
     }
 
     void computeASccInnerPosition() {
@@ -228,7 +231,6 @@ private:
 
     }
 
-
     void computePosition() {
 
         m_modulePos = QVector<QPoint>(m_moduleConnectData.size());
@@ -244,8 +246,7 @@ private:
 
         computeASccPosition();// 计算每个强连通分支内部的相对位置和绝对位置
 
-        /*
-        qDebug() << "****************************************************";
+/*        qDebug() << "****************************************************";
         qDebug() << m_sccs << "  SCC";
         for (int i = 0; i < m_sccsInfo.size(); ++i) {
             qDebug() << "Index   " << i;
@@ -256,8 +257,7 @@ private:
             qDebug() << m_sccsInfo[i].sccSize << "  sccSize";
             qDebug() << m_sccsInfo[i].moduleSize << "  moduleSize";
             qDebug() << "****************************************************";
-        }
-         */
+        }*/
 
         // bug 疑难杂症 Fix Time:2022.0228
         // 计算SccInfo 需要注意
@@ -266,14 +266,20 @@ private:
         // 计算每个强连通分支内部结点的位置
         computeASccInnerPosition();
 
+        // 调整模块的位置 使得模块间距小一些
+        adjustModulePos();
+
         // todo add
         //computePortPos();// 计算单独port的绝对位置
 
     }
 
+    void adjustModulePos(){
+        // 根据俄罗斯方块调整最终位置
+    }
 
 
-private:
+///private:
 
     /// 输入数据
     QVector<QList<int>> m_moduleConnectData;// 模块间的连接数据 不包括单独的port与模块的连接数据

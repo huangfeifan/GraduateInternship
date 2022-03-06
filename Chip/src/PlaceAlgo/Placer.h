@@ -35,8 +35,9 @@ public :
     QVector<QList<int>> m_connectionScc;
     QVector<ModuleSize> m_moduleDegreeScc;// 记录模块的度数  width 出度 height 入度
     QVector<QPoint> m_relativePositionScc;// 改进的行列定位法坐标 相对坐标的计算
+
+
     QStringList m_nameListScc;
-    // todo add a function convertConnectData(oldConnect,hash,newConnect)
     // place a strong connect component
     QVector<QList<int>> sccConnect;
     QVector<bool> sccPlaced;

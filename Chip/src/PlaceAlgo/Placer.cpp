@@ -70,7 +70,7 @@ QList<int> Placement::computeTraversalOrder() {
     QList<int> orderList;
 /*        // 强连通分量个数
         int sccSize = m_sccs.sccSize();
-        // todo modify---
+
         if (sccSize > 1) {
             // 多个强连通分量
         } else if (sccSize == 1) {
@@ -542,10 +542,12 @@ void Placement::initScc() {
 
     // sccData
     QHash<int, int> hash;// 用于生成m_connectionScc
-    QVector<QList<int>> temp = m_connection;
-    QList<int> indexList; // todo modify QList to QVector
+    //QVector<QList<int>> temp = m_connection;
     QHash<int, int> indexHash;
-    QList<int> orderList;// index拓扑排序的编号 // todo modify QList to QVector
+
+    // todo modify QList to QVector
+    QList<int> indexList;
+    QList<int> orderList;// index拓扑排序的编号
 
 
     for (int i = 0; i < m_sccs.size(); ++i) {
@@ -592,7 +594,7 @@ void Placement::initScc() {
     qDebug() << sccIndexHash << " sccIndexHash";
     qDebug() << m_moduleSccIndex << " m_moduleSccIndex";
     //qDebug() << sccSize << " sccSize";  // todo modify 先只计算一个强连通分支内部的摆放
-    QVector<QVector<QList<int>>> allSccConnect(sccCount);//
+    //QVector<QVector<QList<int>>> allSccConnect(sccCount);//
     //qDebug() << allSccConnect.sccSize() << " allSccConnect";
 
     //qDebug() << m_connectionScc << "     m_connectionScc  " << m_connectionScc.sccSize();
@@ -730,10 +732,7 @@ void Placement::simplePlace() {
     // 计算模块的大小  假定模块大小给定
     //computeModuleSize();
 
-
     //qDebug() << "----------------compute_Module_Size----------------";
-    /// 计算模块的绝对位置  Todo add function
-
 
 }
 
@@ -761,9 +760,11 @@ void Placement::placeIndexAndChild(int index, int row, int column, QList<int> or
         }
     }
 
+    qDebug() << childList << "--ChildList";
+    row = row - childList.size() / 2 ;
     for (int i = 0; i < childList.size(); ++i) {
         int child = childList[i];
-        //row = row - childList.sccSize()/2;
+        //row = row - childList.size() / 2 ;
         while (m_isOccupyScc[column + 1].contains(row)) {
             row++;
         }

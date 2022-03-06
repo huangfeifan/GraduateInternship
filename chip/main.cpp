@@ -1,7 +1,10 @@
 ﻿#include <QApplication>
 #include <QPushButton>
-#include <QDebug>
 #include <QTime>
+#include <QRandomGenerator>
+
+#include <QDebug>
+
 
 #include "MyWidget/mainwindow.h"
 #include "MyWidget/MyPaint.h"
@@ -17,7 +20,106 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
 
-    // graphView
+//    qDebug() << placement.getRelativePosition().sccSize();
+//    qDebug() << placement.m_nameList.sccSize();
+//    qDebug() << placement.m_nameListScc.sccSize();
+
+    //AfterPlacement a(placement.getRelativePosition(), graphData, placement.m_nameList);
+    //a.setWindowTitle("place all module");
+    //a.show();
+
+    //AfterPlacement b(placement.m_relativePositionScc, placement.m_connectionScc, placement.m_nameListScc);
+    //b.setWindowTitle("place all scc");
+    //b.show();
+
+    //AfterPlacement c(placement.relativePosition, placement.sccConnect, placement.sccList);
+    //c.setWindowTitle("a scc");
+    //c.show();
+
+
+
+    // 模块数 1-10
+    int maxModuleCount = 10;
+    int moduleCount = QRandomGenerator::global()->bounded(maxModuleCount);
+    //moduleCount = 5;
+    //qDebug() << moduleCount << " ModuleCount";
+
+    // in the range between 0 (inclusive) and highest (exclusive)
+    int connectLineCount = 5 * QRandomGenerator::global()->bounded(40);
+    QVector<QPoint> connectList = QVector<QPoint>(connectLineCount);// 模拟连接数据
+    QVector<int> inDegree = QVector<int>(moduleCount);
+    QVector<int> outDegree = QVector<int>(moduleCount);
+    for (int i = 0; i < connectLineCount; ++i) {
+        int start = QRandomGenerator::global()->bounded(moduleCount + 1) - 1;
+        int end = QRandomGenerator::global()->bounded(moduleCount + 1) - 1;
+        //qDebug() << start << " " << end;
+        if (start != end) {
+            if (start == -1 && end == -1) {
+                // 数据无效
+                continue;
+            }
+
+            if (start != -1 && end != -1) {
+                outDegree[start]++;
+                inDegree[end]++;
+                //qDebug() << start << " " << end;
+            }
+
+
+            if (start == -1) {
+                // start = -1 表示单独的输入port
+                if (end != -1) {
+
+                }
+            }
+
+            if (end == -1) {
+                // end = -1 表示单独的输出port
+                if (start != -1) {
+
+                }
+            }
+        }
+    }
+
+    //qDebug() << inDegree << " InDegree";
+    //qDebug() << outDegree << " outDegree";
+
+    //qDebug() << "-------------------------\n\n\n";
+    int width = 100;
+    int gap = 5;
+    QVector<QPoint> size = QVector<QPoint>(moduleCount);
+    for (int i = 0; i < moduleCount; ++i) {
+        size[i].setX(width);
+
+        int max = inDegree[i] > outDegree[i] ? inDegree[i] : outDegree[i];
+        int height = (max + 1) * gap;
+
+        size[i].setY(height);
+    }
+    //qDebug() << size << "   Size";
+
+    qDebug() << "-------------------------\n\n\n";
+    /// 计算模块大小 根据输入输出个数() 高度统一(参数)
+
+    moduleCount = graphData.size();
+    size = QVector<QPoint>(moduleCount);
+    for (int i = 0; i < moduleCount; ++i) {
+        size[i].setX(30);
+        size[i].setY(20);
+    }
+    //qDebug() << size;
+
+    SchematicPlacement sp(graphData, size);
+
+
+    MyPaint myPaint(sp.getModulePos(), size);
+    myPaint.show();
+
+    return app.exec();
+}
+
+// graphView
 /*    MainWindow window;
     window.show();*/
 
@@ -36,58 +138,18 @@ int main(int argc, char *argv[]) {
     }
 */
 
-    // test scc algo
-    //TrajanAlgo tarjanAlgo;
+// test scc algo
+//TrajanAlgo tarjanAlgo;
 
-    // test topology sort
-    //GetTopologySort topologySort;
+// test topology sort
+//GetTopologySort topologySort;
 
-    // test placement
-    Placement placement;
+// test placement
+//Placement placement;
 
-/*    qDebug() << placement.getRelativePosition().sccSize();
-    qDebug() << placement.m_nameList.sccSize();
-    qDebug() << placement.m_nameListScc.sccSize();*/
-
-    AfterPlacement a(placement.getRelativePosition(), graphData, placement.m_nameList);
-    a.setWindowTitle("place all module");
-    a.show();
-
-    AfterPlacement b(placement.m_relativePositionScc, placement.m_connectionScc, placement.m_nameListScc);
-    b.setWindowTitle("place all scc");
-    b.show();
-
-    AfterPlacement c(placement.relativePosition, placement.sccConnect, placement.sccList);
-    c.setWindowTitle("a scc");
-    c.show();
-
-
-    qDebug() << "-------------------------\n\n\n";
-
-    QVector<QPoint> size = QVector<QPoint>(graphData.size());
-    for (int i = 0; i < graphData.size(); ++i) {
-        //size[i].setX(10 * (i + 1));
-        size[i].setX(10);
-
-        size[i].setY(10);
-        //size[i].setY(10 * (1 + i));
-    }
-
-    //qDebug() << size;
-
-    SchematicPlacement sp(graphData, size);
-
-
-    MyPaint myPaint(sp.getModulePos(),size);
-    myPaint.show();
-
-    // vector init Sze
+// vector init Sze
 /*    QVector<int> a(10);
     qDebug() << a;*/
-
-
-/*    BeforeLayout b;
-    b.show();*/
 
 
 /*    // qt algorithm Sort的使用
@@ -113,9 +175,6 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < list1.sccSize(); ++i) {
         qDebug() << list1[i].barLevel << " " << list1[i].diameter;
     }*/
-
-    return app.exec();
-}
 
 
 struct Bar {

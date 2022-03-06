@@ -4,7 +4,6 @@
 
 #include "ComputeAbsolutePos.h"
 
-
 ComputeAbsolutePos::ComputeAbsolutePos(const QVector<QList<int>> &graph, const QVector<QPoint> &size,
                                        const QVector<QPoint> &relativePos, int grid) : m_graph(graph),
                                                                                        m_moduleSize(size),
@@ -25,37 +24,15 @@ ComputeAbsolutePos::ComputeAbsolutePos(const QVector<QList<int>> &graph, const Q
      *  如何计算行与行的通道数     粗略计算
      */
 
-    qDebug() <<  "----------------------Compute AbsolutePos---------------------------------Start";
+    qDebug() << "----------------------Compute AbsolutePos---------------------------------Start";
+    // 方法1
+    solutionOne();
 
+    // 方法2
+    //solutionTwo();
 
-    qDebug() << relativePos << "  relativePos";
-    qDebug() << m_moduleSize << "  size";
+    qDebug() << "----------------------Compute AbsolutePos---------------------------------End";
 
-    // 初始化数据
-    initColumnRowInfo();
-    qDebug() <<  "-----------";
-
-    // 计算行宽列高
-    computeColumnAndRow();
-    qDebug() <<  "-----------";
-
-    // 计算每行每列的间距
-    computeColumnAndRowSpacing();
-    qDebug() <<  "-----------";
-
-    // 计算每行每列的位置
-    computeColumnAndRowPosition();
-    qDebug() <<  "-----------";
-
-    // 计算模块的绝对位置
-    computePosition();
-    qDebug() <<  "-----------";
-
-    // 计算所有模块占据的版图大小
-    computeBlockSize();
-    qDebug() <<  "-----------";
-
-    qDebug() <<  "----------------------Compute AbsolutePos---------------------------------End";
 
 }
 

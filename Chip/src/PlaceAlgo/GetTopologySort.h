@@ -58,7 +58,7 @@ private:
         /// 有向图的入度为0的
         // TODO optimize 扫一遍入度为0 入队列  while(队列非空) 队列pop 子节点入度减一 若子节点入度为0则放在队列最后 增加辅助信息
         for (int i = 0; i < m_connection.size(); ++i) {
-            QList<int> temp;
+            //QList<int> temp;
             if (m_inDegree[i] == 0) {
                 m_qStack.push_back(i);
             }

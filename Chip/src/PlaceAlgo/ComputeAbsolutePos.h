@@ -5,7 +5,11 @@
 #pragma once
 
 #include <QVector>
+#include <QRect>
 #include <QDebug>
+
+const int rowSpacing = 10;// 间距
+const int columnSpacing = 10;// 间距
 
 class ComputeAbsolutePos {
 public:
@@ -26,6 +30,7 @@ public:
     }
 
 private:
+
     /// init GridIWidth and GridJHeight
     void initColumnRowInfo() {
         /// 初始化行列相关数据
@@ -111,6 +116,14 @@ private:
             }
         }
 
+        for (int i = 1; i < m_rowSpacing.size()-1; ++i) {
+            m_rowSpacing[i] += rowSpacing;
+        }
+
+        for (int i = 1; i < m_columnSpacing.size()-1; ++i) {
+            m_columnSpacing[i] += columnSpacing;
+        }
+
         qDebug() << m_rowSpacing << "   m_rowSpacing";
         qDebug() << m_columnSpacing << "    m_columnSpacing";
     }
@@ -165,6 +178,134 @@ private:
         qDebug() << m_size << "     m_size";
     }
 
+    void solutionOne() {
+        qDebug() << m_relativePos << "  relativePos";
+        qDebug() << m_moduleSize << "  size";
+        // 初始化数据
+        initColumnRowInfo();
+        qDebug() << "-----------";
+        // 计算行宽列高
+        computeColumnAndRow();
+        qDebug() << "-----------";
+        // 计算每行每列的间距
+        computeColumnAndRowSpacing();
+        qDebug() << "-----------";
+        // 计算每行每列的位置
+        computeColumnAndRowPosition();
+        qDebug() << "-----------";
+        // 计算模块的绝对位置
+        computePosition();
+        qDebug() << "-----------";
+        // 计算所有模块占据的版图大小
+        computeBlockSize();
+        qDebug() << "-----------";
+    }
+
+    /// 不采用规则网格的方式来确定模块的最终位置
+    void solutionTwo() {
+        /* 数组哈希表存储 相对位置的信息
+         * 计算哪一列模块最多
+         * 先摆放模块最多的列 行间距(默认间距+待摆放和上一个出度)
+         * 摆放其他列 基于最多列的模块位置 若不存在 则找到最近的相对行位置所在绝对位置   列间距
+         * 调整位置 以(0,0)为基准
+         * */
+
+        // 通过模块的相对位置以及模块上下左右的端口数量来确定spacing
+        // todo consider
+        //  从上到下从左到右摆放
+        //  难点在于spacing的确定 估算: 两倍(当前待摆放模块和上一个模块的出度之和)+默认spacing --不一定合理
+        //  估算的优缺点: 优点: 有效降低了运算复杂度(原:KN K列数 N结点个数 现在:N)
+        //               缺点: 估算方式的合理性???
+        //      列spacing估算方式  基本列间距加上当前模块和左侧模块出度之和
+
+        qDebug() << "Solution Two-----------------------------------------------------";
+        QVector<bool> m_isPlaced = QVector<bool>(m_relativePos.size());
+        //qDebug() << m_isPlaced << " m_isPlaced";// pass
+        //qDebug() << m_relativePos << " m_relativePos";
+
+        // 计算 列数
+        int rowMin = 0, rowMax = 0, columnMin = 0, columnMax = 0;
+        for (int i = 0; i < m_relativePos.size(); ++i) {
+            int column = m_relativePos[i].x();
+            int row = m_relativePos[i].y();
+            rowMax = rowMax > row ? rowMax : row;
+            rowMin = rowMin < row ? rowMin : row;
+
+            columnMax = columnMax > column ? columnMax : column;
+            columnMin = columnMin < column ? columnMin : column;
+        }
+
+        // Pass
+        // 初始化数组长度 共计columnCount列
+        int columnCount = columnMax - columnMin + 1;
+        //qDebug() << columnCount << "  columnCount";
+
+        // 行列信息
+        QVector<QHash<int, int>> m_hash = QVector<QHash<int, int>>(columnCount);
+        // 初始化数据
+        for (int i = 0; i < m_moduleSize.size(); ++i) {
+            QPoint point = m_relativePos[i];// .x()列 .y()行
+            m_hash[point.x()].insert(point.y(), i);// key--row   value--index
+        }
+        //qDebug() << m_hash << "     m_hash";// Pass
+        //qDebug() << m_relativePos << "     m_relativePos";// 强连通分支内部的相对位置 或者 强连通分之间的相对位置
+
+        /// 计算哪一列包含的模块最多
+        int moduleMaxColumnIndex = 0;
+        int temp = -1;
+        for (int i = 0; i < m_hash.size(); ++i) {
+            if (temp < m_hash[i].size()) {
+                temp = m_hash[i].size();
+                moduleMaxColumnIndex = i;
+            }
+        }
+        //qDebug() << moduleMaxColumnIndex << "    moduleMaxColumnIndex";// pass
+
+        // 为了避免模块的重叠
+        QVector<QRect> m_rect = QVector<QRect>(m_relativePos.size());
+
+
+        /// 摆放包含模块数最多的列
+        // 选择从上到下 找到行数最小的module 摆放后 再摆放下面的
+        temp = columnSpacing;// 存放最小行数
+        QHash<int, int>::const_iterator iter = m_hash[moduleMaxColumnIndex].constBegin();// key--row   value--index
+        while (iter != m_hash[moduleMaxColumnIndex].constEnd()) {
+            temp = temp > iter.key() ? iter.key() : temp;
+            ++iter;
+        }
+        //qDebug() << temp << " row----Min";// pass
+
+        // 摆放第一个模块
+        int index = m_hash[moduleMaxColumnIndex].value(temp);
+        qDebug() << index << " index---";// pass
+        QRect rect = QRect(0, 0, m_moduleSize[index].x(), m_moduleSize[index].y());
+        m_absolutePos[index] = QPoint(0, 0);
+        m_isPlaced[index] = true;
+
+        // 接着摆放其他模块
+        //      计算待摆放模块
+        QList<int> tempList;
+        while (tempList.size() > m_hash[moduleMaxColumnIndex].size()) {// key--row   value--index
+            temp++;
+            if (m_hash[moduleMaxColumnIndex].contains(temp)) {
+                //tempList.insert(m_hash[moduleMaxColumnIndex].va)
+            }
+        }
+
+
+        //      摆放
+
+
+        /// 摆放moduleMaxColumnIndex左侧的模块
+
+        /// 摆放moduleMaxColumnIndex右侧的模块
+
+
+        qDebug() << "Solution Two-----------------------------------------------------Finished";
+
+    }
+
+
 private:
 
     QVector<QList<int>> m_graph;// 邻接表
@@ -179,10 +320,8 @@ private:
     QVector<int> m_columnSpacing;// 列间距
     QVector<int> m_rowSpacing;// 行间距
 
-    QPoint m_size;// 所有模块占据矩形大小
+    QPoint m_size;// 预估所有模块占据总大小
 
     int m_grid = 10;//网格大小设定
 };
-
-
 

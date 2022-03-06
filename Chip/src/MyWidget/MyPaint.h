@@ -12,9 +12,8 @@ class MyPaint : public QWidget {
 Q_OBJECT
 
 public:
-    MyPaint(QVector<QPoint> pos, QVector<QPoint> size) {
-        m_pos = pos;
-        m_size = size;
+    MyPaint(QVector<QPoint> pos, QVector<QPoint> size):m_pos(pos),m_size(size) {
+        //m_size = size;
     }
 
     ~MyPaint();

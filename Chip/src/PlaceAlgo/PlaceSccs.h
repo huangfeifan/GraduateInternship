@@ -20,10 +20,53 @@ public:
         computePos();
 
         /// 简单调整相对位置
-        PlaceSccs::simpleAdjust(m_relativePos);
+        adjustPos();
 
         qDebug() << m_relativePos << " RelativePos";
         qDebug() << "________________________PlaceSccs________________________End";
+    }
+
+    void adjustPos() {
+        /// 调整相对位置 相对位置从(0,0)开始
+
+        simpleAdjust(m_relativePos);
+
+        // 加入最后几列都只有一个module 则考虑将其拼在一起
+        QVector<QList<int>> columnIndexList = QVector<QList<int>>(m_relativePos.size());
+        // 初始化数据
+        for (int i = 0; i < m_relativePos.size(); ++i) {
+            QPoint point = m_relativePos[i];// .x()列 .y()行
+            columnIndexList[point.x()].push_back(i);// 存放索引index
+        }
+
+        int maxModuleCount = 0;// 按列划分 模块数的最大值
+        for (int i = 0; i < columnIndexList.size(); ++i) {
+            maxModuleCount = maxModuleCount > columnIndexList[i].size() ? maxModuleCount : columnIndexList[i].size();
+        }
+
+        if (maxModuleCount > 1) {
+            // 最后两列仅有一个 则将其放在其他列
+            int temp = m_relativePos.size() - 1;
+            while (columnIndexList[temp].size() == 0) {
+                temp--;
+            }
+            if (columnIndexList[temp].size() == 1) {// 从最后一列往前面列探索
+                int index = columnIndexList[temp][0];
+                int column = temp - 1;
+                // 调整单个模块位置
+                int row = m_relativePos[index].y();
+                while (m_isPosOccupied[column].contains(row)) {
+                    row++;
+                }
+                m_relativePos[index].setX(column);
+                m_relativePos[index].setY(row);
+            }
+        }
+
+        qDebug() << columnIndexList << "     ((((((";
+        qDebug() << m_relativePos << "_______________";
+        qDebug() << maxModuleCount << " )))))";
+
     }
 
     void preHandleData(const QVector<QList<int>> &connectData) {
@@ -54,9 +97,8 @@ public:
         }
         for (int i = 0; i < m_moduleCount; ++i) {
             // 出度越大越靠左 入度越大越靠右
-            m_weight[i] = (m_degree[i].x() - m_degree[i].y()) ;
+            m_weight[i] = (m_degree[i].x() - m_degree[i].y());
         }
-
     }
 
     static void PlaceSccs::simpleAdjust(QVector<QPoint> &relativePosition) {
@@ -74,13 +116,10 @@ public:
         }
     }
 
+
     QVector<QPoint> getRelativePos() {
         return m_relativePos;
     };
-
-    QVector<QList<int>> getGraph() {
-        return m_connectData;
-    }
 
 private:
 
@@ -99,10 +138,11 @@ private:
             }
         }
 
-        // 是否增加排序呢  Todo Add
+        // 是否增加排序呢  Todo consider Add
         for (int i = 0; i < tSort.size(); ++i) {
             for (int j = 0; j < tSort[i].size(); ++j) {
-                placeIndexAndChild(tSort[i][j], tSort.size() - 1, i, orderList);
+                //placeIndexAndChild(tSort[i][j], tSort.size() - 1, i, orderList);
+                placeIndexAndChild(tSort[i][j], 0, i, orderList);
             }
         }
 
@@ -129,10 +169,28 @@ private:
                 childList.push_back(child);
             }
         }
+        // qlist去重
+        QHash<int, int> hash;
+        for (int i = 0; i < childList.size(); ++i) {
+            if (!hash.contains(childList[i])) {
+                hash.insert(childList[i], childList[i]);
+            }
+        }
+        childList.clear();
+        QHash<int, int>::const_iterator iter = hash.constBegin();// key--row   value--index
+        while (iter != hash.constEnd()) {
+            childList.push_back(iter.key());
+            ++iter;
+        }
+
+        // 以row为基准 尽量在row附近行
+        qDebug() << row << "   *****";
+        row = row - childList.size() / 2; // 巧妙???
+        qDebug() << row << "   *****";
+        qDebug() << childList << "   *****";
 
         for (int i = 0; i < childList.size(); ++i) {
             int child = childList[i];
-            //row = row - childList.sccSize()/2;
             while (m_isPosOccupied[column + 1].contains(row)) {
                 row++;
             }
@@ -155,36 +213,3 @@ private:
     QVector<QList<int>> m_connectData;// 强连通分支间的连接关系
 
 };
-
-/*
-void preHandleData(const QVector<QList<int>> &connectData) {
-    /// 模块个数
-    m_moduleCount = connectData.size();
-    // m_moduleCount = oldIndexList.size();
-     for (int i = 0; i < m_moduleCount; ++i) {
-         m_sccIndexHash.insert(oldIndexList[i], i);//  <oldIndex,newIndex>
-     }
-
-
-    /// 初始化数组
-    m_isPlaced = QVector<bool>(m_moduleCount);
-    m_degree = QVector<QPoint>(m_moduleCount);
-    m_relativePos = QVector<QPoint>(m_moduleCount);
-    m_isPosOccupied = QVector<QHash<int, int>>(m_moduleCount);
-    m_weight = QVector<double>(m_moduleCount);
-
-    /// 计算connect数据
-    //  根据原结点序号 计算出强连通分支内部的connectData
-    m_connectData = connectData;
-    for (size_t i = 0; i < connectData.size(); ++i) {
-        //int start = connectData[i].x();
-        //int end = connectData[i].y();
-        //int newStart = m_sccIndexHash.value(start);
-        //int newEnd = m_sccIndexHash.value(end);
-        //m_connectData[newStart].push_back(newEnd);
-    }
-    //qDebug() << connectData << " Old---ConnectInfo";
-    //qDebug() << m_connectData << " ConnectData";
-}
-
-*/

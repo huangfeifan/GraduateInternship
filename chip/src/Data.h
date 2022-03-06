@@ -4,8 +4,10 @@
 
 #pragma once
 
+// V1043 using the 'constexpr' keyword instead of 'const' in the variable declaration doesn't change this behavior
+// inline 需要 /std:c++17
 
-static QVector<QList<int>> graphData = {
+const static QVector<QList<int>> graphData = {
 
 
 /*
@@ -98,7 +100,7 @@ static QVector<QList<int>> graphData = {
 
 
     // 2022.0114 Test Data
-        {},//11 0
+/*        {},//11 0
         {0},//12 1
         {4},//13 2
         {},//21 3
@@ -106,7 +108,42 @@ static QVector<QList<int>> graphData = {
         {1,6,7,8},//23 5
         {2,1},//31 6
         {2,1},//32 7
-        {2,1},//33 8
+        {2,1},//33 8*/
+
+        {4},//A 0
+        {3,5},//B 1
+        {3},//C 2
+        {7},//D 3
+        {6},//E 4
+        {6,7},//F 5
+        {8,9},//G 6
+        {9},//H 7
+        {11,12},//I 8
+        {10},//J 9
+        {},//K 10
+        {},//L 11
+        {},//M 12
+
+
+// 计算出的相对位置与ease布局差不多
+/*        {1},//0
+        {2},//1
+        {3},//2
+        {1},//3
+        {5},//4
+        {7},//5
+        {7},//6
+        {0},//7*/
+
+
+
+/*        {5,2,3},//0
+        {},//1
+        {0,1},//2
+        {4},//3
+        {2,5},//4
+        {3,4},//5*/
+
 
 /*
         {3},
@@ -128,7 +165,7 @@ static QVector<QList<int>> graphData = {
 */
 
 
-/*        {7},
+/*      {7},
         {2},
         {6},
         {5},

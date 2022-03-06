@@ -20,8 +20,8 @@ public:
         /// 计算相对位置
         computePos();
 
-        // 简单调整相对位置
-        PlaceSccs::simpleAdjust(m_relativePos);
+        /// 简单调整相对位置
+        adjustPos();
         qDebug() << m_relativePos << " after Simple adjust:  AScc_relativePos";
 
         qDebug() << "****************************PlaceAScc****************************End\n";
@@ -48,7 +48,8 @@ private:
         }
 
         // 思想： 先摆放度数最大的点 然后摆放其所有子节点 然后摆放所有子节点的子节点
-        int row = m_connectData.size();    // 摆放权重(度数)最大的
+        int placeModuleNum = 0;
+        int row = 0;    // 摆放权重(度数)最大的
         int column = 0;
         while (m_isPosOccupied[column].key(row)) {
             row++;
@@ -57,7 +58,9 @@ private:
         m_relativePos[maxIndex].setX(column++);// 列
         m_relativePos[maxIndex].setY(row);// 行
         m_isPlaced[maxIndex] = true;// 修改状态
+        placeModuleNum++;
 
+        qDebug() << maxIndex << " maxIndex " << row;
         qDebug() << m_relativePos << "   relativePosition";
 
         QStack<int> currentStack, nextStack;
@@ -71,16 +74,20 @@ private:
                 currentStack.push(child);
             }
         }
+        qDebug() << indexParentIndex << "   index Parent Index";
         qDebug() << currentStack << "   CurrentStack";
 
         qDebug() << row << " FRow--";
+        int topIndex = currentStack.top();
+        int topParentIndex = indexParentIndex[topIndex];
+        row = m_relativePos[topParentIndex].y() - m_connectData[topParentIndex].size() * 0.382;
         while (!currentStack.isEmpty()) {
             // 摆放topIndex
-            int topIndex = currentStack.pop();
-            int topParentIndex = indexParentIndex[topIndex];
-            qDebug() << topIndex << "   " << topParentIndex << " " << m_connectData[topParentIndex].size();
-            row = m_relativePos[topParentIndex].y() - m_connectData[topParentIndex].size() * 0.382;
-
+            topIndex = currentStack.pop();
+            topParentIndex = indexParentIndex[topIndex];
+            qDebug() << topIndex << " index parent  " << topParentIndex << " parentChildCount "
+                     << m_connectData[topParentIndex].size();
+            qDebug() << row << " row--before adjust";
             while (m_isPosOccupied[column].contains(row)) {
                 row++;
             }
@@ -89,8 +96,13 @@ private:
             m_relativePos[topIndex].setX(column);// 列
             m_relativePos[topIndex].setY(row);// 行
             m_isPlaced[topIndex] = true;
+            placeModuleNum++;
+            qDebug() << topIndex << " topIndex Placed" << column << " " << row;
+            if (placeModuleNum == m_moduleCount) {
+                break;
+            }
 
-            qDebug() << topIndex << " topIndex";
+            row++;// 摆放尚未结束 则行数自加
             for (int i = 0; i < m_connectData[topIndex].size(); ++i) {
                 // update nextStack;
                 int child = m_connectData[topIndex][i];
@@ -101,22 +113,35 @@ private:
                     indexParentIndex[child] = topIndex;
                 }
             }
+
+            qDebug() << column << " Column------row   " << row;
+            qDebug() << currentStack << " currentStack";
+            qDebug() << nextStack << " nextStack";
+
             // 当前列摆放结束  接着摆放下一列
             if (currentStack.isEmpty()) {
                 currentStack = nextStack;
                 nextStack.clear();
                 column++;// 当前列摆放结束 继续摆放下一列
+                row = m_relativePos[topParentIndex].y() - m_connectData[topParentIndex].size() * 0.382;
             }
-            qDebug() << column << " Column------Current   " << row;
-            qDebug() << currentStack << " currentStack";
-            qDebug() << nextStack << " nextStack";
         }
         qDebug() << m_relativePos << " before Simple adjust:  AScc_relativePos";
     }
 
-    int findMaxDegreeIndex() {
-        return -1;
-    };
+    void adjustPos(){
+        int minRow = m_relativePos[0].y();
+        int minColumn = m_relativePos[0].x();
+        for (int i = 0; i < m_relativePos.size(); ++i) {
+            minRow = m_relativePos[i].y() > minRow ? minRow : m_relativePos[i].y();
+            minColumn = m_relativePos[i].x() > minColumn ? minColumn : m_relativePos[i].x();
+        }
+        for (int i = 0; i < m_relativePos.size(); ++i) {
+            m_relativePos[i].setX(m_relativePos[i].x() - minColumn);
+            m_relativePos[i].setY(m_relativePos[i].y() - minRow);
+        }
+
+    }
 
     void preHandleData(const QVector<QList<int>> &connectData) {
         /// 模块个数
@@ -165,9 +190,6 @@ private:
     QVector<QHash<int, int>> m_isPosOccupied;// 位置是否被占据
     QVector<double> m_weight;// 权重 出度和入度各占50%
     QVector<QList<int>> m_connectData;// 强连通分支内的连接关系
-
-    // todo delete ???
-    QVector<int> m_indexParent;// 摆放的index的父节点的
 
     const double IN_OUT_WEIGHT = 1.0;
 };

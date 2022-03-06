@@ -22,6 +22,6 @@ SchematicPlacement::SchematicPlacement(QVector<QList<int>> graphData, QVector<QP
     computePosition();
 }
 
-SchematicPlacement::~SchematicPlacement() {
+/*SchematicPlacement::~SchematicPlacement() {
 
-}
+}*/
