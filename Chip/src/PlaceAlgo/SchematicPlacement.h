@@ -155,28 +155,37 @@ private:
     void computeSccsAbsolutePosition() {
         /// 计算强连通分支间的绝对位置
 
-        qDebug() << "------------------------------------------------------compute Sccs AbsolutePosition";
+        qDebug() << "\n\n------------------------------------------------------compute Sccs AbsolutePosition";
 
         // 每个强连通分支的大小
         QVector<QPoint> moduleSize = QVector<QPoint>(m_sccs.size());
-        for (int i = 1; i < m_sccsInfo.size(); ++i) {
-            moduleSize[i - 1] = m_sccsInfo[i].sccSize;
+
+        for (int i = 0; i < m_sccs.size(); ++i) {
+            if (m_sccs[i].size() == 1) {
+                // 为了计算相对位置 以5为基本大小单位
+                moduleSize[i] = QPoint(5, 5);
+            } else {
+                // 一个最大强连通分支的大小
+                moduleSize[i] = m_sccsInfo[i + 1].sccSize;
+
+            }
         }
 
         // pass
         //qDebug() << moduleSize << " ModuleSize----Sccs";
 
+        QVector<QList<int>> graph;//    m_sccsInfo[0].graph
         ComputeAbsolutePos absolutePos(m_sccsInfo[0].graph, moduleSize,
-                                       m_sccsInfo[0].relativePos, m_grid);
+                                       m_sccsInfo[0].relativePos, m_grid, 0, 0);
         m_sccsInfo[0].absolutePos = absolutePos.getAbsolutePos();
         m_sccsInfo[0].sccSize = absolutePos.getSccBlockSize();
 
         // pass
-        qDebug() << "  absolutePos  " << m_sccsInfo[0].absolutePos;
+        qDebug() << "\n\n  absolutePos  " << m_sccsInfo[0].absolutePos;
         qDebug() << "  sccSize  " << m_sccsInfo[0].sccSize;
 
         //qDebug() << m_sccsInfo[0].absolutePos.size() << " ";
-        qDebug() << "------------------------------------------------------compute Sccs AbsolutePosition End";
+        qDebug() << "------------------------------------------------------compute Sccs AbsolutePosition End\n\n";
     }
 
     void computeASccPosition() {
@@ -190,13 +199,31 @@ private:
                 // 计算相对位置并保存
                 PlaceAScc placeAScc(m_sccsInfo[index].graph);
                 m_sccsInfo[index].relativePos = placeAScc.getRelativePos();
+                qDebug() << m_sccsInfo[index].relativePos << "     relative Pos";
 
+                int width = 0;
+                int height = 0;
+                QVector<QPoint> size = m_sccsInfo[index].relativePos;
+                for (int j = 0; j < size.size(); ++j) {
+                    width = width > size[j].x() ? width : size[j].x();
+                    height = height > size[j].y() ? height : size[j].y();
+                    size[j].setX(size[j].x() * 5);
+                    size[j].setY(size[j].y() * 5);
+                }
+                //qDebug() << size;
+
+                //qDebug() << width << " width  height" << height;
                 // 计算绝对位置并保存
-                ComputeAbsolutePos absolutePos(m_sccsInfo[index].graph, m_sccsInfo[index].moduleSize,
-                                               m_sccsInfo[index].relativePos, m_grid);
+                m_sccsInfo[index].absolutePos = size;
+                // 更新单个强连通分支的大小
+                m_sccsInfo[index].sccSize = QPoint((width + 1) * 5, (height + 1) * 5);
+
+/*                // 计算绝对位置并保存
+                ComputeAbsolutePos absolutePos(m_sccsInfo[index].graph, size,
+                                               m_sccsInfo[index].relativePos, m_grid, 0, 0);
                 m_sccsInfo[index].absolutePos = absolutePos.getAbsolutePos();
                 // 更新单个强连通分支的大小
-                m_sccsInfo[index].sccSize = absolutePos.getSccBlockSize();
+                m_sccsInfo[index].sccSize = absolutePos.getSccBlockSize();*/
 
                 qDebug() << index << "  absolutePos  " << m_sccsInfo[index].absolutePos;
                 qDebug() << index << "  sccSize  " << m_sccsInfo[index].sccSize;
@@ -227,7 +254,7 @@ private:
             }
         }
         qDebug() << m_modulePos << " ModulePos";
-        qDebug() << "------------------------------------------------------compute A SccInner Position End";
+        qDebug() << "------------------------------------------------------compute A SccInner Position End\n\n";
 
     }
 
@@ -244,9 +271,30 @@ private:
         // Not Pass bug     Fix     Time:2022.0228
         computeSccsRelativePosition();// 计算强连通分支间的相对位置
 
-        computeASccPosition();// 计算每个强连通分支内部的相对位置和绝对位置
+        computeASccPosition();// 计算每个强连通分支内部的相对位置
 
-/*        qDebug() << "****************************************************";
+        //printInfo();
+
+        // bug 疑难杂症 Fix Time:2022.0228
+        // 计算SccInfo 需要注意
+        computeSccsAbsolutePosition();// 计算强连通分支间的绝对位置
+
+        // 计算每个模块的相对位置
+        computeASccInnerPosition();
+
+        // 计算每个模块的绝对位置
+        computeAllModulePos();
+
+        // 调整模块的位置 使得模块间距小一些
+        adjustModulePos();
+
+        // todo add
+        computePortPos();// 计算单独port的绝对位置
+
+    }
+
+    void printInfo() {
+        qDebug() << "****************************************************";
         qDebug() << m_sccs << "  SCC";
         for (int i = 0; i < m_sccsInfo.size(); ++i) {
             qDebug() << "Index   " << i;
@@ -257,25 +305,27 @@ private:
             qDebug() << m_sccsInfo[i].sccSize << "  sccSize";
             qDebug() << m_sccsInfo[i].moduleSize << "  moduleSize";
             qDebug() << "****************************************************";
-        }*/
-
-        // bug 疑难杂症 Fix Time:2022.0228
-        // 计算SccInfo 需要注意
-        computeSccsAbsolutePosition();// 计算强连通分支间的绝对位置
-
-        // 计算每个强连通分支内部结点的位置
-        computeASccInnerPosition();
-
-        // 调整模块的位置 使得模块间距小一些
-        adjustModulePos();
-
-        // todo add
-        //computePortPos();// 计算单独port的绝对位置
-
+        }
     }
 
-    void adjustModulePos(){
+
+    void adjustModulePos() {
         // 根据俄罗斯方块调整最终位置
+    }
+
+    void computeAllModulePos() {
+        qDebug() << "compute All Module Pos------------------------------------";
+        qDebug() << m_modulePos;
+        // 相对位置的计算
+        for (int i = 0; i < m_modulePos.size(); ++i) {
+            QPoint point = m_modulePos[i];
+            m_modulePos[i] = QPoint(point.x() / 5, point.y() / 5);
+        }
+        qDebug() << m_modulePos;
+
+        ComputeAbsolutePos pos(m_moduleConnectData, m_size, m_modulePos, 1, 30, 50);
+        m_modulePos = pos.getAbsolutePos();
+
     }
 
 

@@ -100,7 +100,7 @@ const static QVector<QList<int>> graphData = {
 
 
     // 2022.0114 Test Data
-/*        {},//11 0
+        {},//11 0
         {0},//12 1
         {4},//13 2
         {},//21 3
@@ -108,9 +108,9 @@ const static QVector<QList<int>> graphData = {
         {1,6,7,8},//23 5
         {2,1},//31 6
         {2,1},//32 7
-        {2,1},//33 8*/
+        {2,1},//33 8
 
-        {4},//A 0
+/*        {4},//A 0
         {3,5},//B 1
         {3},//C 2
         {7},//D 3
@@ -122,7 +122,7 @@ const static QVector<QList<int>> graphData = {
         {10},//J 9
         {},//K 10
         {},//L 11
-        {},//M 12
+        {},//M 12*/
 
 
 // 计算出的相对位置与ease布局差不多

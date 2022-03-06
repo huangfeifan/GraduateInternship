@@ -2,9 +2,7 @@
 #include <QPushButton>
 #include <QTime>
 #include <QRandomGenerator>
-
 #include <QDebug>
-
 
 #include "MyWidget/mainwindow.h"
 #include "MyWidget/MyPaint.h"
@@ -101,19 +99,32 @@ int main(int argc, char *argv[]) {
 
     qDebug() << "-------------------------\n\n\n";
     /// 计算模块大小 根据输入输出个数() 高度统一(参数)
-
     moduleCount = graphData.size();
     size = QVector<QPoint>(moduleCount);
+    inDegree = QVector<int>(moduleCount);
+    outDegree = QVector<int>(moduleCount);
+    for (int i = 0; i < graphData.size(); ++i) {
+        // 出度
+        outDegree[i] = graphData[i].size();
+        int end;
+        for (int j = 0; j < graphData[i].size(); ++j) {
+            end = graphData[i][j];
+            inDegree[end]++;
+        }
+    }
+    const int WIDTH = 30;
+    int height = 10;// 一个port 20 两个port30 依次类推
     for (int i = 0; i < moduleCount; ++i) {
-        size[i].setX(30);
-        size[i].setY(20);
+        size[i].setX(WIDTH);
+        int temp = inDegree[i] > outDegree[i] ? inDegree[i] : outDegree[i];
+        size[i].setY((temp + 1) * height);
     }
     //qDebug() << size;
 
     SchematicPlacement sp(graphData, size);
 
 
-    MyPaint myPaint(sp.getModulePos(), size);
+    MyPaint myPaint(sp.getModulePos(), size, inDegree, outDegree);
     myPaint.show();
 
     return app.exec();

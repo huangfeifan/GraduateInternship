@@ -63,9 +63,9 @@ public:
             }
         }
 
-        qDebug() << columnIndexList << "     ((((((";
-        qDebug() << m_relativePos << "_______________";
-        qDebug() << maxModuleCount << " )))))";
+        //qDebug() << columnIndexList << "     ((((((";
+        //qDebug() << m_relativePos << "      m_relativePos";
+        //qDebug() << maxModuleCount << " )))))";
 
     }
 
@@ -158,7 +158,7 @@ private:
             m_relativePos[index].setX(column);// column
             m_relativePos[index].setY(row);// row
             m_isPlaced[index] = true;
-            qDebug() << index << " index " << row << " row " << column << " column";
+            //qDebug() << index << " index " << row << " row " << column << " column";
         }
 
         /// placeChild
@@ -184,10 +184,10 @@ private:
         }
 
         // 以row为基准 尽量在row附近行
-        qDebug() << row << "   *****";
+        //qDebug() << row << "   *****";
         row = row - childList.size() / 2; // 巧妙???
-        qDebug() << row << "   *****";
-        qDebug() << childList << "   *****";
+        //qDebug() << row << "   *****";
+        //qDebug() << childList << "   *****";
 
         for (int i = 0; i < childList.size(); ++i) {
             int child = childList[i];
@@ -198,7 +198,7 @@ private:
             m_relativePos[child].setX(column + 1);// column
             m_relativePos[child].setY(row);// row
             m_isPlaced[child] = true;
-            qDebug() << child << " child " << row << " row " << column + 1 << " column";
+            //qDebug() << child << " child " << row << " row " << column + 1 << " column";
         }
     }
 

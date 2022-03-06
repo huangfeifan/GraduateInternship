@@ -8,14 +8,11 @@
 #include <QRect>
 #include <QDebug>
 
-const int rowSpacing = 10;// 间距
-const int columnSpacing = 10;// 间距
-
 class ComputeAbsolutePos {
 public:
     /// 计算模块的绝对位置   参数: 邻接表 模块大小 相对位置 网格大小
     ComputeAbsolutePos(const QVector<QList<int>> &graph, const QVector<QPoint> &size,
-                       const QVector<QPoint> &relativePos, int grid);
+                       const QVector<QPoint> &relativePos, int grid, int rowSpacing, int columnSpacing);
 
 public:
     // width = *.x()   height = *.y()
@@ -81,6 +78,9 @@ private:
     /// 计算每行每列的间距
     void computeColumnAndRowSpacing() {
         /// 计算每行每列的间距
+
+        m_graph.clear();// todo delete 2022.0306
+
         for (int i = 0; i < m_graph.size(); ++i) {
             for (int j = 0; j < m_graph[i].size(); ++j) {
                 /// i 起点    终点 graph[i][j]
@@ -116,11 +116,11 @@ private:
             }
         }
 
-        for (int i = 1; i < m_rowSpacing.size()-1; ++i) {
+        for (int i = 1; i < m_rowSpacing.size() - 1; ++i) {
             m_rowSpacing[i] += rowSpacing;
         }
 
-        for (int i = 1; i < m_columnSpacing.size()-1; ++i) {
+        for (int i = 1; i < m_columnSpacing.size() - 1; ++i) {
             m_columnSpacing[i] += columnSpacing;
         }
 
@@ -323,5 +323,8 @@ private:
     QPoint m_size;// 预估所有模块占据总大小
 
     int m_grid = 10;//网格大小设定
+
+    int rowSpacing = 0;// 间距
+    int columnSpacing = 0;// 间距
 };
 

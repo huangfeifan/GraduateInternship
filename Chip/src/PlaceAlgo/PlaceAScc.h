@@ -60,24 +60,24 @@ private:
         m_isPlaced[maxIndex] = true;// 修改状态
         placeModuleNum++;
 
-        qDebug() << maxIndex << " maxIndex " << row;
-        qDebug() << m_relativePos << "   relativePosition";
+        //qDebug() << maxIndex << " maxIndex " << row;
+        //qDebug() << m_relativePos << "   relativePosition";
 
         QStack<int> currentStack, nextStack;
         // 修改最大度数结点的子节点的父节点行号 indexParentIndex 用于描述父节点所在行数
         for (int i = 0; i < m_connectData[maxIndex].size(); ++i) {
             int child = m_connectData[maxIndex][i];// 新moduleIndex
-            qDebug() << " child Index " << child;
+            //qDebug() << " child Index " << child;
             indexParentIndex[child] = maxIndex;
             // child没有被摆放 则将其添加到stack中 便于后续摆放
             if (!m_isPlaced[child]) {
                 currentStack.push(child);
             }
         }
-        qDebug() << indexParentIndex << "   index Parent Index";
-        qDebug() << currentStack << "   CurrentStack";
+        //qDebug() << indexParentIndex << "   index Parent Index";
+        //qDebug() << currentStack << "   CurrentStack";
 
-        qDebug() << row << " FRow--";
+        //qDebug() << row << " FRow--";
         int topIndex = currentStack.top();
         int topParentIndex = indexParentIndex[topIndex];
         row = m_relativePos[topParentIndex].y() - m_connectData[topParentIndex].size() * 0.382;
@@ -85,19 +85,19 @@ private:
             // 摆放topIndex
             topIndex = currentStack.pop();
             topParentIndex = indexParentIndex[topIndex];
-            qDebug() << topIndex << " index parent  " << topParentIndex << " parentChildCount "
-                     << m_connectData[topParentIndex].size();
-            qDebug() << row << " row--before adjust";
+            //qDebug() << topIndex << " index parent  " << topParentIndex << " parentChildCount "
+            //         << m_connectData[topParentIndex].size();
+            //qDebug() << row << " row--before adjust";
             while (m_isPosOccupied[column].contains(row)) {
                 row++;
             }
-            qDebug() << row << " RRRow";
+            //qDebug() << row << " RRRow";
             m_isPosOccupied[column].insert(row, row);
             m_relativePos[topIndex].setX(column);// 列
             m_relativePos[topIndex].setY(row);// 行
             m_isPlaced[topIndex] = true;
             placeModuleNum++;
-            qDebug() << topIndex << " topIndex Placed" << column << " " << row;
+            //qDebug() << topIndex << " topIndex Placed" << column << " " << row;
             if (placeModuleNum == m_moduleCount) {
                 break;
             }
@@ -108,15 +108,15 @@ private:
                 int child = m_connectData[topIndex][i];
                 // 将未摆放的子节点入栈
                 if (!m_isPlaced[child]) {
-                    qDebug() << child << " childChild";
+                    //qDebug() << child << " childChild";
                     nextStack.push(child);
                     indexParentIndex[child] = topIndex;
                 }
             }
 
-            qDebug() << column << " Column------row   " << row;
-            qDebug() << currentStack << " currentStack";
-            qDebug() << nextStack << " nextStack";
+            //qDebug() << column << " Column------row   " << row;
+            //qDebug() << currentStack << " currentStack";
+            //qDebug() << nextStack << " nextStack";
 
             // 当前列摆放结束  接着摆放下一列
             if (currentStack.isEmpty()) {
@@ -179,7 +179,7 @@ private:
             // 出度越大越靠左 入度越大越靠右
             m_weight[i] = (m_degree[i].x() - m_degree[i].y()) * IN_OUT_WEIGHT;
         }
-        qDebug() << m_weight << "  Weight";
+        //qDebug() << m_weight << "  Weight";
     };
 
 private:

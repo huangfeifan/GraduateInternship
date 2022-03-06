@@ -5,10 +5,13 @@
 #include "ComputeAbsolutePos.h"
 
 ComputeAbsolutePos::ComputeAbsolutePos(const QVector<QList<int>> &graph, const QVector<QPoint> &size,
-                                       const QVector<QPoint> &relativePos, int grid) : m_graph(graph),
-                                                                                       m_moduleSize(size),
-                                                                                       m_relativePos(relativePos),
-                                                                                       m_grid(grid) {
+                                       const QVector<QPoint> &relativePos, int grid, int rowSpacing, int columnSpacing)
+        : m_graph(graph),
+          m_moduleSize(size),
+          m_relativePos(relativePos),
+          m_grid(grid),
+          rowSpacing(rowSpacing),
+          columnSpacing(columnSpacing) {
     /**
      * 目的：确定每个元件的布局最终位置
      *  已有各个模块的大小 模块的相对位置
