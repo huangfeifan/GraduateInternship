@@ -4,8 +4,41 @@
 
 #pragma once
 
+#include "PlaceAlgo/MyStruct.h"
+
 // V1043 using the 'constexpr' keyword instead of 'const' in the variable declaration doesn't change this behavior
 // inline 需要 /std:c++17
+static int MODULE_COUNT = 8;
+
+static int LEFT_INPUT_PORT_COUNT = 0;// 单独的输入port
+
+static int RIGHT_OUTPUT_PORT_COUNT = 0;// 单独的输出port
+
+const static QList<ConnectData> FAKE_ALL_CONNECT_DATA = {
+        // startModuleIndex, endModule, startPort ,endPort
+
+        {4, 5, 0, 0},
+        {5, 7, 2, 1},
+        {6, 7, 1, 0},
+        {7, 0, 2, 0},
+        {0, 1, 1, 1},
+        {1, 2, 2, 0},
+        {2, 3, 2, 1},
+        {3, 1, 0, 0},
+
+};
+
+static QVector<int> MODULE_PORT_LIST = {
+        // 第i个module的port个数 输入和输出port个数之和
+        2,//0
+        3,//1
+        3,//2
+        2,//3
+        2,//4
+        3,//5
+        2,//6
+        3,//7
+};
 
 const static QVector<QList<int>> graphData = {
 
@@ -99,8 +132,9 @@ const static QVector<QList<int>> graphData = {
 */
 
 
-    // 2022.0114 Test Data
-        {},//11 0
+        // 2022.0114 Test Data
+        // Example 1
+/*        {},//11 0
         {0},//12 1
         {4},//13 2
         {},//21 3
@@ -108,8 +142,20 @@ const static QVector<QList<int>> graphData = {
         {1,6,7,8},//23 5
         {2,1},//31 6
         {2,1},//32 7
-        {2,1},//33 8
+        {2,1},//33 8*/
 
+        // example 2
+// 计算出的相对位置与ease布局差不多
+/*        {1},//0
+        {2},//1
+        {3},//2
+        {1},//3
+        {5},//4
+        {7},//5
+        {7},//6
+        {0},//7*/
+
+// example 3 ASG.ews
 /*        {4},//A 0
         {3,5},//B 1
         {3},//C 2
@@ -124,16 +170,23 @@ const static QVector<QList<int>> graphData = {
         {},//L 11
         {},//M 12*/
 
-
-// 计算出的相对位置与ease布局差不多
-/*        {1},//0
+// example 4 .ews
+/*        {1,3},//0
         {2},//1
-        {3},//2
-        {1},//3
-        {5},//4
-        {7},//5
-        {7},//6
-        {0},//7*/
+        {1,3},//2
+        {0,4},//3
+        {3},//4*/
+
+
+// example 5
+        {3},
+        {},
+        {},
+        {2, 1, 4},
+        {1}
+
+
+
 
 
 
@@ -143,15 +196,6 @@ const static QVector<QList<int>> graphData = {
         {4},//3
         {2,5},//4
         {3,4},//5*/
-
-
-/*
-        {3},
-        {},
-        {},
-        {2,1,4},
-        {1}
-*/
 
 
 /*
@@ -209,11 +253,6 @@ const static QVector<QList<int>> graphData = {
         {},//5
         {},//6
         {},//7*/
-
-
-
-
-
 
 };
 

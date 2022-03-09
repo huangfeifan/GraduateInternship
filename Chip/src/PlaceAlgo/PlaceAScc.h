@@ -12,7 +12,7 @@ class PlaceAScc {
 public:
     PlaceAScc(const QVector<QList<int>> &connectData) {
 
-        qDebug() << "\n****************************PlaceAScc****************************";
+        //qDebug() << "\n****************************PlaceAScc****************************";
 
         /// 初始化所有变量
         preHandleData(connectData);
@@ -22,9 +22,9 @@ public:
 
         /// 简单调整相对位置
         adjustPos();
-        qDebug() << m_relativePos << " after Simple adjust:  AScc_relativePos";
+        //qDebug() << m_relativePos << " after Simple adjust:  AScc_relativePos";
 
-        qDebug() << "****************************PlaceAScc****************************End\n";
+        //qDebug() << "****************************PlaceAScc****************************End\n";
     };
 
     QVector<QPoint> getRelativePos() {

@@ -16,12 +16,12 @@ public:
     GetTopologySort(QVector<QList<int>> graphData) :m_connection(graphData){
 
         //m_connection = graphData;
-        qDebug() << "\nGetTopologySort---------";
+        //qDebug() << "\nGetTopologySort---------";
         // 检查是否有环 Tarjan_algorithm 需要参数  m_connection
         initConnect();
         computeResult();
         detectVerticesNum();
-        qDebug() << "GetTopologySort---------\n";
+        //qDebug() << "GetTopologySort---------\n";
         //initParent();
     }
 
@@ -89,7 +89,7 @@ private:
             }
         }
         //qDebug() << "while----end";
-        qDebug() << "****    Topology sort m_result:\n" << m_result;
+        //qDebug() << "****    Topology sort m_result:\n" << m_result;
     }
 
     void detectVerticesNum() {
@@ -102,9 +102,9 @@ private:
         // 拓扑排序顶点数不等于有向图的顶点数  说明有向图有环
         if (sortVerticesNum != m_connection.size()) {
             isDAG = false;
-            qDebug() << " has circuit";
+            //qDebug() << " has circuit";
         } else {
-            qDebug() << " has not circuit";
+            //qDebug() << " has not circuit";
         }
     }
 
@@ -123,7 +123,7 @@ private:
                 parent[end].push_back(i);
             }
         }
-        qDebug() << parent << " IndexParent";
+        //qDebug() << parent << " IndexParent";
     }
 
 };

@@ -49,7 +49,7 @@ public: // variable 变量
         if (width > 0) {
             resize(width, width);
         } else {
-            qDebug() << "Data Error";
+            //qDebug() << "Data Error";
         }
     }
 

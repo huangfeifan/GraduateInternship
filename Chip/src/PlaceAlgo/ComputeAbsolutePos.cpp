@@ -27,14 +27,14 @@ ComputeAbsolutePos::ComputeAbsolutePos(const QVector<QList<int>> &graph, const Q
      *  如何计算行与行的通道数     粗略计算
      */
 
-    qDebug() << "----------------------Compute AbsolutePos---------------------------------Start";
+    //qDebug() << "----------------------Compute AbsolutePos---------------------------------Start";
     // 方法1
     solutionOne();
 
     // 方法2
     //solutionTwo();
 
-    qDebug() << "----------------------Compute AbsolutePos---------------------------------End";
+    //qDebug() << "----------------------Compute AbsolutePos---------------------------------End";
 
 
 }

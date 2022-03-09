@@ -5,13 +5,21 @@
 #pragma once
 
 #include <QDebug>
+#include <QString>
+#include <QPoint>
+#include <QList>
+#include <QHash>
+#include <QVector>
+#include <QStack>
+
+#include "GetTopologySort.h"
 
 class PlaceSccs {
 
 public:
     /// 所有强连通分量的摆放 只处理最基本的数据
     PlaceSccs(const QVector<QList<int>> &connectData) {
-        qDebug() << "________________________PlaceSccs________________________";
+        //qDebug() << "________________________PlaceSccs________________________";
 
         /// 初始化所有变量
         preHandleData(connectData);
@@ -19,19 +27,19 @@ public:
         /// 计算相对位置
         computePos();
 
-        /// 简单调整相对位置
-        adjustPos();
+        //qDebug() << m_relativePos << " RelativePos  before adjust";// pass
 
-        qDebug() << m_relativePos << " RelativePos";
-        qDebug() << "________________________PlaceSccs________________________End";
+        /// 简单调整相对位置
+        adjustPos();//  bug 时间 0307
+
+        //qDebug() << m_relativePos << " RelativePos";
+        //qDebug() << "________________________PlaceSccs________________________End";
     }
 
     void adjustPos() {
         /// 调整相对位置 相对位置从(0,0)开始
 
-        simpleAdjust(m_relativePos);
-
-        // 加入最后几列都只有一个module 则考虑将其拼在一起
+/*        // 加入最后几列都只有一个module 则考虑将其拼在一起
         QVector<QList<int>> columnIndexList = QVector<QList<int>>(m_relativePos.size());
         // 初始化数据
         for (int i = 0; i < m_relativePos.size(); ++i) {
@@ -39,12 +47,12 @@ public:
             columnIndexList[point.x()].push_back(i);// 存放索引index
         }
 
-        int maxModuleCount = 0;// 按列划分 模块数的最大值
+        int MODULE_COUNT = 0;// 按列划分 模块数的最大值
         for (int i = 0; i < columnIndexList.size(); ++i) {
-            maxModuleCount = maxModuleCount > columnIndexList[i].size() ? maxModuleCount : columnIndexList[i].size();
+            MODULE_COUNT = MODULE_COUNT > columnIndexList[i].size() ? MODULE_COUNT : columnIndexList[i].size();
         }
 
-        if (maxModuleCount > 1) {
+        if (MODULE_COUNT > 1) {
             // 最后两列仅有一个 则将其放在其他列
             int temp = m_relativePos.size() - 1;
             while (columnIndexList[temp].size() == 0) {
@@ -58,14 +66,18 @@ public:
                 while (m_isPosOccupied[column].contains(row)) {
                     row++;
                 }
-                m_relativePos[index].setX(column);
-                m_relativePos[index].setY(row);
+                //m_relativePos[index].setX(column);
+                //m_relativePos[index].setY(row);
             }
-        }
+        }*/
+
+        //qDebug() << m_relativePos << "  adjustPos-------";
+        simpleAdjust(m_relativePos);
+        //qDebug() << m_relativePos << "  adjustPos-------";
 
         //qDebug() << columnIndexList << "     ((((((";
         //qDebug() << m_relativePos << "      m_relativePos";
-        //qDebug() << maxModuleCount << " )))))";
+        //qDebug() << MODULE_COUNT << " )))))";
 
     }
 
@@ -186,16 +198,20 @@ private:
         // 以row为基准 尽量在row附近行
         //qDebug() << row << "   *****";
         row = row - childList.size() / 2; // 巧妙???
+        column = column + 1;// child在下一列
         //qDebug() << row << "   *****";
         //qDebug() << childList << "   *****";
 
         for (int i = 0; i < childList.size(); ++i) {
             int child = childList[i];
-            while (m_isPosOccupied[column + 1].contains(row)) {
+            if (m_isPlaced[child]) {
+                continue;
+            }
+            while (m_isPosOccupied[column].contains(row)) {
                 row++;
             }
-            m_isPosOccupied[column + 1].insert(row, row);
-            m_relativePos[child].setX(column + 1);// column
+            m_isPosOccupied[column].insert(row, row);
+            m_relativePos[child].setX(column);// column
             m_relativePos[child].setY(row);// row
             m_isPlaced[child] = true;
             //qDebug() << child << " child " << row << " row " << column + 1 << " column";

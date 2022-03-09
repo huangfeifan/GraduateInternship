@@ -71,8 +71,8 @@ private:
             m_rowHeight[row] = m_rowHeight[row] > m_moduleSize[i].y() ? m_rowHeight[row] : m_moduleSize[i].y();
             //qDebug() << m_rowHeight[row];
         }
-        qDebug() << m_rowHeight << "  m_rowHeight";
-        qDebug() << m_columnWidth << "  m_columnWidth";
+        //qDebug() << m_rowHeight << "  m_rowHeight";
+        //qDebug() << m_columnWidth << "  m_columnWidth";
     }
 
     /// 计算每行每列的间距
@@ -124,8 +124,8 @@ private:
             m_columnSpacing[i] += columnSpacing;
         }
 
-        qDebug() << m_rowSpacing << "   m_rowSpacing";
-        qDebug() << m_columnSpacing << "    m_columnSpacing";
+        //qDebug() << m_rowSpacing << "   m_rowSpacing";
+        //qDebug() << m_columnSpacing << "    m_columnSpacing";
     }
 
     /// 计算每行每列的位置
@@ -142,8 +142,8 @@ private:
             m_rowPosition[i] = m_rowSpacing[i] + m_rowPosition[i - 1] + m_rowHeight[i - 1];
         }
 
-        qDebug() << m_rowPosition << "  m_rowPosition";
-        qDebug() << m_columnPosition << "   m_columnPosition";
+        //qDebug() << m_rowPosition << "  m_rowPosition";
+        //qDebug() << m_columnPosition << "   m_columnPosition";
 
     }
 
@@ -164,7 +164,20 @@ private:
             m_absolutePos[i].setX(xPos);
             m_absolutePos[i].setY(yPos);
         }
-        qDebug() << m_absolutePos << "     m_absolutePos";
+        //qDebug() << m_absolutePos << "  before   m_absolutePos";
+
+        // 以 (0,0) 为左上角顶点
+        int minX = m_absolutePos[m_absolutePos.size() - 1].x();
+        int minY = m_absolutePos[m_absolutePos.size() - 1].y();
+        for (int i = 0; i < m_absolutePos.size(); ++i) {
+            minX = minX > m_absolutePos[i].x() ? m_absolutePos[i].x() : minX;
+            minY = minY > m_absolutePos[i].y() ? m_absolutePos[i].y() : minY;
+        }
+        QPoint point(minX, minY);
+        for (int i = 0; i < m_absolutePos.size(); ++i) {
+            m_absolutePos[i] -= point;
+        }
+        //qDebug() << m_absolutePos << "  after   m_absolutePos";
     }
 
     /// 计算所有模块占据的版图大小
@@ -175,30 +188,30 @@ private:
         int row = m_rowPosition.size() - 1;
         m_size.setY(m_rowPosition[row] + m_rowSpacing[row + 1] + m_rowHeight[row]);
 
-        qDebug() << m_size << "     m_size";
+        //qDebug() << m_size << "     m_size";
     }
 
     void solutionOne() {
-        qDebug() << m_relativePos << "  relativePos";
-        qDebug() << m_moduleSize << "  size";
+        //qDebug() << m_relativePos << "  relativePos";
+        //qDebug() << m_moduleSize << "  size";
         // 初始化数据
         initColumnRowInfo();
-        qDebug() << "-----------";
+        //qDebug() << "-----------";
         // 计算行宽列高
         computeColumnAndRow();
-        qDebug() << "-----------";
+        //qDebug() << "-----------";
         // 计算每行每列的间距
         computeColumnAndRowSpacing();
-        qDebug() << "-----------";
+        //qDebug() << "-----------";
         // 计算每行每列的位置
         computeColumnAndRowPosition();
-        qDebug() << "-----------";
+        //qDebug() << "-----------";
         // 计算模块的绝对位置
         computePosition();
-        qDebug() << "-----------";
+        //qDebug() << "-----------";
         // 计算所有模块占据的版图大小
         computeBlockSize();
-        qDebug() << "-----------";
+        //qDebug() << "-----------";
     }
 
     /// 不采用规则网格的方式来确定模块的最终位置

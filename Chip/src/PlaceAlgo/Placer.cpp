@@ -30,7 +30,7 @@ void SortListByDegree(QList<int> &list, QList<int> degreeList) {
 
 Placement::Placement() {
     m_upDown = true;
-    qDebug() << "Placement----------------------------------------------------";
+    //qDebug() << "Placement----------------------------------------------------";
     GetGraphSccs tarjanAlgo(graphData);
     m_sccs = tarjanAlgo.getGraphAllScc();
     m_connection = graphData;
@@ -43,7 +43,7 @@ Placement::Placement() {
     // 单独摆放一个强连通分支
     placeAScc();
 
-    qDebug() << "Placement----------------------------------------------------\n";
+    //qDebug() << "Placement----------------------------------------------------\n";
 
 }
 
@@ -122,7 +122,7 @@ QList<int> Placement::computeTraversalOrder() {
 
 
     }
-    qDebug() << orderList << " orderList_print";
+    //qDebug() << orderList << " orderList_print";
 
     return orderList;
 }

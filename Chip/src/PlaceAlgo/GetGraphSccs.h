@@ -29,9 +29,9 @@ public :
         getSCC();
         //qDebug() << m_sccs.sccSize() << "  scc_size";
         for (int i = 0; i < m_sccs.size(); ++i) {
-            qDebug() << m_sccs[i];
+            //qDebug() << m_sccs[i];
         }
-        qDebug() << "TrajanAlgo----------------------------------------------------";
+        //qDebug() << "TrajanAlgo----------------------------------------------------";
     }
 
     QList<QList<int>> getGraphAllScc() {

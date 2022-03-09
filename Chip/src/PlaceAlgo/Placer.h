@@ -14,15 +14,8 @@
 #include "GetTopologySort.h"
 #include "ImprovedTarjanAlgo.h"
 
-struct ModuleSize {
-    int width = 0;
-    int height = 0;
-};
+#include "PlaceAlgo/MyStruct.h"
 
-struct IndexDegree {
-    int index;
-    int degree;
-};
 
 class Placement {
 

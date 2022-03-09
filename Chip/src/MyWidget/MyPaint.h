@@ -7,6 +7,8 @@
 #include <QWidget>
 #include <QPainter>
 
+#include "PlaceAlgo/MyStruct.h"
+
 class MyPaint : public QWidget {
 
 Q_OBJECT
