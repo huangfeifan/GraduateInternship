@@ -20,8 +20,8 @@ public:
     MyPaint(QVector<QPoint> pos, QVector<QPoint> size, QVector<int> in, QVector<int> out) : m_pos(pos), m_size(size),
                                                                                             m_inDegree(in),
                                                                                             m_outDegree(out) {
+        setFixedSize(1200, 1000);
         //m_size = size;
-        setMouseTracking(true);
     }
 
     ~MyPaint();
