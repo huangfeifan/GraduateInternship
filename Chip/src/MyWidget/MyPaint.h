@@ -6,8 +6,11 @@
 
 #include <QWidget>
 #include <QPainter>
+#include <QDebug>
+#include <QVector>
 
 #include "PlaceAlgo/MyStruct.h"
+#include "PlaceAlgo/Router.h"
 
 class MyPaint : public QWidget {
 
@@ -18,9 +21,13 @@ public:
                                                                                             m_inDegree(in),
                                                                                             m_outDegree(out) {
         //m_size = size;
+        setMouseTracking(true);
     }
 
     ~MyPaint();
+
+private:
+    QList<QPoint> paintRouterPaths(QStack<Pair> paths);
 
 protected:
 

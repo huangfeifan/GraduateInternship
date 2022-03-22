@@ -13,9 +13,11 @@
 #include "PlaceAlgo/ComputeAbsolutePos.h"
 #include "PlaceAlgo/SchematicPlacement.h"
 #include "PlaceAlgo/MyStruct.h"
+#include "PlaceAlgo/Router.h"
 
 #include "Test.h"
 #include "Data.h"
+
 
 /// 根据结构体的某一个属性排序
 
@@ -198,7 +200,6 @@ int main(int argc, char *argv[]) {
 
     //qDebug() << size;
 
-
     MyPaint myPaint(sp.getModulePos(), size, inDegree, outDegree);
     myPaint.show();
 
@@ -268,7 +269,6 @@ void getRandomConnectData() {
     }
 }
 
-
 /// 演示
 //    qDebug() << placement.getRelativePosition().sccSize();
 //    qDebug() << placement.m_nameList.sccSize();
@@ -286,25 +286,3 @@ void getRandomConnectData() {
 //c.setWindowTitle("a scc");
 //c.show();
 
-// test scc algo
-//TrajanAlgo tarjanAlgo;
-
-// test topology sort
-//GetTopologySort topologySort;
-
-// test placement
-//Placement placement;
-
-/// graphView
-/*    MainWindow window;
-    window.show();*/
-
-/*
-    QHash<int, int> testHash;
-    testHash.insert(4, -1);
-    testHash.insert(5, 1);
-    testHash.insert(6, 1);
-    if (testHash.contains(4)) {
-        qDebug() << testHash.value(4);
-    }
-*/

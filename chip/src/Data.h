@@ -25,7 +25,6 @@ const static QList<ConnectData> FAKE_ALL_CONNECT_DATA = {
         {1, 2, 2, 0},
         {2, 3, 2, 1},
         {3, 1, 0, 0},
-
 };
 
 static QVector<int> MODULE_PORT_LIST = {
@@ -179,6 +178,11 @@ const static QVector<QList<int>> graphData = {
 
 
 // example 5
+        {3},
+        {},
+        {},
+        {2, 1, 4},
+        {1},
         {3},
         {},
         {},
