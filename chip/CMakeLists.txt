@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.19)
 project(Chip)
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_PREFIX_PATH "D:/Qt5.12.6/5.12.6/msvc2017_64")
+set(CMAKE_PREFIX_PATH "D:/Qt5.12.6/5.12.6/msvc2017_64") # qt path Todo modify
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
@@ -25,7 +25,7 @@ add_executable(
         ${DIR_SRCS}
         images.qrc
         main.cpp
-)
+        src/PlaceAlgo/PlaceAndRoute.cpp src/PlaceAlgo/PlaceAndRoute.h)
 
 if (NOT CMAKE_PREFIX_PATH)
     message(WARNING "CMAKE_PREFIX_PATH is not defined, you may need to set it "

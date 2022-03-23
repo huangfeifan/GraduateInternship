@@ -9,7 +9,7 @@
 #include <QDebug>
 
 #include "Data.h"
-#include "PlaceAlgo/Placer.h"
+//#include "PlaceAlgo/Placer.h"
 
 class AfterPlacement : public QWidget {
 

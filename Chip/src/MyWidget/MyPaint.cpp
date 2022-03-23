@@ -107,7 +107,7 @@ void MyPaint::paintEvent(QPaintEvent *event) {
         painter.drawLine(list[i - 1].x() * grid, list[i - 1].y() * grid, list[i].x() * grid, list[i].y() * grid);
     }
 
-    // update rowGridInfo
+    // update m_rowGridInfo
     // Note the boundary conditions
     for (int i = 1; i < list.size(); ++i) {
         int startX = list[i - 1].x();//
@@ -118,9 +118,9 @@ void MyPaint::paintEvent(QPaintEvent *event) {
         if (startX == endX) {
             // update column channel
             //if (startY > endY) {
-            //    columnGridInfo[endY][startX] = 0;
+            //    m_columnGridInfo[endY][startX] = 0;
             //} else {
-            //    columnGridInfo[startY][startX] = 0;
+            //    m_columnGridInfo[startY][startX] = 0;
             //}
             columnGridInfo[endY][startX] = 0;
             columnGridInfo[startY][startX] = 0;
@@ -131,9 +131,9 @@ void MyPaint::paintEvent(QPaintEvent *event) {
         if (startY == endY) {
             // update row channel
             //if (startX > endX) {
-            //    rowGridInfo[endY][endX] = 0;
+            //    m_rowGridInfo[endY][endX] = 0;
             //} else {
-            //    rowGridInfo[endY][startX] = 0;
+            //    m_rowGridInfo[endY][startX] = 0;
             //}
             rowGridInfo[endY][endX] = 0;
             rowGridInfo[endY][startX] = 0;
@@ -141,7 +141,7 @@ void MyPaint::paintEvent(QPaintEvent *event) {
             columnGridInfo[endY][endX] = 0;
         }
 
-        rowGridInfo[y][x] = 0;// blocked
+        //rowGridInfo[y][x] = 0;// blocked
         //qDebug() << x << " " << y;
     }
 

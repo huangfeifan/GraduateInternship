@@ -16,7 +16,7 @@
 
 #include "PlaceAlgo/MyStruct.h"
 
-
+/*
 class Placement {
 
 public :
@@ -26,7 +26,7 @@ public :
     QVector<bool> m_isPlacedScc;// 模块是否被摆放  todo delete 可以删除
     QVector<QHash<int, int>> m_isOccupyScc;// 位置被占据
     QVector<QList<int>> m_connectionScc;
-    QVector<ModuleSize> m_moduleDegreeScc;// 记录模块的度数  width 出度 height 入度
+    QVector<ModuleSize> m_moduleDegreeScc;// 记录模块的度数  width 出度 weight 入度
     QVector<QPoint> m_relativePositionScc;// 改进的行列定位法坐标 相对坐标的计算
 
 
@@ -98,7 +98,9 @@ private:
     int m_moduleCount = 0;
     QVector<QHash<int, int>> m_isOccupy;// 位置被占据
     QVector<QList<int>> m_connection;
-    QVector<ModuleSize> m_moduleDegree;// 记录模块的度数  width 出度 height 入度
+    QVector<ModuleSize> m_moduleDegree;// 记录模块的度数  width 出度 weight 入度
     QVector<QPoint> m_relativePosition;// 改进的行列定位法坐标 相对坐标的计算
 
 };
+
+*/

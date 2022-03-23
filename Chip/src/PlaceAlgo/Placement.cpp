@@ -2,46 +2,83 @@
 // Created by Huangff on 2022/2/11.
 //
 
-#include "SchematicPlacement.h"
+#include "Placement.h"
 #include "Data.h"
 
-SchematicPlacement::SchematicPlacement(QVector<QList<int>> graphData, QVector<QPoint> moduleSize) : m_moduleConnectData(
-        graphData), m_size(moduleSize) {
+Placement::Placement(QVector<QList<int>> graphData, QVector<ModuleInfo> moduleInfo) : m_moduleConnectData(
+        graphData), m_moduleInfo(moduleInfo) {
+    ///// 1.数据预处理
+    ///// 2.计算强连通分支间的相对位置
+    ///// 3.计算强连通内部的相对位置和绝对位置
+    ///// 4.计算每个模块的绝对位置
+    ///// 5.计算单独port的绝对位置
+    ///// 全剧终
+    //
+    //// passed
+    //preHandleData();
+    //
+    //// bug 数组越界 Fix Time: 0228  计算模块绝对位置
+    //computePosition();  // 2,3,4
+    //
+    //// 初始化port相关数据
+    //initPortRelatedInfo();
+    //
+    //// 计算port的绝对位置
+    //computePortPos();
+}
+
+Placement::Placement(QList<ConnectData> connectData, QVector<ModuleInfo> moduleInfo, int leftPortNum, int rightPortNum)
+        : m_connectData(connectData),
+          m_moduleInfo(moduleInfo), m_leftPortNum(leftPortNum), m_rightPortNum(rightPortNum) {
+    // 计算模块大小
+    computeModuleSize();
+
     /// 1.数据预处理
     /// 2.计算强连通分支间的相对位置
     /// 3.计算强连通内部的相对位置和绝对位置
-    /// 4.计算强连通间的绝对位置
-    /// 5.计算每个模块的绝对位置
-    /// 6.计算单独port的绝对位置
+    /// 4.计算每个模块的绝对位置
+    /// 5.计算单独port的绝对位置
     /// 全剧终
 
     // passed
     preHandleData();
 
-    // bug 数组越界 Fix Time: 0228
-    computePosition();
+    // bug 数组越界 Fix Time: 0228  计算模块绝对位置
+    computePosition();  // 2,3,4
+
+    // 初始化port相关数据
+    initPortRelatedInfo();
+
+    // 计算port的绝对位置
+    computePortPos();
 }
 
-QVector<QPoint> SchematicPlacement::getModulePos() {
+Placement::Placement(QList<ConnectData> connectData) : m_connectData(connectData) {
+    // 邻接表的计算
+    computeModuleConnectData();
+
+}
+
+QVector<QPoint> Placement::getModulePos() {
     return m_modulePos;
 }
 
-QVector<QPoint> SchematicPlacement::getLeftPortPos() {
+QVector<QPoint> Placement::getLeftPortPos() {
     // 左侧输入port位置
     return m_leftPortPos;
 }
 
-QVector<QPoint> SchematicPlacement::getRightPortPos() {
+QVector<QPoint> Placement::getRightPortPos() {
     // 右侧输出port位置
     return m_rightPortPos;
 }
 
-QVector<QVector<int>> SchematicPlacement::getModulePortPos() {
+QVector<QVector<QPoint>> Placement::getModulePortPos() {
     // 每个module的port位置
     return m_modulePortPos;
 }
 
-void SchematicPlacement::printInfo() {
+void Placement::printInfo() {
     qDebug() << "****************************************************";
     qDebug() << m_sccs << "  SCC";
     for (int i = 0; i < m_sccsInfo.size(); ++i) {
@@ -56,7 +93,7 @@ void SchematicPlacement::printInfo() {
     }
 }
 
-void SchematicPlacement::adjustRelativePos(QVector<QPoint> &relativePos) {
+void Placement::adjustRelativePos(QVector<QPoint> &relativePos) {
 // 最后两列只有一个module 且都只包含一个module 则将最后一列的module放在倒数第二列
     QVector<QList<int>> columnIndexList = QVector<QList<int>>(relativePos.size());
     QVector<QHash<int, int>> isPosOccupied = QVector<QHash<int, int>>(relativePos.size());
@@ -97,7 +134,7 @@ void SchematicPlacement::adjustRelativePos(QVector<QPoint> &relativePos) {
     }
 }
 
-void SchematicPlacement::computeAllModulePos() {
+void Placement::computeAllModulePos() {
     //qDebug() << "compute All Module Pos------------------------------------";
     //qDebug() << m_modulePos;
     // 相对位置的计算
@@ -112,11 +149,16 @@ void SchematicPlacement::computeAllModulePos() {
     // 保存相对位置
     m_moduleRelativePos = m_modulePos;
 
-    ComputeAbsolutePos pos(m_moduleConnectData, m_size, m_modulePos, 1, 30, 50);
+    QVector<QPoint> size = QVector<QPoint>(m_moduleInfo.size());
+    for (int i = 0; i < m_moduleInfo.size(); ++i) {
+        size[i] = m_moduleInfo[i].size;
+    }
+
+    ComputeAbsolutePos pos(m_moduleConnectData, size, m_modulePos, 1, 30, 50);
     m_modulePos = pos.getAbsolutePos();
 }
 
-void SchematicPlacement::computePosition() {
+void Placement::computePosition() {
     m_modulePos = QVector<QPoint>(m_moduleConnectData.size());
 
     /// 计算模块的绝对位置
@@ -145,10 +187,10 @@ void SchematicPlacement::computePosition() {
     adjustModulePos();
 
     // todo add
-    computePortPos();// 计算单独port的绝对位置
+    computePortPos();// 计算所有port的绝对位置
 }
 
-void SchematicPlacement::computeASccInnerPosition() {
+void Placement::computeASccInnerPosition() {
 //qDebug() << "------------------------------------------------------compute A SccInner Position";
 
     /// 计算每个强连通分支内部结点的绝对位置
@@ -170,7 +212,7 @@ void SchematicPlacement::computeASccInnerPosition() {
     //qDebug() << "------------------------------------------------------compute A SccInner Position End\n\n";
 }
 
-void SchematicPlacement::computeASccPosition() {
+void Placement::computeASccPosition() {
     /// 计算强连通分支内部的相对位置和绝对位置
     // pass
     for (int i = 0; i < m_sccs.size(); ++i) {
@@ -194,7 +236,7 @@ void SchematicPlacement::computeASccPosition() {
             }
             //qDebug() << size;
 
-            //qDebug() << width << " width  height" << height;
+            //qDebug() << width << " width  weight" << weight;
             // 计算绝对位置并保存
             m_sccsInfo[index].absolutePos = size;
             // 更新单个强连通分支的大小
@@ -213,7 +255,7 @@ void SchematicPlacement::computeASccPosition() {
     }
 }
 
-void SchematicPlacement::computeSccsAbsolutePosition() {
+void Placement::computeSccsAbsolutePosition() {
     /// 计算强连通分支间的绝对位置
     //qDebug() << "\n\n------------------------------------------------------compute Sccs AbsolutePosition";
     // 每个强连通分支的大小
@@ -244,7 +286,7 @@ void SchematicPlacement::computeSccsAbsolutePosition() {
     //qDebug() << "------------------------------------------------------compute Sccs AbsolutePosition End\n\n";
 }
 
-void SchematicPlacement::initSccsInfo() {
+void Placement::initSccsInfo() {
     // 初始化m_sccsConnectData和m_sccsInfo
 
     m_moduleSccIndex = QVector<int>(m_moduleConnectData.size());// 模块所在的sccIndex
@@ -263,7 +305,7 @@ void SchematicPlacement::initSccsInfo() {
 
             sccIndexHash.insert(m_sccs[i][j], j);// 原来的index 新index
             // 模块大小
-            moduleSize[j] = m_size[m_sccs[i][j]];
+            moduleSize[j] = m_moduleInfo[m_sccs[i][j]].size;
         }
 
         m_sccsInfo[i + 1].sccSize = moduleSize[0];// 先初始化一个sccSize 后续会修改
@@ -316,62 +358,194 @@ void SchematicPlacement::initSccsInfo() {
     }
 }
 
-SchematicPlacement::SchematicPlacement(QList<ConnectData> connectData, QVector<QPoint> moduleSize) {
-    m_connectData = connectData;
-    m_size = moduleSize;
-}
 
-SchematicPlacement::SchematicPlacement(QList<ConnectData> connectData) {
-    m_connectData = connectData;
-    // 邻接表的计算
-    computeModuleConnectData();
-
-
-}
-
-void SchematicPlacement::computeModuleSize() {
+void Placement::computeModuleSize() {
     /// 计算模块大小 根据输入输出个数() 高度统一(参数)
 
-    QVector<QPoint> size = QVector<QPoint>(m_moduleCount);
-    QVector<int> inDegree = QVector<int>(m_moduleCount);
-    QVector<int> outDegree = QVector<int>(m_moduleCount);
-    for (int i = 0; i < m_moduleConnectData.size(); ++i) {
-        // 出度
-        outDegree[i] = m_moduleConnectData[i].size();
-        int end;
-        for (int j = 0; j < m_moduleConnectData[i].size(); ++j) {
-            end = m_moduleConnectData[i][j];
-            inDegree[end]++;
-        }
+    if (m_moduleInfo.size() && m_moduleInfo[0].size.x() > 0) {
+        return;
     }
+
     const int WIDTH = 30;
     int height = 10;// 一个port 20 两个port30 依次类推
-    for (int i = 0; i < m_moduleCount; ++i) {
-        m_size[i].setX(WIDTH);
-        int temp = inDegree[i] > outDegree[i] ? inDegree[i] : outDegree[i];
-        m_size[i].setY((temp + 1) * height);
+    for (int i = 0; i < m_moduleInfo.size(); ++i) {
+        m_moduleInfo[i].size.setX(WIDTH);
+        int temp = m_moduleInfo[i].inDegree > m_moduleInfo[i].outDegree ? m_moduleInfo[i].inDegree
+                                                                        : m_moduleInfo[i].outDegree;
+        m_moduleInfo[i].size.setY((temp + 1) * height);
     }
 }
 
-QVector<QPoint> SchematicPlacement::getModuleRelativePos() {
+QVector<QPoint> Placement::getModuleRelativePos() {
     return m_moduleRelativePos;
 }
 
-void SchematicPlacement::computeScc() {
+void Placement::computeScc() {
     GetGraphSccs tarjanAlgo(m_moduleConnectData);
     m_sccs = tarjanAlgo.getGraphAllScc();
 }
 
-void SchematicPlacement::computeModuleConnectData() { // pass
+void Placement::computeModuleConnectData() { // pass
     for (int i = 0; i < m_connectData.size(); ++i) {
         int startModule = m_connectData[i].startModuleIndex;
         int endModule = m_connectData[i].endModuleIndex;
 
-        if (endModule == -1 || startModule == -1) {
-            // 输入为单独的port
-            // 输入为单独的port
+        if (startModule == -1) {
+            // 左侧单独的输入port
+            m_leftPortConnectData.push_back(m_connectData[i]);
             continue;
         }
+
+        if (endModule == -1) {
+            // 右侧单独的输出port
+            m_rightPortConnectData.push_back(m_connectData[i]);
+            continue;
+        }
+
         m_moduleConnectData[startModule].push_back(endModule);
+    }
+}
+
+Placement::Placement(QVector<QPoint> moduleDegree, QList<ConnectData> connectData) : m_connectData(connectData) {
+    computeModuleSize();
+}
+
+void Placement::adjustModulePos() {
+    // 根据俄罗斯方块调整最终位置
+}
+
+void Placement::computePortPos() {
+    /// 用于计算所有port的位置
+
+    // 计算属于模块的port的位置
+    computeModulePortPos();
+
+    // 计算左侧单独的port位置
+    computeLeftPortPos();
+
+    // 计算右侧单独的port位置
+    computeRightPortPos();
+
+}
+
+void Placement::computeSccsRelativePosition() {
+    /// 计算强连通分支间的相对位置
+    // 存放在m_sccsInfo[0].relativePos中
+    // connect数据
+    //qDebug() << m_sccsConnectData[0];// 原连接数据
+    //qDebug() << m_sccsInfo[0].graph;// 新索引下的连接数据
+    PlaceSccs placeSccs(m_sccsInfo[0].graph);
+    // 保存相对位置数据
+    m_sccsInfo[0].relativePos = placeSccs.getRelativePos();
+}
+
+void Placement::preHandleData() {
+    /// 数据的预处理
+    //      1.计算强连通分支
+    //      2.初始化m_sccsConnectData和m_sccsInfo
+
+    computeScc();
+    initSccsInfo();
+}
+
+void Placement::computeModulePortPos() {
+    for (int i = 0; i < m_connectData.size(); ++i) {
+        int startModule = m_connectData[i].startModuleIndex;
+        int endModule = m_connectData[i].endModuleIndex;
+
+        if (startModule == -1 || endModule == -1) {
+            continue;
+        }
+
+        int startPort = m_connectData[i].startPortIndex;
+        int endPort = m_connectData[i].endPortIndex;
+        // 设置模块的port的权重  port放在左右 则考虑y当作权重 port放在上下 考虑x当作权重
+        // Todo extend
+        m_modulePort[startModule][startPort].weight = m_moduleRelativePos[endModule].y();
+        m_modulePort[endModule][endPort].weight = m_moduleRelativePos[startModule].y();
+    }
+
+    // 对模块的port进行排序 四个方向基于权重排序并计算绝对位置
+    for (int i = 0; i < m_modulePort.size(); ++i) {
+        QList<WeightAndIndex> left;
+        QList<WeightAndIndex> bottom;
+        QList<WeightAndIndex> right;
+        QList<WeightAndIndex> top;
+        for (int j = 0; j < m_modulePort[i].size(); ++j) {
+            WeightAndIndex temp(m_modulePort[i][j].weight, j);
+            switch (m_modulePort[i][j].Direction) {
+                // 0,1,2,3 左下右上
+                case 0:
+                    left.push_back(temp);
+                    break;
+                case 1:
+                    bottom.push_back(temp);
+                    break;
+                case 2:
+                    right.push_back(temp);
+                    break;
+                case 3:
+                    top.push_back(temp);
+                    break;
+                default:
+                    qDebug() << "Error Switch Case!";
+            }
+        }
+
+        qSort(left.begin(), left.end(), compareWeight);
+        qSort(bottom.begin(), bottom.end(), compareWeight);
+        qSort(right.begin(), right.end(), compareWeight);
+        qSort(top.begin(), top.end(), compareWeight);
+
+        for (int j = 0; j < left.size(); ++j) {
+            int index = left[i].index;
+            m_modulePort[i][index].orderIndex = j;
+            m_modulePort[i][index].point = QPoint(0, j * m_grid + m_grid) + m_modulePos[i];
+        }
+        for (int j = 0; j < bottom.size(); ++j) {
+            int index = bottom[i].index;
+            m_modulePort[i][index].orderIndex = j;
+            m_modulePort[i][index].point = QPoint(j * m_grid + m_grid, m_moduleInfo[i].size.y()) + m_modulePos[i];
+        }
+
+        for (int j = 0; j < right.size(); ++j) {
+            int index = right[i].index;
+            m_modulePort[i][index].orderIndex = j;
+            m_modulePort[i][index].point = QPoint(m_moduleInfo[i].size.x(), j * m_grid + m_grid) + m_modulePos[i];
+        }
+
+        for (int j = 0; j < top.size(); ++j) {
+            int index = top[i].index;
+            m_modulePort[i][index].orderIndex = j;
+            m_modulePort[i][index].point = QPoint(0, j * m_grid + m_grid) + m_modulePos[i];
+        }
+    }
+
+}
+
+void Placement::computeLeftPortPos() {
+    QHash<int, int> leftPos;
+    for (int i = 0; i < m_leftPortConnectData.size(); ++i) {
+        int startPort = m_leftPortConnectData[i].startPortIndex;
+        m_leftInputPort[startPort].point = QPoint();
+    }
+    // place unplaced port
+    for (int i = 0; i < m_leftPortNum; ++i) {
+        //if (m_leftInputPort[i].)
+        // todo add something
+    }
+
+}
+
+void Placement::computeRightPortPos() {
+
+}
+
+void Placement::initPortRelatedInfo() {
+    m_leftInputPort = QVector<PortInfo>(m_leftPortNum);
+    m_rightOutputPort = QVector<PortInfo>(m_rightPortNum);
+    m_modulePort = QVector<QVector<PortInfo>>(m_moduleInfo.size());
+    for (int i = 0; i < m_moduleInfo.size(); ++i) {
+        m_modulePort[i] = QVector<PortInfo>(m_moduleInfo[i].inDegree + m_moduleInfo[i].outDegree);
     }
 }

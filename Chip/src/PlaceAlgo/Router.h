@@ -73,7 +73,7 @@ public:
     // A Utility Function to trace the path from the source
     // to destination
     void tracePath(QVector<QVector<cell>> cellDetails, Pair dest) {
-        printf("\nThe Path is ");
+        //printf("\nThe Path is ");
         int row = dest.first;
         int col = dest.second;
 
@@ -93,7 +93,7 @@ public:
         while (!Path.empty()) {
             QPair<int, int> p = Path.top();
             Path.pop();
-            printf("-> (%d,%d) ", p.first, p.second);
+            //printf("-> (%d,%d) ", p.first, p.second);
         }
 
         return;
@@ -116,10 +116,10 @@ public:
         }
 
         // Either the source or the destination is blocked
-        if (isUnBlocked(src.first, src.second, m_rowGrid) == false
-            || isUnBlocked(dest.first, dest.second, m_rowGrid)
-               == false || isUnBlocked(src.first, src.second, m_columnGrid) == false
-            || isUnBlocked(dest.first, dest.second, m_columnGrid)
+        if (isUnBlocked(src.first, src.second, m_rowGridInfo) == false
+            || isUnBlocked(dest.first, dest.second, m_rowGridInfo)
+               == false || isUnBlocked(src.first, src.second, m_columnGridInfo) == false
+            || isUnBlocked(dest.first, dest.second, m_columnGridInfo)
                == false) {
             printf("Source or the destination is blocked\n");
             return;
@@ -226,7 +226,7 @@ public:
                     // Set the Parent of the destination cell
                     m_cellDetails[i - 1][j].parent_i = i;
                     m_cellDetails[i - 1][j].parent_j = j;
-                    printf("The destination cell is found\n");
+                    //printf("The destination cell is found\n");
                     tracePath(m_cellDetails, dest);
                     foundDest = true;
                     return;
@@ -235,7 +235,7 @@ public:
                     // list or if it is blocked, then ignore it.
                     // Else do the following
                 else if (closedList[i - 1][j] == false
-                         && isUnBlocked(i - 1, j, m_columnGrid)) {
+                         && isUnBlocked(i - 1, j, m_columnGridInfo)) {
                     gNew = m_cellDetails[i][j].g + 1.0;
                     hNew = calculateHValue(i - 1, j, dest);
                     fNew = gNew + hNew;
@@ -273,7 +273,7 @@ public:
                     // Set the Parent of the destination cell
                     m_cellDetails[i + 1][j].parent_i = i;
                     m_cellDetails[i + 1][j].parent_j = j;
-                    printf("The destination cell is found\n");
+                    //printf("The destination cell is found\n");
                     tracePath(m_cellDetails, dest);
                     foundDest = true;
                     return;
@@ -282,7 +282,7 @@ public:
                     // list or if it is blocked, then ignore it.
                     // Else do the following
                 else if (closedList[i + 1][j] == false
-                         && isUnBlocked(i + 1, j, m_columnGrid)) {
+                         && isUnBlocked(i + 1, j, m_columnGridInfo)) {
                     gNew = m_cellDetails[i][j].g + 1.0;
                     hNew = calculateHValue(i + 1, j, dest);
                     fNew = gNew + hNew;
@@ -319,7 +319,7 @@ public:
                     // Set the Parent of the destination cell
                     m_cellDetails[i][j + 1].parent_i = i;
                     m_cellDetails[i][j + 1].parent_j = j;
-                    printf("The destination cell is found\n");
+                    //printf("The destination cell is found\n");
                     tracePath(m_cellDetails, dest);
                     foundDest = true;
                     return;
@@ -329,7 +329,7 @@ public:
                     // list or if it is blocked, then ignore it.
                     // Else do the following
                 else if (closedList[i][j + 1] == false
-                         && isUnBlocked(i, j + 1, m_rowGrid)
+                         && isUnBlocked(i, j + 1, m_rowGridInfo)
                         ) {
                     gNew = m_cellDetails[i][j].g + 1.0;
                     hNew = calculateHValue(i, j + 1, dest);
@@ -368,7 +368,7 @@ public:
                     // Set the Parent of the destination cell
                     m_cellDetails[i][j - 1].parent_i = i;
                     m_cellDetails[i][j - 1].parent_j = j;
-                    printf("The destination cell is found\n");
+                    //printf("The destination cell is found\n");
                     tracePath(m_cellDetails, dest);
                     foundDest = true;
                     return;
@@ -378,7 +378,7 @@ public:
                     // list or if it is blocked, then ignore it.
                     // Else do the following
                 else if (closedList[i][j - 1] == false
-                         && isUnBlocked(i, j - 1, m_rowGrid)
+                         && isUnBlocked(i, j - 1, m_rowGridInfo)
                         ) {
                     gNew = m_cellDetails[i][j].g + 1.0;
                     hNew = calculateHValue(i, j - 1, dest);
@@ -422,12 +422,54 @@ public:
 
     // set row channel info
     void setRowGridInfo(const QVector<QVector<int>> &grid) {
-        m_rowGrid = grid;
+        m_rowGridInfo = grid;
     }
 
     // set column channel info
     void setColumnGridInfo(const QVector<QVector<int>> &grid) {
-        m_columnGrid = grid;
+        m_columnGridInfo = grid;
+    }
+
+    void setGridInfo(const QVector<QVector<int>> &rowInfo, const QVector<QVector<int>> &columnInfo) {
+        m_rowGridInfo = rowInfo;
+        m_columnGridInfo = columnInfo;
+    }
+
+    // update gridInfo
+    void updateGridInfo(QList<QPoint> list) {
+        for (int i = 1; i < list.size(); ++i) {
+            int startX = list[i - 1].x();//
+            int startY = list[i - 1].y();//
+            int endX = list[i].x();//
+            int endY = list[i].y();//
+
+            if (startX == endX) {
+                // update column channel
+                //if (startY > endY) {
+                //    m_columnGridInfo[endY][startX] = 0;
+                //} else {
+                //    m_columnGridInfo[startY][startX] = 0;
+                //}
+                m_columnGridInfo[endY][startX] = 0;
+                m_columnGridInfo[startY][startX] = 0;
+                m_rowGridInfo[startY][startX] = 0;
+                m_rowGridInfo[endY][startX] = 0;
+            }
+
+            if (startY == endY) {
+                // update row channel
+                //if (startX > endX) {
+                //    m_rowGridInfo[endY][endX] = 0;
+                //} else {
+                //    m_rowGridInfo[endY][startX] = 0;
+                //}
+                m_rowGridInfo[endY][endX] = 0;
+                m_rowGridInfo[endY][startX] = 0;
+                m_columnGridInfo[endY][startX] = 0;
+                m_columnGridInfo[endY][endX] = 0;
+            }
+            //qDebug() << x << " " << y;
+        }
     }
 
     // get the routing result
@@ -445,11 +487,10 @@ public:
         //return list;
     }
 
-
 private:
     int m_row;// row count
     int m_column;// column count
     QStack<Pair> m_path;// routing result
-    QVector<QVector<int>> m_rowGrid;// row Channel
-    QVector<QVector<int>> m_columnGrid;// column Channel
+    QVector<QVector<int>> m_rowGridInfo;// row Channel
+    QVector<QVector<int>> m_columnGridInfo;// column Channel
 };

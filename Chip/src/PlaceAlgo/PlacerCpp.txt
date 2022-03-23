@@ -4,7 +4,10 @@
 
 #include "Placer.h"
 #include "ComputeAbsolutePos.h"
-#include "SchematicPlacement.h"
+#include "Placement.h"
+
+/*
+
 
 static bool degreeCompare(const IndexDegree &index1, const IndexDegree &index2) {
     // 从大到小进行排序
@@ -53,14 +56,14 @@ void Placement::computeModuleSize() {
     // 根据模块的出度入度就可以得到模块的宽高 默认只有左右端口 所以宽度默认
     for (int i = 0; i < m_moduleCount; ++i) {
         m_moduleSize[i].width = m_minWidth;
-        int height = m_moduleDegree[i].width > m_moduleDegree[i].height ? m_moduleDegree[i].width
-                                                                        : m_moduleDegree[i].height;
-        m_moduleSize[i].height = m_minHeight + height * height_gap;
+        int weight = m_moduleDegree[i].width > m_moduleDegree[i].weight ? m_moduleDegree[i].width
+                                                                        : m_moduleDegree[i].weight;
+        m_moduleSize[i].weight = m_minHeight + weight * height_gap;
     }
 
     // 打印 Module Size
     for (int i = 0; i < m_moduleCount; ++i) {
-        //qDebug() << "Module__" << i << " width " << m_moduleSize[i].width << " , height " << m_moduleSize[i].height;
+        //qDebug() << "Module__" << i << " width " << m_moduleSize[i].width << " , weight " << m_moduleSize[i].weight;
     }
 }
 
@@ -68,57 +71,57 @@ QList<int> Placement::computeTraversalOrder() {
     // 出度排序 根据出度遍历 todo modify
 
     QList<int> orderList;
-/*        // 强连通分量个数
-        int sccSize = m_sccs.sccSize();
-
-        if (sccSize > 1) {
-            // 多个强连通分量
-        } else if (sccSize == 1) {
-            // 只有一个强连通分量
-        } else if (!sccSize) {
-            qDebug() << "error";
-        }*/
+       //// 强连通分量个数
+       // int sccSize = m_sccs.sccSize();
+       //
+       // if (sccSize > 1) {
+       //     // 多个强连通分量
+       // } else if (sccSize == 1) {
+       //     // 只有一个强连通分量
+       // } else if (!sccSize) {
+       //     qDebug() << "error";
+       // }
 
     for (int i = m_sccs.size() - 1; i >= 0; --i) {
-/*            if (m_sccs[i].sccSize() == 0) {
-                // 连通分支只有一个结点
-                orderList.push_back(m_sccs[i][0]);
-            } else {
-                // 对强连通分量的结点进行排序 根据连接关系(包括但不限于出入度) todo modify
-                QList<int> degree;
-                int maxIndex = 0;
-                qDebug() << m_sccs[i] << "   scc_i";
-                for (int j = 1; j < m_sccs[i].sccSize(); ++j) {
-                    int index = m_sccs[i][j];
-                    maxIndex = m_connection[index][0];
-                    if (m_connection[index].sccSize() > m_connection[maxIndex].sccSize()) {
-                        maxIndex = index;
-                        degree.push_front(maxIndex);
-                    } else {
-                        degree.push_back(index);
-                    }
-                }
-                qDebug() << degree;
-
-                for (int j = 0; j < degree.sccSize(); ++j) {
-                    orderList.push_back(degree[j]);
-                }
-            }*/
+            //if (m_sccs[i].sccSize() == 0) {
+            //    // 连通分支只有一个结点
+            //    orderList.push_back(m_sccs[i][0]);
+            //} else {
+            //    // 对强连通分量的结点进行排序 根据连接关系(包括但不限于出入度) todo modify
+            //    QList<int> degree;
+            //    int maxIndex = 0;
+            //    qDebug() << m_sccs[i] << "   scc_i";
+            //    for (int j = 1; j < m_sccs[i].sccSize(); ++j) {
+            //        int index = m_sccs[i][j];
+            //        maxIndex = m_connection[index][0];
+            //        if (m_connection[index].sccSize() > m_connection[maxIndex].sccSize()) {
+            //            maxIndex = index;
+            //            degree.push_front(maxIndex);
+            //        } else {
+            //            degree.push_back(index);
+            //        }
+            //    }
+            //    qDebug() << degree;
+            //
+            //    for (int j = 0; j < degree.sccSize(); ++j) {
+            //        orderList.push_back(degree[j]);
+            //    }
+            //}
 
         // 强连通分支内部不调整次序
         for (int j = 0; j < m_sccs[i].size(); ++j) {
             orderList.push_back(m_sccs[i][j]);
         }
 
-/*            // 根据输出输出关系 调整强连通分支结点的次序
-            int index = m_sccs[i][0];
-            for (int j = 1; j < m_sccs[i].sccSize(); ++j) {
-                int newIndex = m_sccs[i][j];
-                if (m_connection[index].sccSize() < m_connection[newIndex].sccSize()) {
-                    index = newIndex;
-                }
-            }
-            orderList.push_back(index);*/
+            //// 根据输出输出关系 调整强连通分支结点的次序
+            //int index = m_sccs[i][0];
+            //for (int j = 1; j < m_sccs[i].sccSize(); ++j) {
+            //    int newIndex = m_sccs[i][j];
+            //    if (m_connection[index].sccSize() < m_connection[newIndex].sccSize()) {
+            //        index = newIndex;
+            //    }
+            //}
+            //orderList.push_back(index);
 
 
     }
@@ -137,35 +140,35 @@ QList<int> Placement::computeTraversalOrder1() {
     }
 
     for (int i = m_sccs.size() - 1; i >= 0; --i) {
-/*            if (m_sccs[i].sccSize() == 0) {
-                // 连通分支只有一个结点
-                orderList.push_back(m_sccs[i][0]);
-            } else {
-                // 对强连通分量的结点进行排序 根据连接关系(包括但不限于出入度) todo modify
-                QList<int> degree;
-                int maxIndex = 0;
-                qDebug() << m_sccs[i] << "   scc_i";
-                for (int j = 1; j < m_sccs[i].sccSize(); ++j) {
-                    int index = m_sccs[i][j];
-                    maxIndex = m_connection[index][0];
-                    if (m_connection[index].sccSize() > m_connection[maxIndex].sccSize()) {
-                        maxIndex = index;
-                        degree.push_front(maxIndex);
-                    } else {
-                        degree.push_back(index);
-                    }
-                }
-                qDebug() << degree;
+           //if (m_sccs[i].sccSize() == 0) {
+           //     // 连通分支只有一个结点
+           //     orderList.push_back(m_sccs[i][0]);
+           // } else {
+           //     // 对强连通分量的结点进行排序 根据连接关系(包括但不限于出入度) todo modify
+           //     QList<int> degree;
+           //     int maxIndex = 0;
+           //     qDebug() << m_sccs[i] << "   scc_i";
+           //     for (int j = 1; j < m_sccs[i].sccSize(); ++j) {
+           //         int index = m_sccs[i][j];
+           //         maxIndex = m_connection[index][0];
+           //         if (m_connection[index].sccSize() > m_connection[maxIndex].sccSize()) {
+           //             maxIndex = index;
+           //             degree.push_front(maxIndex);
+           //         } else {
+           //             degree.push_back(index);
+           //         }
+           //     }
+           //     qDebug() << degree;
+           //
+           //     for (int j = 0; j < degree.sccSize(); ++j) {
+           //         orderList.push_back(degree[j]);
+           //     }
+           // }
 
-                for (int j = 0; j < degree.sccSize(); ++j) {
-                    orderList.push_back(degree[j]);
-                }
-            }*/
-
-/*            // 强连通分支内部不调整次序
+            // 强连通分支内部不调整次序
             for (int j = 0; j < m_sccs[i].sccSize(); ++j) {
-                orderList.push_back(m_sccs[i][j]);
-            }*/
+                //orderList.push_back(m_sccs[i][j]);
+            }
 
         // 根据输出输出关系 调整强连通分支结点的次序
         int index = m_sccs[i][0];
@@ -188,14 +191,13 @@ QList<int> Placement::computeTraversalOrder1() {
 }
 
 void Placement::breadthPlacement() {
-    /**
-     * 从每个强连通分支取一个权重(出度/子结点个数)最大的结点 得到一个遍历序列
-     *  对遍历序列进行遍历
-     *  从强连通分支的权重最大结点出发 对当前结点的所有子节点进行摆放 然后摆放子节点的子节点(对于有向无环图也能得到非常不错的布局结果)
-     *
-     *
-     *  首先计算大概的摆放顺序 其次根据大致的摆放顺序摆放Module
-     */
+
+     // 从每个强连通分支取一个权重(出度/子结点个数)最大的结点 得到一个遍历序列
+     //  对遍历序列进行遍历
+     //  从强连通分支的权重最大结点出发 对当前结点的所有子节点进行摆放 然后摆放子节点的子节点(对于有向无环图也能得到非常不错的布局结果)
+     //
+     //
+     //  首先计算大概的摆放顺序 其次根据大致的摆放顺序摆放Module
 
 
     // 出度排序 根据出度遍历 step1  todo modify
@@ -207,35 +209,35 @@ void Placement::breadthPlacement() {
     }
 
     for (int i = m_sccs.size() - 1; i >= 0; --i) {
-/*            if (m_sccs[i].sccSize() == 0) {
-                // 连通分支只有一个结点
-                orderList.push_back(m_sccs[i][0]);
-            } else {
-                // 对强连通分量的结点进行排序 根据连接关系(包括但不限于出入度) todo modify
-                QList<int> degree;
-                int maxIndex = 0;
-                qDebug() << m_sccs[i] << "   scc_i";
-                for (int j = 1; j < m_sccs[i].sccSize(); ++j) {
-                    int index = m_sccs[i][j];
-                    maxIndex = m_connection[index][0];
-                    if (m_connection[index].sccSize() > m_connection[maxIndex].sccSize()) {
-                        maxIndex = index;
-                        degree.push_front(maxIndex);
-                    } else {
-                        degree.push_back(index);
-                    }
-                }
-                qDebug() << degree;
+            //if (m_sccs[i].sccSize() == 0) {
+            //    // 连通分支只有一个结点
+            //    orderList.push_back(m_sccs[i][0]);
+            //} else {
+            //    // 对强连通分量的结点进行排序 根据连接关系(包括但不限于出入度) todo modify
+            //    QList<int> degree;
+            //    int maxIndex = 0;
+            //    qDebug() << m_sccs[i] << "   scc_i";
+            //    for (int j = 1; j < m_sccs[i].sccSize(); ++j) {
+            //        int index = m_sccs[i][j];
+            //        maxIndex = m_connection[index][0];
+            //        if (m_connection[index].sccSize() > m_connection[maxIndex].sccSize()) {
+            //            maxIndex = index;
+            //            degree.push_front(maxIndex);
+            //        } else {
+            //            degree.push_back(index);
+            //        }
+            //    }
+            //    qDebug() << degree;
+            //
+            //    for (int j = 0; j < degree.sccSize(); ++j) {
+            //        orderList.push_back(degree[j]);
+            //    }
+            //}
 
-                for (int j = 0; j < degree.sccSize(); ++j) {
-                    orderList.push_back(degree[j]);
-                }
-            }*/
-
-/*            // 强连通分支内部不调整次序
+            // 强连通分支内部不调整次序
             for (int j = 0; j < m_sccs[i].sccSize(); ++j) {
-                orderList.push_back(m_sccs[i][j]);
-            }*/
+                //orderList.push_back(m_sccs[i][j]);
+            }
 
         // 根据输出输出关系 调整强连通分支结点的次序
         int index = m_sccs[i][0];
@@ -391,7 +393,7 @@ void Placement::placeChildRecursion(int index, int row, int column) {
         //qDebug() << " parent_index " << index << " child_index " << first;
 
         int firstRow = row;
-        //firstRow = m_upDown ? row + 1 : row ;// todo modify  设置偏移量 多少合适呢
+        //firstRow = m_upDown ? row + 1 : row ;//
         //m_upDown = !m_upDown;
         while (m_isOccupy[column + 1].contains(firstRow)) {
             firstRow++;
@@ -462,11 +464,11 @@ void Placement::init() {
         m_relativePosition.push_back(QPoint());
         m_realPosition.push_back(QPoint());
 
-        // height 入度
+        // weight 入度
         for (int j = 0; j < m_connection[i].size(); ++j) {
             int end = m_connection[i][j];
             // 入度
-            m_moduleDegree[end].height++;
+            m_moduleDegree[end].weight++;
         }
     }
 
@@ -490,16 +492,16 @@ void Placement::init() {
 
 
     // 打印出入度
-/*        for (int i = 0; i < m_moduleCount; ++i) {
-            qDebug() << "Module__" << i << " out_degree " << m_moduleDegree[i].width << " , in_degree "
-                     << m_moduleDegree[i].height;
-        }*/
+        for (int i = 0; i < m_moduleCount; ++i) {
+            //qDebug() << "Module__" << i << " out_degree " << m_moduleDegree[i].width << " , in_degree "
+              //       << m_moduleDegree[i].weight;
+        }
 
 
-/*      qDebug() << m_isOccupy << "  m_isOccupy";
-        qDebug() << m_isPlaced << "  m_isPlaced";
-        qDebug() << m_relativePos << "  m_relativePos";
-        qDebug() << m_parent << " m_parent";*/
+      //qDebug() << m_isOccupy << "  m_isOccupy";
+        //qDebug() << m_isPlaced << "  m_isPlaced";
+        //qDebug() << m_relativePos << "  m_relativePos";
+        //qDebug() << m_parent << " m_parent";
 
 }
 
@@ -545,7 +547,7 @@ void Placement::initScc() {
     //QVector<QList<int>> temp = m_connection;
     QHash<int, int> indexHash;
 
-    // todo modify QList to QVector
+
     QList<int> indexList;
     QList<int> orderList;// index拓扑排序的编号
 
@@ -569,7 +571,6 @@ void Placement::initScc() {
             for (int j = 0; j < m_sccs[i].size(); ++j) {
                 hash.insert(m_sccs[i][j], m_sccs[i][0]);
                 str = str + "_" + QString::number(m_sccs[i][j]);
-                // todo modify
                 sccList.push_back(QString::number(m_sccs[i][j]));
                 sccIndexHash.insert(m_sccs[i][j], j);
 
@@ -593,7 +594,7 @@ void Placement::initScc() {
     qDebug() << sccList << " sccList";
     qDebug() << sccIndexHash << " sccIndexHash";
     qDebug() << m_moduleSccIndex << " m_moduleSccIndex";
-    //qDebug() << sccSize << " sccSize";  // todo modify 先只计算一个强连通分支内部的摆放
+    //qDebug() << sccSize << " sccSize";  //
     //QVector<QVector<QList<int>>> allSccConnect(sccCount);//
     //qDebug() << allSccConnect.sccSize() << " allSccConnect";
 
@@ -623,7 +624,6 @@ void Placement::initScc() {
     qDebug() << m_connectionScc << "     m_connectionScc";
     qDebug() << m_nameListScc << "     m_nameListScc";
     qDebug() << "   init connectionScc   ";
-    // todo simplify m_connectionScc
 
 
     //m_connectionScc = graphData;
@@ -649,65 +649,84 @@ void Placement::initScc() {
         m_relativePositionScc.push_back(QPoint());
         //m_realPosition.push_back(QPoint());
 
-        // height 入度
-        /*for (int j = 0; j < m_connectionScc[i].sccSize(); ++j) {
-            int end = m_connectionScc[i][j];
+        // weight 入度
+        for (int j = 0; j < m_connectionScc[i].sccSize(); ++j) {
+            //int end = m_connectionScc[i][j];
             // 入度
-            m_moduleDegree[end].height++;
-        }*/
+            //m_moduleDegree[end].weight++;
+        }
     }
-    for (int i = 0; i < m_connectionScc.size(); ++i) {
-        /*for (int j = 0; j < m_connectionScc[i].sccSize(); ++j) {
-            int end = m_connectionScc[i][j];
-            m_parent[end].push_back(i);
-        }*/
+    for (
+            int i = 0;
+            i < m_connectionScc.
+
+                    size();
+
+            ++i) {
+        for (int j = 0; j < m_connectionScc[i].sccSize(); ++j) {
+            //    int end = m_connectionScc[i][j];
+            //    m_parent[end].push_back(i);
+        }
 
         m_isOccupyScc.push_back(QHash<int, int>());
+
     }
-    for (int i = m_connectionScc.size(); i < m_connectionScc.size() * 2; ++i) {
-        m_isOccupyScc.push_back(QHash<int, int>());
+    for (
+            int i = m_connectionScc.size();
+            i < m_connectionScc.
+
+                    size()
+
+                * 2; ++i) {
+        m_isOccupyScc.
+
+                push_back(QHash<int, int>());
+
     }
 
-    // 摆放---------------------------------------------------------------------------------
-    //      Step1.计算拓扑排序序列
-    //      Step2.根据拓扑序列摆放Module
-    //            根据父子关系摆放
+// 摆放---------------------------------------------------------------------------------
+//      Step1.计算拓扑排序序列
+//      Step2.根据拓扑序列摆放Module
+//            根据父子关系摆放
     GetTopologySort topologySort(m_connectionScc);
     QList<QStack<int>> tSort = topologySort.m_result;
-    //qDebug() << m_connectionScc << "    m_connectionScc";
-    qDebug() << tSort << "    topologySort";
+//qDebug() << m_connectionScc << "    m_connectionScc";
+    qDebug()
+
+            << tSort << "    topologySort";
     for (int i = 0; i < tSort.size(); ++i) {
         for (int j = 0; j < tSort[i].size(); ++j) {
             orderList[tSort[i][j]] = i;
         }
     }
-    qDebug() << orderList << "   orderList";
-    // 是否增加排序呢  todo consider
-    for (int i = 0; i < tSort.size(); ++i) {
-        //qDebug() << tSort[i][0]<< " -----------------------------*************";
-        int column = tSort.size() - 1 + i;
+    qDebug()
 
+            << orderList << "   orderList";
+// 是否增加排序呢  todo consider
+    for (int i = 0; i < tSort.size(); ++i) {
+//qDebug() << tSort[i][0]<< " -----------------------------*************";
+        int column = tSort.size() - 1 + i;
         for (int j = 0; j < tSort[i].size(); ++j) {
             placeIndexAndChild(tSort[i][j], tSort.size() - 1, column, orderList);
         }
     }
 
 
-    // 调整相对位置 相对位置从(0,0)开始
+// 调整相对位置 相对位置从(0,0)开始
     PlaceSccs::simpleAdjust(m_relativePositionScc);
 
 
-/*    AfterPlacement placement(m_relativePositionScc, m_connectionScc);
-    placement.show();*/
+    //AfterPlacement placement(m_relativePositionScc, m_connectionScc);
+    //placement.show();
 
-    // 测试初始化是否出错
-/*    qDebug() << m_connectionScc << "  m_connectionScc";
-    qDebug() << m_isOccupyScc << "  m_isOccupyScc";
-    qDebug() << m_isPlacedScc << "  m_isPlacedScc";
-    qDebug() << m_relativePositionScc << "  m_relativePositionScc";*/
+// 测试初始化是否出错
+//    qDebug() << m_connectionScc << "  m_connectionScc";
+//    qDebug() << m_isOccupyScc << "  m_isOccupyScc";
+//    qDebug() << m_isPlacedScc << "  m_isPlacedScc";
+//    qDebug() << m_relativePositionScc << "  m_relativePositionScc";
 
-    // 对connection进行排序
-    //sortConnectionData();
+// 对connection进行排序
+//sortConnectionData();
 }
 
 void Placement::simplePlace() {
@@ -761,7 +780,7 @@ void Placement::placeIndexAndChild(int index, int row, int column, QList<int> or
     }
 
     qDebug() << childList << "--ChildList";
-    row = row - childList.size() / 2 ;
+    row = row - childList.size() / 2;
     for (int i = 0; i < childList.size(); ++i) {
         int child = childList[i];
         //row = row - childList.size() / 2 ;
@@ -888,3 +907,5 @@ void Placement::placeAScc() {
     qDebug() << "End---------------------------------------PlaceAScc__End";
 }
 
+
+*/

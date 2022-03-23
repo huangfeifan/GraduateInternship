@@ -11,10 +11,24 @@
 
 
 /// 用于对权重的排序
-struct HeightAndIndex {
-    int height;
+struct WeightAndIndex {
+
+    int weight;
     int index;
+
+    WeightAndIndex(int w, int i) {
+        weight = w;
+        index = i;
+    };
 };
+
+static bool compareWeight(const WeightAndIndex &first, const WeightAndIndex &second) {
+    // 从大到小排序
+    if (first.weight > second.weight) {
+        return true;
+    }
+    return false;
+}
 
 /// 注意事项 可能不能很好地与接口兼容 需要增加一个转换函数 实现接口数据到算法数据的转换
 struct ConnectData {
@@ -26,6 +40,12 @@ struct ConnectData {
     // moduleIndex = -1 表示单独的port
 };
 
+struct ModuleInfo {
+    int inDegree = 0;// 输入port个数
+    int outDegree = 0;// 输出port个数
+    QPoint size;//模块大小
+};
+
 struct PortInfo {
     /// 注意事项
     ///     计算module上的port时  height是行相对位置
@@ -35,8 +55,11 @@ struct PortInfo {
     ///         由单独的port输出到module上的port 则height=0
     int moduleIndex = 0;
     int portIndex = 0;
-    int height = 0;// 如果port是起点,则终点高度为height;如果port是终点,则起点高度为height
+    int weight = 0;// 如果port是起点,则终点高度为height;如果port是终点,则起点高度为height
     bool isLeftInput = false;// true表示是左侧单独的输入port;false则表示右侧单独的输出port
+    int Direction = 0;// 0,1,2,3 左下右上
+    QPoint point;// port的pos
+    int orderIndex;// 按照权重排序后
 };
 
 struct ASccInfo {

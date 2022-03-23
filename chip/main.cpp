@@ -9,9 +9,9 @@
 #include "MyWidget/MyPaint.h"
 #include "MyWidget/AfterPlacement.h"
 
-#include "PlaceAlgo/Placer.h"
+//#include "PlaceAlgo/Placer.h"
 #include "PlaceAlgo/ComputeAbsolutePos.h"
-#include "PlaceAlgo/SchematicPlacement.h"
+#include "PlaceAlgo/Placement.h"
 #include "PlaceAlgo/MyStruct.h"
 #include "PlaceAlgo/Router.h"
 
@@ -39,42 +39,13 @@ QVector<QList<int>> getModuleConnectData(const QList<ConnectData> &connectData, 
     return moduleData;
 }
 
-bool compareHeight(const HeightAndIndex &first, const HeightAndIndex &second) {
-    // 从大到小排序
-    if (first.height > second.height) {
-        return true;
-    }
-    return false;
-}
-
 int main(int argc, char *argv[]) {
     Q_INIT_RESOURCE(images);
 
     QApplication app(argc, argv);
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
 
-    /// 计算模块大小 根据输入输出个数() 高度统一(参数)
-    int moduleCount = graphData.size();
-    QVector<QPoint> size = QVector<QPoint>(moduleCount);
-    QVector<int> inDegree = QVector<int>(moduleCount);
-    QVector<int> outDegree = QVector<int>(moduleCount);
-    for (int i = 0; i < graphData.size(); ++i) {
-        // 出度
-        outDegree[i] = graphData[i].size();
-        int end;
-        for (int j = 0; j < graphData[i].size(); ++j) {
-            end = graphData[i][j];
-            inDegree[end]++;
-        }
-    }
-    const int WIDTH = 30;
-    int height = 10;// 一个port 20 两个port30 依次类推
-    for (int i = 0; i < moduleCount; ++i) {
-        size[i].setX(WIDTH);
-        int temp = inDegree[i] > outDegree[i] ? inDegree[i] : outDegree[i];
-        size[i].setY((temp + 1) * height);
-    }
-    SchematicPlacement sp(graphData, size);
+    Placement sp;
 
     // 获得相对位置
     QVector<QPoint> moduleRelativePos = sp.getModuleRelativePos();
@@ -108,7 +79,8 @@ int main(int argc, char *argv[]) {
 
     qDebug() << moduleRelativePos << "   - -- -  - - - - module relative pos";
 
-    // 计算所有port的信息   1.计算单独的port的height  2.计算属于模块port的height
+    // 计算所有port的信息
+    /// 1.计算单独的port的height  2.计算属于模块port的height
     for (int i = 0; i < data.size(); ++i) {
         int startModule = data[i].startModuleIndex;
         int endModule = data[i].endModuleIndex;
@@ -118,30 +90,30 @@ int main(int argc, char *argv[]) {
         /// 注意 单独的port计算的是绝对高度
         if (startModule == -1) {
             /// 输入为单独的port
-            modulePort[endModule][endPort].height = 0;
-            leftInputPort[startPort].height = modulePos[endModule].y();
+            modulePort[endModule][endPort].weight = 0;
+            leftInputPort[startPort].weight = modulePos[endModule].y();
             continue;
         }
         if (endModule == -1) {
             /// 输入为单独的port
-            modulePort[startModule][startPort].height = 0;
-            rightOutputPort[endPort].height = modulePos[startModule].y();
+            modulePort[startModule][startPort].weight = 0;
+            rightOutputPort[endPort].weight = modulePos[startModule].y();
             continue;
         }
         /// 注意 模块上的port计算的是相对高度
         // 输入输出均为module上的port
         // Bug 数据没有成为闭环
-        //modulePort[startModule][startPort].height = moduleRelativePos[endModule].y() + 1;
-        //modulePort[endModule][endPort].height = moduleRelativePos[startModule].y() + 1;
+        //modulePort[startModule][startPort].weight = moduleRelativePos[endModule].y() + 1;
+        //modulePort[endModule][endPort].weight = moduleRelativePos[startModule].y() + 1;
     }
 
     /// module的Port排序
     // bug Fix
     for (int i = 0; i < modulePort.size(); ++i) {
-        QList<HeightAndIndex> left, right;
+        QList<WeightAndIndex> left, right;
         for (int j = 0; j < modulePort[i].size(); ++j) {
-            HeightAndIndex temp;
-            temp.height = modulePort[i][j].height;
+            WeightAndIndex temp;
+            temp.weight = modulePort[i][j].weight;
             temp.index = j;// index
             if (modulePort[i][j].isLeftInput) {
                 /// 左侧输入的Port input left
@@ -153,8 +125,8 @@ int main(int argc, char *argv[]) {
         }
 
         /// 排序
-        qSort(left.begin(), left.end(), compareHeight);
-        qSort(right.begin(), right.end(), compareHeight);
+        qSort(left.begin(), left.end(), compareWeight);
+        qSort(right.begin(), right.end(), compareWeight);
 
         /// 数据存储在modulePortIndex中
         for (int j = 0; j < left.size(); ++j) {
@@ -166,19 +138,19 @@ int main(int argc, char *argv[]) {
             modulePortIndex[i][index] = j;
         }
     }
-    // port位置的计算
-
+    /// port位置的计算
     // 单独port的排序及位置计算
-    QList<HeightAndIndex> left, right;
+    // todo add
+    QList<WeightAndIndex> left, right;
     for (int i = 0; i < leftInputPort.size(); ++i) {
-        HeightAndIndex temp;
-        temp.height = leftInputPort[i].height;
+        WeightAndIndex temp;
+        temp.weight = leftInputPort[i].weight;
         temp.index = i;
         left.push_back(temp);
     }
     for (int i = 0; i < rightOutputPort.size(); ++i) {
-        HeightAndIndex temp;
-        temp.height = rightOutputPort[i].height;
+        WeightAndIndex temp;
+        temp.weight = rightOutputPort[i].weight;
         temp.index = i;
         right.push_back(temp);
     }

@@ -15,7 +15,7 @@ public:
                        const QVector<QPoint> &relativePos, int grid, int rowSpacing, int columnSpacing);
 
 public:
-    // width = *.x()   height = *.y()
+    // width = *.x()   weight = *.y()
 
     QVector<QPoint> getAbsolutePos() {
         return m_absolutePos;
@@ -305,14 +305,11 @@ private:
             }
         }
 
-
-        //      摆放
-
+        //  摆放
 
         /// 摆放moduleMaxColumnIndex左侧的模块
 
         /// 摆放moduleMaxColumnIndex右侧的模块
-
 
         qDebug() << "Solution Two-----------------------------------------------------Finished";
 
