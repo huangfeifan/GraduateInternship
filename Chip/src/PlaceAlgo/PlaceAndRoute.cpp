@@ -133,7 +133,7 @@ void PlaceAndRoute::routing() {
         if (router.isSuccessFindPaths()) {
             m_paths[i] = router.getPaths();// (y,x)
             // 及时更新被阻挡区域
-            qDebug() << m_paths[i] << "PLACE_AND_ROUTE_PATH_I";
+            //qDebug() << m_paths[i] << "PLACE_AND_ROUTE_PATH_I";
 
             // list(y,x) --> list(x,y)
             for (int j = 0; j < m_paths[i].size(); ++j) {

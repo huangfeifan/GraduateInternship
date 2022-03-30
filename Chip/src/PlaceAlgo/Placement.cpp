@@ -350,22 +350,48 @@ void Placement::computeModuleConnectData() { // pass
         int startModule = m_connectData[i].startModuleIndex;
         int endModule = m_connectData[i].endModuleIndex;
 
+        // 检测输入数据是否异常
+        int startPortIndex = m_connectData[i].startPortIndex;
+        int endPortIndex = m_connectData[i].endPortIndex;
+
         if (startModule == -1) {
             // 左侧单独的输入port
             m_leftPortConnectData.push_back(m_connectData[i]);
+            if (startPortIndex < 0 || startPortIndex > m_leftPortNum) {
+                qDebug() << "Data Error!";// 输入数据有误
+                return;
+            }
             continue;
+        } else {
+            if (startPortIndex < 0 || startModule < 0 ||
+                startModule > m_moduleCount || startPortIndex > m_modulePortInfo[startModule].size()) {
+                qDebug() << "Data Error!";// 输入数据有误
+                return;
+            }
         }
 
         if (endModule == -1) {
             // 右侧单独的输出port
             m_rightPortConnectData.push_back(m_connectData[i]);
+
+            if (endPortIndex < 0 || endPortIndex > m_rightPortNum) {
+                qDebug() << "Data Error!";// 输入数据有误
+                return;
+            }
             continue;
+        } else {
+            if (endPortIndex < 0 || endModule < 0 ||
+                endModule > m_moduleCount || endPortIndex > m_modulePortInfo[endModule].size()) {
+                qDebug() << "Data Error!";// 输入数据有误
+                return;
+            }
         }
 
         m_moduleConnectData[startModule].push_back(endModule);
+        //
     }   //qDebug() << m_moduleConnectData;// pass
 
-    qDebug() << "adjacency List" << m_moduleConnectData;
+    //qDebug() << "adjacency List" << m_moduleConnectData;
 }
 
 Placement::Placement(QList<ConnectData> connectData) : m_connectData(connectData) {

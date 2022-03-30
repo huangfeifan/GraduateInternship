@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
 
     MyPaint myPaint;
-    //myPaint.show();
+    myPaint.show();
 
     return app.exec();
 }

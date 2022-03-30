@@ -24,9 +24,9 @@ const static QList<ConnectData> Fake_ConnectData = {
         {-1, 2, 3, 1},
         {0,  3, 2, 1},
         {0,  2, 3, 0},
-
         */
 
+        /**/
         // example 2
         {-1, 0,  3,  2},
         {-1, 0,  4,  3},
@@ -46,7 +46,22 @@ const static QList<ConnectData> Fake_ConnectData = {
 
         {3,  2,  3,  6},
         {3,  2,  4,  7},
+        /**/
 
+
+        /*
+        // example 3
+        {-1,0,0,0},
+        {-1,1,1,0},
+
+        {0,3,1,0},
+        {1,3,1,1},
+        {2,4,0,0},
+
+        {3,5,2,0},
+        {4,-1,1,0},
+
+        */
 
 };
 
@@ -55,19 +70,30 @@ const static QVector<QVector<int>> Fake_ModulePortInfo = {
 
         /*
         // example 1
-
         {0, 0, 2, 2},// module_0
         {},// module_1
         {2, 2},//module_2
         {0, 0},//module_3
         */
 
-
+        /**/
         // example 2
         {0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2},// module_0
         {0, 0, 0, 0, 2, 2},// module_1
         {0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2},//module_2
         {0, 0, 0, 2, 2},//module_3
+        /**/
+
+        /*
+        // example 3
+        {0,2}, //module0
+        {0,2}, //module1
+        {2}, //module2
+        {0,0,2}, //module3
+        {0,2}, //module4
+        {0}, //module5
+        */
+
 };
 
 

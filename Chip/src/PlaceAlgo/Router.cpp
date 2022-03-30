@@ -66,26 +66,26 @@ void Router::updatePathInfo(QList<QPoint> list, int blockType) {
         int endX = list[i].x();//
         int endY = list[i].y();//
 
-        // todo consider
+        // todo consider  边界条件的考量
         if (startX == endX) {
             m_columnGridInfo[endY][startX] = blockType;
-            m_columnGridInfo[startY][startX] = blockType;
+            //m_columnGridInfo[startY][startX] = blockType;
 
-            m_rowGridInfo[startY][startX] = blockType;
-            m_rowGridInfo[startY][startX + 1] = blockType;
-            m_rowGridInfo[endY][startX] = blockType;
-            m_rowGridInfo[endY][startX + 1] = blockType;
+            //m_rowGridInfo[startY][startX] = blockType;
+            //m_rowGridInfo[startY][startX + 1] = blockType;
+            //m_rowGridInfo[endY][startX] = blockType;
+            //m_rowGridInfo[endY][startX + 1] = blockType;
 
         }
 
         if (startY == endY) {
             m_rowGridInfo[endY][endX] = blockType;
-            m_rowGridInfo[endY][endX + 1] = blockType;
-            m_rowGridInfo[endY][startX] = blockType;
-            m_rowGridInfo[endY][startX + 1] = blockType;
+            //m_rowGridInfo[endY][startX] = blockType;
 
-            m_columnGridInfo[endY][startX] = blockType;
-            m_columnGridInfo[endY][endX] = blockType;
+            //m_rowGridInfo[endY][endX + 1] = blockType;
+            //m_rowGridInfo[endY][startX + 1] = blockType;
+            //m_columnGridInfo[endY][startX] = blockType;
+            //m_columnGridInfo[endY][endX] = blockType;
         }
     }
 }
@@ -197,12 +197,10 @@ void Router::aStarSearch(const Pair src, const Pair dest) {
     pair.*/
     QList<pPair> openList;
 
-    // Put the starting cell on the open list and set its
-    // 'f' as 0
+    // Put the starting cell on the open list and set its 'f' as 0
     openList.push_back(pPair(0.0, Pair(i, j)));
 
-    // We set this boolean value as false as initially
-    // the destination is not reached.
+    // We set this boolean value as false as initially the destination is not reached.
     m_foundDest = false;
 
     while (!openList.empty()) {
@@ -236,14 +234,12 @@ void Router::aStarSearch(const Pair src, const Pair dest) {
         S.W--> South-West (i+1, j-1)
 
         But Schematic Routing only allow four direction(N,E,S,W).
-
          */
 
         // To store the 'g', 'h' and 'f' of the 4 successors
         double gNew, hNew, fNew;
 
         //----------- 1st Successor (North) ------------
-
         // Only process this cell if this is a valid one
         if (isValid(i - 1, j)) {
             // If the destination cell is the same as the
@@ -290,11 +286,9 @@ void Router::aStarSearch(const Pair src, const Pair dest) {
         }
 
         //----------- 2nd Successor (South) ------------
-
         // Only process this cell if this is a valid one
         if (isValid(i + 1, j)) {
-            // If the destination cell is the same as the
-            // current successor
+            // If the destination cell is the same as the current successor
             if (isDestination(i + 1, j, dest)) {
                 // Set the Parent of the destination cell
                 m_cellDetails[i + 1][j].parent_i = i;
@@ -336,7 +330,6 @@ void Router::aStarSearch(const Pair src, const Pair dest) {
         }
 
         //----------- 3rd Successor (East) ------------
-
         // Only process this cell if this is a valid one
         if (isValid(i, j + 1)) {
             // If the destination cell is the same as the
@@ -385,7 +378,6 @@ void Router::aStarSearch(const Pair src, const Pair dest) {
         }
 
         //----------- 4th Successor (West) ------------
-
         // Only process this cell if this is a valid one
         if (isValid(i, j - 1)) {
             // If the destination cell is the same as the

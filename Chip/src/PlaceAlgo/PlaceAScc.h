@@ -12,7 +12,7 @@ class PlaceAScc {
 public:
     PlaceAScc(const QVector<QList<int>> &connectData) {
 
-        qDebug() << "\n****************************PlaceAScc****************************";
+        //qDebug() << "\n****************************PlaceAScc****************************";
 
         /// 初始化所有变量
         preHandleData(connectData);
@@ -25,7 +25,7 @@ public:
         adjustPos();
         //qDebug() << m_relativePos << " after Simple adjust:  AScc_relativePos";
 
-        qDebug() << "****************************PlaceAScc****************************End\n";
+        //qDebug() << "****************************PlaceAScc****************************End\n";
     };
 
     QVector<QPoint> getRelativePos() {
@@ -81,8 +81,8 @@ private:
                 currentStack.push(child);
             }
         }
-        //qDebug() << indexParentIndex << "   index Parent Index";
-        //qDebug() << currentStack << "   CurrentStack";
+        qDebug() << indexParentIndex << "   index Parent Index";
+        qDebug() << currentStack << "   CurrentStack";
 
         //qDebug() << row << " FRow--";
         int topIndex = currentStack.top();
@@ -91,6 +91,9 @@ private:
         while (!currentStack.isEmpty()) {
             // 摆放topIndex
             topIndex = currentStack.pop();
+            if (m_isPlaced[topIndex]) {
+                continue;
+            }
             topParentIndex = indexParentIndex[topIndex];
             //qDebug() << topIndex << " index parent  " << topParentIndex << " parentChildCount "
             //         << m_connectData[topParentIndex].size();
@@ -100,8 +103,9 @@ private:
             }
             //qDebug() << row << " RRRow";
             m_isPosOccupied[column].insert(row, row);
-            m_relativePos[topIndex].setX(column);// 列
-            m_relativePos[topIndex].setY(row);// 行
+            m_relativePos[topIndex] = QPoint(column, row);
+            //m_relativePos[topIndex].setX(column);// 列
+            //m_relativePos[topIndex].setY(row);// 行
             m_isPlaced[topIndex] = true;
             placeModuleNum++;
             //qDebug() << topIndex << " topIndex Placed" << column << " " << row;

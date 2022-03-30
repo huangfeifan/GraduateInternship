@@ -53,7 +53,7 @@ void MyPaint::paintEvent(QPaintEvent *event) {
         if (i >= 0) {
             for (int j = 1; j < m_paths[i].size(); ++j) {
                 painter.drawLine(m_paths[i][j] * GRID, m_paths[i][j - 1] * GRID);
-                painter.drawText(m_paths[i][j] * GRID, QString::number(i));
+                //painter.drawText(m_paths[i][j] * GRID, QString::number(i));
             }
         }
         //qDebug() << m_paths[i].size();
