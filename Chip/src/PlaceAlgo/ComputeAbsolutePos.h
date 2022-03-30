@@ -7,12 +7,13 @@
 #include <QVector>
 #include <QRect>
 #include <QDebug>
+#include "FakeData.h"
 
 class ComputeAbsolutePos {
 public:
     /// 计算模块的绝对位置   参数: 邻接表 模块大小 相对位置 网格大小
     ComputeAbsolutePos(const QVector<QList<int>> &graph, const QVector<QPoint> &size,
-                       const QVector<QPoint> &relativePos, int grid, int rowSpacing, int columnSpacing);
+                       const QVector<QPoint> &relativePos, int rowSpacing, int columnSpacing);
 
 public:
     // width = *.x()   weight = *.y()
@@ -95,22 +96,22 @@ private:
                 // 修改列间距
                 if (startColumn < endColumn) {/// 起点在终点左侧
                     for (int k = startColumn + 1; k <= endColumn; ++k) {
-                        m_columnSpacing[k] += m_grid;
+                        m_columnSpacing[k] += GRID;
                     }
                 } else {/// 起点在终点左侧或同一列
                     for (int k = endColumn + 1; k <= startColumn; ++k) {
-                        m_columnSpacing[k] += m_grid;
+                        m_columnSpacing[k] += GRID;
                     }
                 }
 
                 // 修改行间距
                 if (startRow < endRow) {/// 起点在终点左侧或同一列
                     for (int k = startRow + 1; k <= endRow; ++k) {
-                        m_rowSpacing[k] += m_grid;
+                        m_rowSpacing[k] += GRID;
                     }
                 } else {/// 起点在终点左侧或同一列
                     for (int k = endRow + 1; k <= startRow; ++k) {
-                        m_rowSpacing[k] += m_grid;
+                        m_rowSpacing[k] += GRID;
                     }
                 }
             }
@@ -188,7 +189,7 @@ private:
         int row = m_rowPosition.size() - 1;
         m_size.setY(m_rowPosition[row] + m_rowSpacing[row + 1] + m_rowHeight[row]);
 
-        //qDebug() << m_size << "     m_size";
+        //qDebug() << m_moduleSize << "     m_moduleSize";
     }
 
     void solutionOne() {
@@ -261,7 +262,7 @@ private:
             m_hash[point.x()].insert(point.y(), i);// key--row   value--index
         }
         //qDebug() << m_hash << "     m_hash";// Pass
-        //qDebug() << m_relativePos << "     m_relativePos";// 强连通分支内部的相对位置 或者 强连通分之间的相对位置
+        //qDebug() << m_relativePos << "     m_relativePos";// sccInner相对位置 或者 sccs的相对位置
 
         /// 计算哪一列包含的模块最多
         int moduleMaxColumnIndex = 0;
@@ -277,8 +278,7 @@ private:
         // 为了避免模块的重叠
         QVector<QRect> m_rect = QVector<QRect>(m_relativePos.size());
 
-
-        /// 摆放包含模块数最多的列
+        /// 摆放包含模块数最多的列  ----
         // 选择从上到下 找到行数最小的module 摆放后 再摆放下面的
         temp = columnSpacing;// 存放最小行数
         QHash<int, int>::const_iterator iter = m_hash[moduleMaxColumnIndex].constBegin();// key--row   value--index
@@ -315,7 +315,6 @@ private:
 
     }
 
-
 private:
 
     QVector<QList<int>> m_graph;// 邻接表
@@ -332,7 +331,7 @@ private:
 
     QPoint m_size;// 预估所有模块占据总大小
 
-    int m_grid = 10;//网格大小设定
+    //int m_grid = 10;//网格大小设定
 
     int rowSpacing = 0;// 间距
     int columnSpacing = 0;// 间距

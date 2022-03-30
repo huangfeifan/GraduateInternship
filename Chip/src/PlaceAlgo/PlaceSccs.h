@@ -17,7 +17,7 @@
 class PlaceSccs {
 
 public:
-    /// 所有强连通分量的摆放 只处理最基本的数据
+    /// sccs的摆放 只处理最基本的数据
     PlaceSccs(const QVector<QList<int>> &connectData) {
         //qDebug() << "________________________PlaceSccs________________________";
 
@@ -182,7 +182,7 @@ private:
             }
         }
         // qlist去重
-        QHash<int, int> hash;
+        QHash<int, int> hash;// Todo modify 导致布局结果不一致  ????
         for (int i = 0; i < childList.size(); ++i) {
             if (!hash.contains(childList[i])) {
                 hash.insert(childList[i], childList[i]);
@@ -226,6 +226,6 @@ private:
     QVector<QPoint> m_relativePos;// 待计算的相对坐标
     QVector<QHash<int, int>> m_isPosOccupied;// 位置是否被占据
     QVector<double> m_weight;// 权重 出度和入度各占50%
-    QVector<QList<int>> m_connectData;// 强连通分支间的连接关系
+    QVector<QList<int>> m_connectData;// sccs的连接关系
 
 };

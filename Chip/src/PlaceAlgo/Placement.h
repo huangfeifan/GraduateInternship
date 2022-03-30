@@ -4,24 +4,22 @@
 
 #pragma once
 
-#include "Data.h"
+//#include "MyWidget/Data.h"
 #include "Router.h"
-//#include "Placer.h"
 #include "PlaceSccs.h"
 #include "PlaceAScc.h"
 #include "GetGraphSccs.h"
 #include "GetTopologySort.h"
-//#include "ImprovedTarjanAlgo.h"
 #include "ComputeAbsolutePos.h"
 
 #include "PlaceAlgo/MyStruct.h"
+#include "PlaceAlgo/FakeData.h"
 
 #include <QList>
 #include <QVector>
 #include <QPoint>
 #include <QStack>
 #include <QDebug>
-#include <algorithm>
 #include <algorithm>
 
 class PlaceSccs;
@@ -31,99 +29,138 @@ class PlaceAScc;
 class Placement {
 
 public:
-    Placement(QVector<QList<int>> graphData, QVector<ModuleInfo> moduleInfo);
-
     // 给连接数据 模块信息
-    Placement(QList<ConnectData> connectData, QVector<ModuleInfo> moduleInfo, int leftPortNum, int rightPortNum);
+    Placement(QList<ConnectData> connectData, const QVector<QVector<int>> &modulePortInfo, int leftPortNum,
+              int rightPortNum);
 
-    // 给连接数据 根据出入度计算模块大小
-    Placement(QVector<QPoint> moduleDegree, QList<ConnectData> connectData);
+    Placement(QVector<QList<int>> graphData, QVector<QVector<int>> modulePortInfo);
 
+    // 给连接数据
     Placement(QList<ConnectData> connectData);
+
+    Placement(QList<ConnectData> connectData, QVector<QPoint> moduleSize);
 
     ~Placement() = default;
 
+    // 获取模块的位置
     QVector<QPoint> getModulePos();
 
+    // 获取模块的相对位置
     QVector<QPoint> getModuleRelativePos();
 
-    QVector<QPoint> getLeftPortPos();
+    // 获取左侧输入port的位置
+    QVector<QPoint> getLeftInputPortPos();
 
-    QVector<QPoint> getRightPortPos();
+    // 获取右侧输出port的位置
+    QVector<QPoint> getRightOutputPortPos();
 
+    // 获取模块的port的位置
     QVector<QVector<QPoint>> getModulePortPos();
 
-private: // Todo open comment
+    // 获取模块的大小
+    QVector<QPoint> getModuleSize();
 
+    // 版图行数 高度除以网格大小
+    int getSchematicRowCount();
+
+    // 版图列数 宽度除以网格大小
+    int getSchematicColumnCount();
+
+private:
+
+    // 数据预处理
     void preHandleData();
 
+    // 计算scc
     void computeScc();
 
+    // 计算scc的信息
     void initSccsInfo();
 
+    // 计算模块和端口的位置
     void computePosition();
 
+    // 计算sccs的相对位置
     void computeSccsRelativePosition();
 
+    // 计算sccInner的相对位置
     void computeASccPosition();
 
+    // 计算sccs的绝对位置
     void computeSccsAbsolutePosition();
 
+    // 计算sccInner的绝对位置
     void computeASccInnerPosition();
 
+    // 调整相对位置 计算所有模块的绝对位置
     void computeAllModulePos();
 
     void adjustModulePos();
 
+    // 用于计算所有port的位置
     void computePortPos();
 
+    // 计算模块上port的位置
     void computeModulePortPos();
 
+    // 计算左侧输入port的位置
     void computeLeftPortPos();
 
+    // 计算右侧输出port的位置
     void computeRightPortPos();
 
-
+    // 计算邻接表
     void computeModuleConnectData();
 
+    // 微调布局
     void adjustRelativePos(QVector<QPoint> &relativePos);
 
     void printInfo();
 
     void computeModuleSize();
 
-    void initPortRelatedInfo();
+    void initVector();
+
+    void adjustAllPos();
+
+    void computeXPos();
+
 
 private:
 
     /// 输入数据 QList<ConnectData> data;
     QList<ConnectData> m_connectData;// 连接数据
-    QVector<ModuleInfo> m_moduleInfo;// 所有模块的信息
     int m_leftPortNum = 0;// 左侧输入port个数
     int m_rightPortNum = 0;// 右侧输出port个数
     int m_moduleCount = 0;// 模块个数
+    QVector<QPoint> m_moduleSize;// 模块大小
+    QVector<QVector<int>> m_modulePortInfo;// 模块的port的输入输出
 
     /// 中间数据 邻接表的形式存储
     QVector<QList<int>> m_moduleConnectData;// 模块间的连接数据 不包括单独的port与模块的连接数据
-
-    QVector<QVector<PortInfo>> m_modulePort;
-    QVector<PortInfo> m_leftInputPort;
-    QVector<PortInfo> m_rightOutputPort;
+    QVector<QVector<PortInfo>> m_modulePort;// 模块的port数据  todo modify PortInfo 可以删除point
+    QVector<PortInfo> m_leftInputPort;// 左侧输入port的数据
+    QVector<PortInfo> m_rightOutputPort;// 右侧输出port的数据
     QList<ConnectData> m_leftPortConnectData;// 左侧输入port的连接数据
     QList<ConnectData> m_rightPortConnectData;// 右侧输出port的连接数据
 
-    int m_grid = 10;// 网格大小
+    int m_leftPortXGap = 20 * GRID;// 左侧输入port与第一列模块的间距
+    int m_rightPortXGap = 20 * GRID;// 右侧输出port与最后一列模块的间距
+    int m_maxY = 0;// 没有连接关系的port的摆放 遵循从下往上 // 所有模块的竖直方向最大值
+    int m_minY = 0;// 所有模块的竖直方向的最小值
 
-    QList<QList<int>> m_sccs;// strong connected component    /// 所有强连通分量
-    QVector<QList<QPoint>> m_sccsConnectData;// 强连通分支间的connect 强连通分支内部的connect
-    QVector<ASccInfo> m_sccsInfo;// 强连通分支间的info 强连通分支内部的info
-    QVector<int> m_moduleSccIndex;// 模块所在强连通分支的index
+    QList<QList<int>> m_sccs;// strong connected components
+    QVector<QList<QPoint>> m_sccsConnectData;// sccs和sccInner的connectData
+    QVector<ASccInfo> m_sccsInfo;// sccs和sccInner的info
+    QVector<int> m_moduleSccIndex;// 模块在第几个scc中
 
     /// 输出结果
-    QVector<QPoint> m_modulePos;// 模块的绝对位置
     QVector<QPoint> m_moduleRelativePos;// 模块的相对位置
+    QVector<QPoint> m_modulePos;// 模块的绝对位置
     QVector<QPoint> m_rightPortPos;// 单独的输出port
     QVector<QPoint> m_leftPortPos;// 单独的输入port
     QVector<QVector<QPoint>> m_modulePortPos;// 模块的端口位置
+    int m_graphRowCount = 0;// 版图用网格剖分后的行数  Todo update
+    int m_graphColumnCount = 0;// 版图用网格剖分后的列数 Todo update
 
 };

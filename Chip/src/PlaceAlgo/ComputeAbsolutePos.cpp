@@ -5,11 +5,10 @@
 #include "ComputeAbsolutePos.h"
 
 ComputeAbsolutePos::ComputeAbsolutePos(const QVector<QList<int>> &graph, const QVector<QPoint> &size,
-                                       const QVector<QPoint> &relativePos, int grid, int rowSpacing, int columnSpacing)
+                                       const QVector<QPoint> &relativePos, int rowSpacing, int columnSpacing)
         : m_graph(graph),
           m_moduleSize(size),
           m_relativePos(relativePos),
-          m_grid(grid),
           rowSpacing(rowSpacing),
           columnSpacing(columnSpacing) {
     /**

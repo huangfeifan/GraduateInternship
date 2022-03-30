@@ -9,7 +9,7 @@
 #include <QDebug>
 #include <algorithm>
 
-#include "Data.h"
+//#include "Data.h"
 #include "GetGraphSccs.h"
 #include "GetTopologySort.h"
 #include "ImprovedTarjanAlgo.h"

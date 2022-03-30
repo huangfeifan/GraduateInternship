@@ -8,8 +8,6 @@
 
 // V1043 using the 'constexpr' keyword instead of 'const' in the variable declaration doesn't change this behavior
 // inline 需要 /std:c++17
-static int MODULE_COUNT = 8;
-
 static int LEFT_INPUT_PORT_COUNT = 0;// 单独的输入port
 
 static int RIGHT_OUTPUT_PORT_COUNT = 0;// 单独的输出port

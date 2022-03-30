@@ -7,24 +7,25 @@
 #include "PlaceSccs.h"
 
 class PlaceAScc {
-    /// 一个强连通分量的摆放  计算一个强连通分量内部结点的相对坐标
+    /// scc的摆放  计算一个sccInner的模块的相对坐标
 
 public:
     PlaceAScc(const QVector<QList<int>> &connectData) {
 
-        //qDebug() << "\n****************************PlaceAScc****************************";
+        qDebug() << "\n****************************PlaceAScc****************************";
 
         /// 初始化所有变量
         preHandleData(connectData);
 
         /// 计算相对位置
         computePos();
+        //qDebug() << m_relativePos << " after Simple adjust:  AScc_relativePos";
 
         /// 简单调整相对位置
         adjustPos();
         //qDebug() << m_relativePos << " after Simple adjust:  AScc_relativePos";
 
-        //qDebug() << "****************************PlaceAScc****************************End\n";
+        qDebug() << "****************************PlaceAScc****************************End\n";
     };
 
     QVector<QPoint> getRelativePos() {
@@ -34,6 +35,10 @@ public:
 private:
 
     void computePos() {// Todo Modify     <==>    Placement::placeAScc()
+        if (m_moduleCount == 0) {
+            return;
+        }
+
         QVector<int> indexParentIndex(m_moduleCount);// 父节点所在的行数
 
         // 找出度数最大的
@@ -46,23 +51,25 @@ private:
                 degree = m_connectData[i].size();
             }
         }
+        //qDebug() << maxIndex << "MAX_INDEX";
 
         // 思想： 先摆放度数最大的点 然后摆放其所有子节点 然后摆放所有子节点的子节点
-        int placeModuleNum = 0;
+        int placeModuleNum = 0;// 已摆放模块个数
         int row = 0;    // 摆放权重(度数)最大的
         int column = 0;
         while (m_isPosOccupied[column].key(row)) {
             row++;
         }
         m_isPosOccupied[column].insert(row, row);// 存储index占据的位置
-        m_relativePos[maxIndex].setX(column++);// 列
+        m_relativePos[maxIndex].setX(column);// 列
         m_relativePos[maxIndex].setY(row);// 行
         m_isPlaced[maxIndex] = true;// 修改状态
-        placeModuleNum++;
+        placeModuleNum += 1;
 
         //qDebug() << maxIndex << " maxIndex " << row;
         //qDebug() << m_relativePos << "   relativePosition";
 
+        column += 1;
         QStack<int> currentStack, nextStack;
         // 修改最大度数结点的子节点的父节点行号 indexParentIndex 用于描述父节点所在行数
         for (int i = 0; i < m_connectData[maxIndex].size(); ++i) {
@@ -126,10 +133,10 @@ private:
                 row = m_relativePos[topParentIndex].y() - m_connectData[topParentIndex].size() * 0.382;
             }
         }
-        qDebug() << m_relativePos << " before Simple adjust:  AScc_relativePos";
+        //qDebug() << m_relativePos << " before Simple adjust:  AScc_relativePos";
     }
 
-    void adjustPos(){
+    void adjustPos() {
         int minRow = m_relativePos[0].y();
         int minColumn = m_relativePos[0].x();
         for (int i = 0; i < m_relativePos.size(); ++i) {
@@ -158,7 +165,7 @@ private:
         m_connectData = connectData;
 
         // 从原连接数据构造新的新连接数据 同时更新新结点度数
-        /// 计算出入度和权重 Todo add
+        /// 计算出入度和权重
         for (int i = 0; i < m_connectData.size(); ++i) {
             // 更新出度
             m_degree[i].setX(m_connectData[i].size());
@@ -172,14 +179,11 @@ private:
             }
         }
 
-        qDebug() << m_connectData << "  NewConnectData";
-        qDebug() << m_degree << "  NewDegree";
         // 权重的计算  Todo consider 权重的聚类
         for (int i = 0; i < m_moduleCount; ++i) {
             // 出度越大越靠左 入度越大越靠右
-            m_weight[i] = (m_degree[i].x() - m_degree[i].y()) * IN_OUT_WEIGHT;
+            m_weight[i] = (m_degree[i].x() - m_degree[i].y());// * IN_OUT_WEIGHT;
         }
-        //qDebug() << m_weight << "  Weight";
     };
 
 private:
@@ -189,7 +193,7 @@ private:
     QVector<QPoint> m_relativePos;// 待计算的相对坐标
     QVector<QHash<int, int>> m_isPosOccupied;// 位置是否被占据
     QVector<double> m_weight;// 权重 出度和入度各占50%
-    QVector<QList<int>> m_connectData;// 强连通分支内的连接关系
+    QVector<QList<int>> m_connectData;// sccInner的连接关系
 
-    const double IN_OUT_WEIGHT = 1.0;
+    //const double IN_OUT_WEIGHT = 1.0; // 没啥用
 };

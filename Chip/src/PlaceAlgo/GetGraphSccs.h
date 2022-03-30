@@ -46,7 +46,7 @@ private:
     QVector<int> m_low; // 结点i或i的子结点能够追溯到的最早时间戳 通过邻接表以及子结点的dfn来实现更新
     QVector<bool> m_inStack; // 结点是否在栈内
     QStack<int> m_stack; // 用于回退结点
-    QList<QList<int>> m_sccs;// strongly connected components 保存强连通分量
+    QList<QList<int>> m_sccs;// strongly connected components 保存sccs
 
     void getSCC() {
         for (int i = 0; i < m_numVertices; ++i) {
@@ -91,7 +91,7 @@ private:
 
         if (m_dfn[start] == m_low[start]) {
             //
-            QList<int> strongComponent;// 一个强连通分支
+            QList<int> strongComponent;// a scc
             int temp = -1;
             while (start != temp) {
                 temp = m_stack.pop();
@@ -101,5 +101,4 @@ private:
             m_sccs.push_back(strongComponent);
         }
     }
-
 };
