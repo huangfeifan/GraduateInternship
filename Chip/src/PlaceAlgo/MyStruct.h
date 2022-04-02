@@ -49,12 +49,11 @@ struct PortInfo {
     ///     计算单独的port时  height是行绝对位置
     ///         由module上的port输出到单独的port 则height=0
     ///         由单独的port输出到module上的port 则height=0
-    int moduleIndex = 0;// port所在模块的index -1表示是单独的port
-    int portIndex = 0;//  port在模块的index 或者左右侧的index
+    int moduleIndex = 0;// port所在模块的index -1表示是单独的port // Todo delete not used
+    int portIndex = 0;//  port在模块的index 或者左右侧的index     // Todo delete not used
     int weight = 0;// 如果port是起点,则终点高度为height;如果port是终点,则起点高度为height
     //bool isLeftInput = false;// true表示是左侧单独的输入port;false则表示右侧单独的输出port
     int Direction = 0;// 0,1,2,3 左下右上
-    QPoint point;// port的pos ---
     int orderIndex;// 按照权重排序后 // 从左到右 从上到下
 };
 

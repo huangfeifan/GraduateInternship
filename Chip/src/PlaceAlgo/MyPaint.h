@@ -15,6 +15,7 @@
 #include "PlaceAlgo/Router.h"
 #include "PlaceAlgo/FakeData.h"
 #include "PlaceAlgo/PlaceAndRoute.h"
+#include "PlaceAlgo/RandomData.h"
 
 //#include "MyWidget/Data.h"
 
@@ -45,6 +46,7 @@ private:
     QVector<QPoint> m_size;// 模块大小
     PlaceAndRoute m_placementAndRoute;//
     QVector<QList<QPoint>> m_paths;// 路径
+    QList<ConnectData> m_connectData;
 
     // 端口相关数据
     QVector<QPoint> m_rightPortPos;// 单独的输出port

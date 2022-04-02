@@ -31,10 +31,9 @@ void MyPaint::paintEvent(QPaintEvent *event) {
 
     /// 模块的绘制
     painter.setPen(QColor(0, 0, 0));
-    // 绘制module和port
 
-    qDebug() << m_pos << "POS";
-    qDebug() << m_size << "SIZE";
+    //qDebug() << m_pos << "POS";
+    //qDebug() << m_size << "SIZE";
     for (int i = 0; i < m_size.size(); ++i) {
         int left = m_pos[i].x() * GRID;
         int top = m_pos[i].y() * GRID;
@@ -46,20 +45,40 @@ void MyPaint::paintEvent(QPaintEvent *event) {
         painter.drawText(left, top, QString::number(i));
     }
 
-    painter.setPen(Qt::red);
-    qDebug() << m_paths.size() << "MY_PAINT_M_PATHS";
+
+    //qDebug() << m_paths.size() << "MY_PAINT_M_PATHS";
     for (int i = 0; i < m_paths.size(); ++i) {
         //i = 1;
-        if (i >= 0) {
+        if (m_paths[i].size()) {// A*成功
+            painter.setPen(Qt::red);
             for (int j = 1; j < m_paths[i].size(); ++j) {
                 painter.drawLine(m_paths[i][j] * GRID, m_paths[i][j - 1] * GRID);
                 //painter.drawText(m_paths[i][j] * GRID, QString::number(i));
             }
+        } else {
+            int startModule = m_connectData[i].startModuleIndex;
+            int startPort = m_connectData[i].startPortIndex;
+            int endModule = m_connectData[i].endModuleIndex;
+            int endPort = m_connectData[i].endPortIndex;
+            QPoint startPoint, endPoint;
+            if (startModule == -1) {
+                startPoint = m_leftPortPos[startPort];
+            } else {
+                startPoint = m_modulePortPos[startModule][startPort];
+            }
+            if (endModule == -1) {
+                endPoint = m_rightPortPos[endPort];
+            } else {
+                endPoint = m_modulePortPos[endModule][endPort];
+            }
+            //painter.setPen(Qt::darkBlue);
+            painter.setPen(Qt::DashDotLine);
+            painter.drawLine(startPoint * GRID, endPoint * GRID);
         }
         //qDebug() << m_paths[i].size();
     }
 
-    // 绘制端口
+    /// 绘制端口
     painter.setPen(Qt::blue);
     //qDebug() << m_leftPortPos.size() << " LEFT_PORT_SIZE";
     for (int i = 0; i < m_leftPortPos.size(); ++i) {
@@ -87,7 +106,12 @@ void MyPaint::initData() {
     // 初始化数据
     //qDebug() << Fake_ModulePortInfo.size();
 
+    RandomData r(10, 5, 4, 50);
     m_placementAndRoute = PlaceAndRoute(Fake_ConnectData, LEFT_PORT_NUM, RIGHT_PORT_NUM, Fake_ModulePortInfo);
+    m_connectData = Fake_ConnectData;
+
+    m_connectData = r.m_randomConnectData;
+    m_placementAndRoute = PlaceAndRoute(r.m_randomConnectData, r.m_leftNum, r.m_rightNum, r.m_randomModulePortInfo);
     m_pos = m_placementAndRoute.getModulePos();
     m_size = m_placementAndRoute.getModuleSize();
     m_paths = m_placementAndRoute.getPaths();
@@ -100,5 +124,4 @@ void MyPaint::initData() {
     //qDebug() << m_pos << " POS";
     //qDebug() << m_size << " SIZE";
     //qDebug() << m_paths << "MY_PAINT_PATH";
-
 }

@@ -81,9 +81,8 @@ private:
                 currentStack.push(child);
             }
         }
-        qDebug() << indexParentIndex << "   index Parent Index";
-        qDebug() << currentStack << "   CurrentStack";
-
+        //qDebug() << indexParentIndex << "   index Parent Index";
+        //qDebug() << currentStack << "   CurrentStack";
         //qDebug() << row << " FRow--";
         int topIndex = currentStack.top();
         int topParentIndex = indexParentIndex[topIndex];

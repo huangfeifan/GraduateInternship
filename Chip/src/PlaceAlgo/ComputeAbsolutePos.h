@@ -29,7 +29,6 @@ public:
 
 private:
 
-    /// init GridIWidth and GridJHeight
     void initColumnRowInfo() {
         /// 初始化行列相关数据
         m_absolutePos = QVector<QPoint>(m_relativePos.size());
@@ -60,7 +59,6 @@ private:
 
     }
 
-    /// 计算行宽列高
     void computeColumnAndRow() {
         /// 计算行宽列高
         for (int i = 0; i < m_relativePos.size(); ++i) {
@@ -76,7 +74,6 @@ private:
         //qDebug() << m_columnWidth << "  m_columnWidth";
     }
 
-    /// 计算每行每列的间距
     void computeColumnAndRowSpacing() {
         /// 计算每行每列的间距
 
@@ -129,9 +126,8 @@ private:
         //qDebug() << m_columnSpacing << "    m_columnSpacing";
     }
 
-    /// 计算每行每列的位置
     void computeColumnAndRowPosition() {
-        /// 计算每行每列的位置 Todo modify 可能存在某些大模块导致行列太宽太高 需要换种方式计算绝对位置
+        /// 计算每行每列的位置 Todo consider 可能存在某些大模块导致行列太宽太高 需要换种方式计算绝对位置
         // 当前行 = 上一行位置+上一行高度+当前行与上一行间距 (列同理)
         m_columnPosition[0] = m_columnSpacing[0];
         for (int i = 1; i < m_columnPosition.size(); ++i) {
@@ -148,22 +144,23 @@ private:
 
     }
 
-    /// 计算模块的绝对位置
     void computePosition() {
         /// 计算模块的绝对位置
         for (int i = 0; i < m_relativePos.size(); ++i) {
-            int row, column;
-            row = m_relativePos[i].y();
-            column = m_relativePos[i].x();
+            int row = m_relativePos[i].y();
+            int column = m_relativePos[i].x();
             // 左边距
             int leftXSpacing = (m_columnWidth[column] - m_moduleSize[i].x()) / 2;
             // 上边距
-            int upYSpacing = (m_rowHeight[row] - m_moduleSize[i].x()) / 2;
+            int upYSpacing = (m_rowHeight[row] - m_moduleSize[i].y()) / 2;
+            //qDebug() << leftXSpacing << "Left_Spacing_Up" << upYSpacing;// bug 0402 Todo fix
 
             int xPos = leftXSpacing + m_columnPosition[column];
             int yPos = upYSpacing + m_rowPosition[row];
-            m_absolutePos[i].setX(xPos);
-            m_absolutePos[i].setY(yPos);
+            m_absolutePos[i] = QPoint(xPos, yPos);
+            qDebug() << m_absolutePos[i] << "Pos_Module_" << i;
+            //m_absolutePos[i].setX(xPos);
+            //m_absolutePos[i].setY(yPos);
         }
         //qDebug() << m_absolutePos << "  before   m_absolutePos";
 
@@ -181,7 +178,6 @@ private:
         //qDebug() << m_absolutePos << "  after   m_absolutePos";
     }
 
-    /// 计算所有模块占据的版图大小
     void computeBlockSize() {
         /// 计算所有模块占据的版图大小 或者遍历行宽列高 + 行列间距
         int column = m_columnPosition.size() - 1;
@@ -195,23 +191,23 @@ private:
     void solutionOne() {
         //qDebug() << m_relativePos << "  relativePos";
         //qDebug() << m_moduleSize << "  size";
-        // 初始化数据
-        initColumnRowInfo();
+
+        initColumnRowInfo();// 初始化数据
         //qDebug() << "-----------";
-        // 计算行宽列高
-        computeColumnAndRow();
+
+        computeColumnAndRow();// 计算行宽列高
         //qDebug() << "-----------";
-        // 计算每行每列的间距
-        computeColumnAndRowSpacing();
+
+        computeColumnAndRowSpacing();// 计算每行每列的间距  todo modify
         //qDebug() << "-----------";
-        // 计算每行每列的位置
-        computeColumnAndRowPosition();
+
+        computeColumnAndRowPosition();// 计算每行每列的位置
         //qDebug() << "-----------";
-        // 计算模块的绝对位置
-        computePosition();
+
+        computePosition();// 计算模块的绝对位置
         //qDebug() << "-----------";
-        // 计算所有模块占据的版图大小
-        computeBlockSize();
+
+        computeBlockSize();// 计算所有模块占据的版图大小
         //qDebug() << "-----------";
     }
 
@@ -330,8 +326,6 @@ private:
     QVector<int> m_rowSpacing;// 行间距
 
     QPoint m_size;// 预估所有模块占据总大小
-
-    //int m_grid = 10;//网格大小设定
 
     int rowSpacing = 0;// 间距
     int columnSpacing = 0;// 间距

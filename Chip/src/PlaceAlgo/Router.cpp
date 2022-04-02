@@ -69,7 +69,7 @@ void Router::updatePathInfo(QList<QPoint> list, int blockType) {
         // todo consider  边界条件的考量
         if (startX == endX) {
             m_columnGridInfo[endY][startX] = blockType;
-            //m_columnGridInfo[startY][startX] = blockType;
+            m_columnGridInfo[startY][startX] = blockType;
 
             //m_rowGridInfo[startY][startX] = blockType;
             //m_rowGridInfo[startY][startX + 1] = blockType;
@@ -80,7 +80,7 @@ void Router::updatePathInfo(QList<QPoint> list, int blockType) {
 
         if (startY == endY) {
             m_rowGridInfo[endY][endX] = blockType;
-            //m_rowGridInfo[endY][startX] = blockType;
+            m_rowGridInfo[endY][startX] = blockType;
 
             //m_rowGridInfo[endY][endX + 1] = blockType;
             //m_rowGridInfo[endY][startX + 1] = blockType;
@@ -109,7 +109,7 @@ void Router::initGridInfo() {
 }
 
 void Router::updateRectInfo(QPoint pos, QPoint size, int blockType) {
-    const int gap = -1;// 线与模块的间距
+    const int gap = -2;// 线与模块的间距
     int left = pos.x();// 列 x
     int top = pos.y();
     int width = size.x();//列 x
@@ -142,9 +142,9 @@ void Router::aStarSearch(const Pair src, const Pair dest) {
     // Either the source or the destination is blocked
     if (isUnBlocked(src.first, src.second, m_rowGridInfo) == false
         || isUnBlocked(dest.first, dest.second, m_rowGridInfo)
-           == false || isUnBlocked(src.first, src.second, m_columnGridInfo) == false
-        || isUnBlocked(dest.first, dest.second, m_columnGridInfo)
            == false) {
+        //|| isUnBlocked(src.first, src.second, m_columnGridInfo) == false
+        // || isUnBlocked(dest.first, dest.second, m_columnGridInfo)== false
         printf("Source or the destination is blocked\n");
         m_foundDest = false;
         return;
@@ -395,9 +395,7 @@ void Router::aStarSearch(const Pair src, const Pair dest) {
                 // If the successor is already on the closed
                 // list or if it is blocked, then ignore it.
                 // Else do the following
-            else if (closedList[i][j - 1] == false
-                     && isUnBlocked(i, j - 1, m_rowGridInfo)
-                    ) {
+            else if (closedList[i][j - 1] == false && isUnBlocked(i, j - 1, m_rowGridInfo)) {
                 gNew = m_cellDetails[i][j].g + 1.0;
                 hNew = calculateHValue(i, j - 1, dest);
                 fNew = gNew + hNew;
@@ -467,4 +465,37 @@ void Router::setRowGridInfo(QVector<QVector<int>> rowGridInfo) {
 
 void Router::setColumnGridInfo(QVector<QVector<int>> rowGridInfo) {
     m_columnGridInfo = rowGridInfo;
+}
+
+void Router::addLine(QPoint start, QPoint end) {
+
+    if (start.x() == end.x()) {        // 修改列通道信息
+        int minY = start.y();
+        int maxY = start.y();
+        if (start.y() < end.y()) {
+            maxY = end.y();
+        } else {
+            minY = end.y();
+        }
+        for (int i = minY; i < maxY; ++i) {
+            m_columnGridInfo[i][start.x()] = 0;// 0 表示被阻碍
+        }
+        return;
+    }
+
+    // 修改行通道信息
+    int minX = start.x();
+    int maxX = start.x();
+    if (start.x() < end.x()) {
+        maxX = end.x();
+    } else {
+        minX = end.x();
+    }
+    for (int i = minX; i < maxX; ++i) {
+        m_rowGridInfo[start.y()][i] = 0;
+    }
+}
+
+void Router::removeLine(QPoint start, QPoint end) {
+
 }

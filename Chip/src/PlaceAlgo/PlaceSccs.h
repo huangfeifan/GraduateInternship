@@ -13,16 +13,18 @@
 #include <QStack>
 
 #include "GetTopologySort.h"
+#include "MyStruct.h"
 
 class PlaceSccs {
 
 public:
     /// sccs的摆放 只处理最基本的数据
-    PlaceSccs(const QVector<QList<int>> &connectData) {
+    PlaceSccs(const QVector<QList<int>> &connectData) : m_connectData(connectData) {
         //qDebug() << "________________________PlaceSccs________________________";
 
+        qDebug() << connectData << "PlaceSccs_Connect_Data";
         /// 初始化所有变量
-        preHandleData(connectData);
+        preHandleData();
 
         /// 计算相对位置
         computePos();
@@ -81,9 +83,9 @@ public:
 
     }
 
-    void preHandleData(const QVector<QList<int>> &connectData) {
+    void preHandleData() {
         /// 模块个数
-        m_moduleCount = connectData.size();
+        m_moduleCount = m_connectData.size();
 
         /// 初始化数组
         m_isPlaced = QVector<bool>(m_moduleCount);
@@ -91,9 +93,6 @@ public:
         m_relativePos = QVector<QPoint>(m_moduleCount);
         m_isPosOccupied = QVector<QHash<int, int>>(m_moduleCount);
         m_weight = QVector<double>(m_moduleCount);
-
-        /// connect数据
-        m_connectData = connectData;
 
         /// 计算出入度和权重 Todo add
         for (int i = 0; i < m_connectData.size(); ++i) {
@@ -111,6 +110,7 @@ public:
             // 出度越大越靠左 入度越大越靠右
             m_weight[i] = (m_degree[i].x() - m_degree[i].y());
         }
+        //qDebug() << m_weight << "Weight";
     }
 
     static void PlaceSccs::simpleAdjust(QVector<QPoint> &relativePosition) {
@@ -143,14 +143,17 @@ private:
 
         GetTopologySort topologySort(m_connectData);
         QList<QStack<int>> tSort = topologySort.m_result;
+        //qDebug() << tSort << "TopSortResult";
+
         QVector<int> orderList = QVector<int>(m_connectData.size());// index拓扑排序的编号
         for (int i = 0; i < tSort.size(); ++i) {
             for (int j = 0; j < tSort[i].size(); ++j) {
                 orderList[tSort[i][j]] = i;
             }
         }
+        qDebug() << orderList << "OrderList";
 
-        // 是否增加排序呢  Todo consider Add
+        // add sort ??  todo consider
         for (int i = 0; i < tSort.size(); ++i) {
             for (int j = 0; j < tSort[i].size(); ++j) {
                 //placeIndexAndChild(tSort[i][j], tSort.size() - 1, i, orderList);
@@ -167,8 +170,9 @@ private:
                 row++;
             }
             m_isPosOccupied[column].insert(row, row);
-            m_relativePos[index].setX(column);// column
-            m_relativePos[index].setY(row);// row
+            m_relativePos[index] = QPoint(column, row);// 列 行
+            //m_relativePos[index].setX(column);// column
+            //m_relativePos[index].setY(row);// row
             m_isPlaced[index] = true;
             //qDebug() << index << " index " << row << " row " << column << " column";
         }
@@ -182,28 +186,53 @@ private:
             }
         }
         // qlist去重
-        QHash<int, int> hash;// Todo modify 导致布局结果不一致  ????
+        QHash<int, int> hash;
+        QList<int> list;
         for (int i = 0; i < childList.size(); ++i) {
             if (!hash.contains(childList[i])) {
-                hash.insert(childList[i], childList[i]);
+                hash.insert(childList[i], list.size());
+                list.push_back(childList[i]);
             }
         }
-        childList.clear();
-        QHash<int, int>::const_iterator iter = hash.constBegin();// key--row   value--index
-        while (iter != hash.constEnd()) {
-            childList.push_back(iter.key());
-            ++iter;
+        QVector<WeightAndIndex> temp(list.size());// 用于排序
+        //qDebug() << childList << "ChildList";
+        for (int i = 0; i < childList.size(); ++i) {
+            int value = hash.value(childList[i]);
+            temp[value].index = childList[i];
+            temp[value].weight++;
         }
+        qSort(temp.begin(), temp.end(), compareWeight);// 从小到大排序
+        for (int i = 0; i < temp.size(); ++i) {
+            list[i] = temp[i].index;
+        }
+
+        // 调整子节点的摆放顺序
+        QVector<int> qVector(list.size());
+        for (int i = 0; i < list.size(); ++i) {
+            if (i % 2 == 1) {// 奇数
+                qVector[list.size() - 1 - i / 2] = list[i];
+            } else {
+                qVector[i / 2] = list[i];
+            }
+        }
+
+        //childList.clear();
+        // To do modify 导致布局结果不一致  ????---就是这里 kaobei  fix
+        //QHash<int, int>::const_iterator iter = hash.constBegin();// key--row   value--index
+        //while (iter != hash.constEnd()) {
+        //    childList.push_back(iter.key());
+        //    ++iter;
+        //}
 
         // 以row为基准 尽量在row附近行
         //qDebug() << row << "   *****";
-        row = row - childList.size() / 2; // 巧妙???
+        row = row - qVector.size() / 2; // 巧妙???
         column = column + 1;// child在下一列
         //qDebug() << row << "   *****";
         //qDebug() << childList << "   *****";
 
-        for (int i = 0; i < childList.size(); ++i) {
-            int child = childList[i];
+        for (int i = 0; i < qVector.size(); ++i) {
+            int child = qVector[i];
             if (m_isPlaced[child]) {
                 continue;
             }
@@ -211,8 +240,9 @@ private:
                 row++;
             }
             m_isPosOccupied[column].insert(row, row);
-            m_relativePos[child].setX(column);// column
-            m_relativePos[child].setY(row);// row
+            m_relativePos[child] = QPoint(column, row);
+            //m_relativePos[child].setX(column);// column
+            //m_relativePos[child].setY(row);// row
             m_isPlaced[child] = true;
             //qDebug() << child << " child " << row << " row " << column + 1 << " column";
         }

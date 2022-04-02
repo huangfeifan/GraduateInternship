@@ -43,6 +43,10 @@ public:
     // update gridInfo
     void addPath(QList<QPoint> list);
 
+    void addLine(QPoint start, QPoint end);
+
+    void removeLine(QPoint start, QPoint end);
+
     void removePath(QList<QPoint> list);
 
     void removeRect(QPoint pos, QPoint size);
@@ -65,7 +69,7 @@ private:
     // Init Grid info
     void initGridInfo();
 
-    void updatePathInfo(QList<QPoint> list,  int blockType);
+    void updatePathInfo(QList<QPoint> list, int blockType);
 
     // A Utility Function to check whether given cell (row, col) is a valid cell or not.
     bool isValid(int row, int col);
@@ -88,8 +92,8 @@ private:
     int m_column;// column count
     bool m_foundDest = false;
     QList<QPoint> m_path;// routing result //  m_paths[i].size()==0 means search path failed
-    QVector<QVector<int>> m_rowGridInfo;// row Channel
-    QVector<QVector<int>> m_columnGridInfo;// column Channel
+    QVector<QVector<int>> m_rowGridInfo;// row Channel  同一行Y相同
+    QVector<QVector<int>> m_columnGridInfo;// column Channel 同一列X相同
     QVector<QPoint> m_modulePos; // modulePos
     QVector<QPoint> m_moduleSize;// moduleSize
 };

@@ -42,78 +42,65 @@ public:
 
     ~Placement() = default;
 
-    // 获取模块的位置
-    QVector<QPoint> getModulePos();
+    QVector<QPoint> getModulePos();    // 获取模块的位置
 
-    // 获取模块的相对位置
-    QVector<QPoint> getModuleRelativePos();
+    QVector<QPoint> getModuleRelativePos();    // 获取模块的相对位置
 
-    // 获取左侧输入port的位置
-    QVector<QPoint> getLeftInputPortPos();
+    QVector<QPoint> getLeftInputPortPos();    // 获取左侧输入port的位置
 
-    // 获取右侧输出port的位置
-    QVector<QPoint> getRightOutputPortPos();
+    QVector<QPoint> getRightOutputPortPos();    // 获取右侧输出port的位置
 
-    // 获取模块的port的位置
-    QVector<QVector<QPoint>> getModulePortPos();
+    QVector<QVector<QPoint>> getModulePortPos();    // 获取模块的port的位置
 
-    // 获取模块的大小
-    QVector<QPoint> getModuleSize();
+    QVector<QVector<QPoint>> getModulePortDirectionAndOrder();
 
-    // 版图行数 高度除以网格大小
-    int getSchematicRowCount();
+    QVector<QPoint> getModuleSize();    // 获取模块的大小
 
-    // 版图列数 宽度除以网格大小
-    int getSchematicColumnCount();
+    int getSchematicRowCount();         // 版图行数 高度除以网格大小
+
+    int getSchematicColumnCount();    // 版图列数 宽度除以网格大小
+
+    QVector<int> getModuleLeftPortNum();    // 模块i左侧port个数
+
+    QVector<int> getModuleRightPortNum();    // 模块i右左侧port个数
+
+    QVector<int> getModuleTopPortNum();    // 模块i上方port个数
+
+    QVector<int> getModuleBottomPortNum();    // 模块下方port个数
 
 private:
 
-    // 数据预处理
-    void preHandleData();
+    void preHandleData();    // 数据预处理
 
-    // 计算scc
-    void computeScc();
+    void computeScc();    // 计算scc
 
-    // 计算scc的信息
-    void initSccsInfo();
+    void initSccsInfo();    // 计算scc的信息
 
-    // 计算模块和端口的位置
-    void computePosition();
+    void computePosition();    // 计算模块和端口的位置
 
-    // 计算sccs的相对位置
-    void computeSccsRelativePosition();
+    void computeSccsRelativePosition();    // 计算sccs的相对位置
 
-    // 计算sccInner的相对位置
-    void computeASccPosition();
+    void computeASccPosition();    // 计算sccInner的相对位置
 
-    // 计算sccs的绝对位置
-    void computeSccsAbsolutePosition();
+    void computeSccsAbsolutePosition();    // 计算sccs的绝对位置
 
-    // 计算sccInner的绝对位置
-    void computeASccInnerPosition();
+    void computeASccInnerPosition();    // 计算sccInner的绝对位置
 
-    // 调整相对位置 计算所有模块的绝对位置
-    void computeAllModulePos();
+    void computeAllModulePos();    // 调整相对位置 计算所有模块的绝对位置
 
     void adjustModulePos();
 
-    // 用于计算所有port的位置
-    void computePortPos();
+    void computePortPos();    // 用于计算所有port的位置
 
-    // 计算模块上port的位置
-    void computeModulePortPos();
+    void computeModulePortPos();    // 计算模块上port的位置
 
-    // 计算左侧输入port的位置
-    void computeLeftPortPos();
+    void computeLeftPortPos();    // 计算左侧输入port的位置
 
-    // 计算右侧输出port的位置
-    void computeRightPortPos();
+    void computeRightPortPos();    // 计算右侧输出port的位置
 
-    // 计算邻接表
-    void computeModuleConnectData();
+    void computeModuleConnectData();    // 计算邻接表
 
-    // 微调布局
-    void adjustRelativePos(QVector<QPoint> &relativePos);
+    void adjustRelativePos(QVector<QPoint> &relativePos);    // 微调布局
 
     void printInfo();
 
@@ -125,6 +112,7 @@ private:
 
     void computeXPos();
 
+    void getDistinctRelativePos();
 
 private:
 
@@ -138,7 +126,7 @@ private:
 
     /// 中间数据 邻接表的形式存储
     QVector<QList<int>> m_moduleConnectData;// 模块间的连接数据 不包括单独的port与模块的连接数据
-    QVector<QVector<PortInfo>> m_modulePort;// 模块的port数据  todo modify PortInfo 可以删除point
+    QVector<QVector<PortInfo>> m_modulePort;// 模块的port数据
     QVector<PortInfo> m_leftInputPort;// 左侧输入port的数据
     QVector<PortInfo> m_rightOutputPort;// 右侧输出port的数据
     QList<ConnectData> m_leftPortConnectData;// 左侧输入port的连接数据
@@ -160,7 +148,13 @@ private:
     QVector<QPoint> m_rightPortPos;// 单独的输出port
     QVector<QPoint> m_leftPortPos;// 单独的输入port
     QVector<QVector<QPoint>> m_modulePortPos;// 模块的端口位置
-    int m_graphRowCount = 0;// 版图用网格剖分后的行数  Todo update
-    int m_graphColumnCount = 0;// 版图用网格剖分后的列数 Todo update
+    QVector<QVector<QPoint>> m_moduleDirectionAndOrder;// 模块port的方向和排序编号
+    QVector<int> m_moduleLeftPortNum;// 模块i左侧port个数
+    QVector<int> m_moduleRightPortNum;
+    QVector<int> m_moduleTopPortNum;
+    QVector<int> m_moduleBottomPortNum;
+
+    int m_graphRowCount = 0;// 版图用网格剖分后的行数
+    int m_graphColumnCount = 0;// 版图用网格剖分后的列数
 
 };
