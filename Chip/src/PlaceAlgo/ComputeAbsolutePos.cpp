@@ -35,5 +35,4 @@ ComputeAbsolutePos::ComputeAbsolutePos(const QVector<QList<int>> &graph, const Q
 
     //qDebug() << "----------------------Compute AbsolutePos---------------------------------End";
 
-
 }

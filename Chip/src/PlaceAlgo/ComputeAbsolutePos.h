@@ -158,7 +158,7 @@ private:
             int xPos = leftXSpacing + m_columnPosition[column];
             int yPos = upYSpacing + m_rowPosition[row];
             m_absolutePos[i] = QPoint(xPos, yPos);
-            qDebug() << m_absolutePos[i] << "Pos_Module_" << i;
+            //qDebug() << m_absolutePos[i] << "Pos_Module_" << i;
             //m_absolutePos[i].setX(xPos);
             //m_absolutePos[i].setY(yPos);
         }

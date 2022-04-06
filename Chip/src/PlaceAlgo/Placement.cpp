@@ -133,16 +133,16 @@ void Placement::computeAllModulePos() {
 
     // 保存相对位置
     m_moduleRelativePos = m_modulePos;
-    qDebug() << m_moduleRelativePos << " Relative_Pos";
+    //qDebug() << m_moduleRelativePos << " Relative_Pos";
 
     // 针对计算出的模块相对位置有重合进行微调
     getDistinctRelativePos();
-    qDebug() << m_moduleRelativePos << " After_Adjust_Relative_Pos";
-    qDebug() << m_moduleConnectData << "ConnectData";
-    qDebug() << m_moduleSize << "ModuleSize";
-    qDebug() << m_modulePos << "ModulePos";
+    //qDebug() << m_moduleRelativePos << " After_Adjust_Relative_Pos";
+    //qDebug() << m_moduleConnectData << "ConnectData";
+    //qDebug() << m_moduleSize << "ModuleSize";
+    //qDebug() << m_modulePos << "ModulePos";
 
-    ComputeAbsolutePos pos(m_moduleConnectData, m_moduleSize, m_moduleRelativePos, 20 * GRID, 20 * GRID);
+    ComputeAbsolutePos pos(m_moduleConnectData, m_moduleSize, m_moduleRelativePos, 20 * GRID, 20 * GRID);// 作为参数
     m_modulePos = pos.getAbsolutePos();
     //qDebug() << m_modulePos << " Module_Pos";
 

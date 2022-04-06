@@ -11,7 +11,7 @@ PlaceAndRoute::PlaceAndRoute(QList<ConnectData> connectData, int leftPortNum,
                                                                                        m_modulePortDirection(
                                                                                                modulePortInfo) {
     // 布局
-    placing();
+    placing(); // todo add time record
 
     // 布线
     routing();

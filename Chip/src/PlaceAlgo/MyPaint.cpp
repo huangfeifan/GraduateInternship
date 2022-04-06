@@ -45,7 +45,6 @@ void MyPaint::paintEvent(QPaintEvent *event) {
         painter.drawText(left, top, QString::number(i));
     }
 
-
     //qDebug() << m_paths.size() << "MY_PAINT_M_PATHS";
     for (int i = 0; i < m_paths.size(); ++i) {
         //i = 1;
@@ -56,6 +55,7 @@ void MyPaint::paintEvent(QPaintEvent *event) {
                 //painter.drawText(m_paths[i][j] * GRID, QString::number(i));
             }
         } else {
+            // todo modify 这里的portIndex是原始数据 而实际应该是调整之后的portIndex
             int startModule = m_connectData[i].startModuleIndex;
             int startPort = m_connectData[i].startPortIndex;
             int endModule = m_connectData[i].endModuleIndex;
@@ -74,6 +74,7 @@ void MyPaint::paintEvent(QPaintEvent *event) {
             //painter.setPen(Qt::darkBlue);
             painter.setPen(Qt::DashDotLine);
             painter.drawLine(startPoint * GRID, endPoint * GRID);
+            qDebug() << i << "  Index";
         }
         //qDebug() << m_paths[i].size();
     }

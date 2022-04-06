@@ -40,8 +40,7 @@ public:
     // to A* Search Algorithm
     void aStarSearch(const Pair src, const Pair dest);
 
-    // update gridInfo
-    void addPath(QList<QPoint> list);
+    void addPath(QList<QPoint> list);// update gridInfo
 
     void addLine(QPoint start, QPoint end);
 
@@ -53,8 +52,7 @@ public:
 
     void addRect(QPoint pos, QPoint size);
 
-    // get the routing result
-    QList<QPoint> getPaths();
+    QList<QPoint> getPaths();// get the routing result
 
     bool isSuccessFindPaths();
 

@@ -9,6 +9,7 @@
 
 #include "PlaceAlgo/MyStruct.h"
 #include "PlaceAlgo/Placement.h"
+#include "PlaceAlgo/LineSearch.h"
 
 class PlaceAndRoute {
 

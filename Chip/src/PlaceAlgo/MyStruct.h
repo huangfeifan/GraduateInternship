@@ -67,6 +67,10 @@ struct ASccInfo {
     QVector<QPoint> moduleSize;// 模块的大小
 };
 
+enum  Direction{
+    LEFT, RIGHT, TOP, BOTTOM
+};
+
 struct Bar {
     int barLevel;
     QString diameter;
