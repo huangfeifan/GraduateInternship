@@ -10,11 +10,17 @@ PlaceAndRoute::PlaceAndRoute(QList<ConnectData> connectData, int leftPortNum,
                                                                                        m_rightPortNum(rightPortNum),
                                                                                        m_modulePortDirection(
                                                                                                modulePortInfo) {
+    QTime t;
+    t.start();
     // 布局
     placing(); // todo add time record
+    qDebug("Place Time elapsed: %d ms", t.elapsed());
 
+    QTime q;
+    q.start();
     // 布线
     routing();
+    qDebug("Route Time elapsed: %d ms", q.elapsed());
 }
 
 void PlaceAndRoute::dataConvert() {

@@ -102,27 +102,3 @@ void MyPaint::paintEvent(QPaintEvent *event) {
 
     QWidget::paintEvent(event);
 }
-
-void MyPaint::initData() {
-    // 初始化数据
-    //qDebug() << Fake_ModulePortInfo.size();
-
-    RandomData r(10, 5, 4, 50);
-    m_placementAndRoute = PlaceAndRoute(Fake_ConnectData, LEFT_PORT_NUM, RIGHT_PORT_NUM, Fake_ModulePortInfo);
-    m_connectData = Fake_ConnectData;
-
-    m_connectData = r.m_randomConnectData;
-    m_placementAndRoute = PlaceAndRoute(r.m_randomConnectData, r.m_leftNum, r.m_rightNum, r.m_randomModulePortInfo);
-    m_pos = m_placementAndRoute.getModulePos();
-    m_size = m_placementAndRoute.getModuleSize();
-    m_paths = m_placementAndRoute.getPaths();
-
-    // port位置信息
-    m_rightPortPos = m_placementAndRoute.getRightPortPos();
-    m_leftPortPos = m_placementAndRoute.getLeftPortPos();
-    m_modulePortPos = m_placementAndRoute.getPortPos();
-
-    //qDebug() << m_pos << " POS";
-    //qDebug() << m_size << " SIZE";
-    //qDebug() << m_paths << "MY_PAINT_PATH";
-}

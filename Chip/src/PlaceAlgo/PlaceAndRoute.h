@@ -6,6 +6,7 @@
 
 #include <QPoint>
 #include <QVector>
+#include <QTime>
 
 #include "PlaceAlgo/MyStruct.h"
 #include "PlaceAlgo/Placement.h"

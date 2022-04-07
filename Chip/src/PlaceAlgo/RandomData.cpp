@@ -9,10 +9,10 @@ RandomData::RandomData(int moduleNum, int leftPortNum, int rightPortNum, int con
                                                                                                        rightPortNum) {
 
     /// 随机生成模块的port数目
-    int maxPortNum = 10;
+    //int maxPortNum = 10;
     QVector<int> modulePortNum(moduleNum);
     for (int i = 0; i < moduleNum; ++i) {
-        modulePortNum[i] = QRandomGenerator::global()->bounded(maxPortNum) + 1;
+        modulePortNum[i] = QRandomGenerator::global()->bounded(moduleNum) + 1;
     }
     qDebug() << modulePortNum << "--modulePortNum";
 

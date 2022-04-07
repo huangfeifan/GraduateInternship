@@ -1,5 +1,5 @@
-﻿//
-// Created by Huangff on 2022/2/28.
+//
+// Created by Huangff on 2022/4/7.
 //
 
 #pragma once
@@ -17,28 +17,21 @@
 #include "PlaceAlgo/PlaceAndRoute.h"
 #include "PlaceAlgo/RandomData.h"
 
-//#include "MyWidget/Data.h"
-
-
-class MyPaint : public QWidget {
-
+class LineSearchPaint : public QWidget {
 Q_OBJECT
 
 public:
-    MyPaint() {
+    LineSearchPaint() {
         initData();
         setFixedSize(1200, 1000);
-        //m_moduleSize = size;
     }
 
-    ~MyPaint();
+    ~LineSearchPaint();
 
 private:
 
     void initData() {
         // 初始化数据
-        //qDebug() << Fake_ModulePortInfo.size();
-
         RandomData r(10, 5, 4, 50);// 10个模块
         m_placementAndRoute = PlaceAndRoute(Fake_ConnectData, LEFT_PORT_NUM, RIGHT_PORT_NUM, Fake_ModulePortInfo);
         m_connectData = Fake_ConnectData;
@@ -47,16 +40,12 @@ private:
         m_placementAndRoute = PlaceAndRoute(r.m_randomConnectData, r.m_leftNum, r.m_rightNum, r.m_randomModulePortInfo);
         m_pos = m_placementAndRoute.getModulePos();
         m_size = m_placementAndRoute.getModuleSize();
-        m_paths = m_placementAndRoute.getPaths();
+        //m_paths = m_placementAndRoute.getPaths();
 
         // port位置信息
         m_rightPortPos = m_placementAndRoute.getRightPortPos();
         m_leftPortPos = m_placementAndRoute.getLeftPortPos();
         m_modulePortPos = m_placementAndRoute.getPortPos();
-
-        //qDebug() << m_pos << " POS";
-        //qDebug() << m_size << " SIZE";
-        //qDebug() << m_paths << "MY_PAINT_PATH";
     }
 
 protected:
@@ -74,7 +63,7 @@ private:
     QVector<QPoint> m_rightPortPos;// 单独的输出port
     QVector<QPoint> m_leftPortPos;// 单独的输入port
     QVector<QVector<QPoint>> m_modulePortPos;// 模块的端口位置
-
 };
+
 
 
