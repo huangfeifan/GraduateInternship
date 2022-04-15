@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by Huangff on 2022/4/7.
 //
 
@@ -42,10 +42,20 @@ private:
         m_size = m_placementAndRoute.getModuleSize();
         //m_paths = m_placementAndRoute.getPaths();
 
+        // 获得版图大小
+        m_row = m_placementAndRoute.getRowCount();
+        m_column = m_placementAndRoute.getColumnCount();
+        LineSearch lineSearch(m_row, m_column, m_pos, m_size);
+        m_rowChannel = lineSearch.getRowChannel();
+        m_columnChannel = lineSearch.getColumnChannel();
+        qDebug() << m_rowChannel << "Row_Channel";
+        qDebug() << m_columnChannel << "Column_Channel";
+
         // port位置信息
         m_rightPortPos = m_placementAndRoute.getRightPortPos();
         m_leftPortPos = m_placementAndRoute.getLeftPortPos();
         m_modulePortPos = m_placementAndRoute.getPortPos();
+
     }
 
 protected:
@@ -63,6 +73,15 @@ private:
     QVector<QPoint> m_rightPortPos;// 单独的输出port
     QVector<QPoint> m_leftPortPos;// 单独的输入port
     QVector<QVector<QPoint>> m_modulePortPos;// 模块的端口位置
+
+
+    // lineSearch 数据
+    QVector<QList<int>> m_rowChannel;
+    QVector<QList<int>> m_columnChannel;
+
+    // 版图大小
+    int m_row = 0;
+    int m_column = 0;
 };
 
 

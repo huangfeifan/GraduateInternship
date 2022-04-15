@@ -25,38 +25,100 @@ class LineSearch {// 线探索法
      * */
 public:
 
+    LineSearch(const int &row, const int &column, QVector<QPoint> pos, QVector<QPoint> size) : m_pos(pos),
+                                                                                               m_size(size) {
+        // 初始化行数列数
+        m_rowChannel = QVector<QList<int>>(row);
+        m_columnChannel = QVector<QList<int>>(column);
+        addModulesToChannel(m_pos, m_size);
+
+        //QPoint start(30, 130);
+        //QPoint end(30, 100);
+        //QList<QPoint> path;
+        //bool findPath = aStarRouting(start, end, path);
+        //if (findPath) {
+        //    qDebug() << path << "  Path";
+        //}
+    }
+
     LineSearch(const int &row, const int &column) {
         // 初始化行数列数
         m_rowChannel = QVector<QList<int>>(row);
         m_columnChannel = QVector<QList<int>>(column);
 
-        QPoint start(30, 130);
-        QPoint end(30, 100);
+        QPoint start(100, 200);
+        QPoint end(400, 100);
+
+        QPoint pos(200, 100);
+        QPoint size(100, 200);
+        addModuleToChannel(pos, size);
+
+        //qDebug() << m_rowChannel << "RowChannel";
+        //qDebug() << m_columnChannel << "ColumnChannel";
         QList<QPoint> path;
-        bool findPath = routing(start, end, path);
+        bool findPath = false;
+        //= aStarRouting(start, end, path);
         if (findPath) {
-            qDebug() << path << "  Path";
+            qDebug() << "\n  Path:" << path;
         }
     }
 
     ~LineSearch() = default;
 
-    bool routing(const QPoint &start, const QPoint &end, QList<QPoint> &path);// 根据起点和终点进行线探索
+    QVector<QList<int>> getRowChannel() {
+        return m_rowChannel;
+    }
+
+    QVector<QList<int>> getColumnChannel() {
+        return m_columnChannel;
+    }
+
+    int getIndex(int target, QList<int> channel) {
+        // 有序数组 二分法 找插入位置
+        int low = 0;
+        int high = channel.size() - 1;
+        while (low <= high) {
+            int mid = (high - low) / 2 + low;
+            int num = channel[mid];
+            if (num == target) {
+                return mid;
+            } else if (num > target) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return -1;
+    }
+
+
+    bool routing(QPoint &start, const QPoint &end, QList<QPoint> &path);// 根据起点和终点进行线探索
+
+    void printDirection(const QVector<Direction> &direction);
 
 private:
-    void routing(bool &isFindPath, const QPoint &start, const QPoint &end,
-                 QList<QPoint> &path);
+    void routing(bool &isFindPath, QPoint &start, const QPoint &end,
+                 QList<QPoint> &path, QVector<Direction> &direction, QVector<bool> &isBlocked);
 
     void
     getPriorityDirections(QVector<Direction> &direction, const QPoint &start, const QPoint &end);// 根据起点和终点 计算探索方向的顺序
 
-    void leftSearching(QPoint &start, const QPoint &end, QList<QPoint> &path);
+    void
+    getPriorityDirections(QVector<Direction> &direction, const QPoint &start, const QPoint &end,
+                          QVector<bool> &isBlocked);// 根据起点和终点 计算探索方向的顺序
 
-    void rightSearching(QPoint &start, const QPoint &end, QList<QPoint> &path);
 
-    void topSearching(QPoint &start, const QPoint &end, QList<QPoint> &path);
+    void leftSearching(bool &isFindPath, QPoint &start, const QPoint &end, QList<QPoint> &path,
+                       QVector<Direction> &direction, QVector<bool> &isBlocked);
 
-    void bottomSearching(QPoint &start, const QPoint &end, QList<QPoint> &path);
+    void rightSearching(bool &isFindPath, QPoint &start, const QPoint &end, QList<QPoint> &path,
+                        QVector<Direction> &direction, QVector<bool> &isBlocked);
+
+    void topSearching(bool &isFindPath, QPoint &start, const QPoint &end, QList<QPoint> &path,
+                      QVector<Direction> &direction, QVector<bool> &isBlocked);
+
+    void bottomSearching(bool &isFindPath, QPoint &start, const QPoint &end, QList<QPoint> &path,
+                         QVector<Direction> &direction, QVector<bool> &isBlocked);
 
     bool removeIntersection(QList<QPoint> &path);// 去除自交
 
@@ -141,4 +203,6 @@ private:
 
     QVector<QList<int>> m_rowChannel;// 行通道  从小到大的顺序存储
     QVector<QList<int>> m_columnChannel;// 列通道
+    QVector<QPoint> m_pos;// 模块位置
+    QVector<QPoint> m_size;// 模块大小
 };

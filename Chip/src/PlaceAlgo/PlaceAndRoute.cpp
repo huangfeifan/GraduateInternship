@@ -3,6 +3,7 @@
 //
 
 #include "PlaceAndRoute.h"
+#include "PlaceAlgo/MikamiTabuchiAlgo.h"
 
 PlaceAndRoute::PlaceAndRoute(QList<ConnectData> connectData, int leftPortNum,
                              int rightPortNum, QVector<QVector<int>> modulePortInfo) : m_connectData(connectData),
@@ -19,8 +20,15 @@ PlaceAndRoute::PlaceAndRoute(QList<ConnectData> connectData, int leftPortNum,
     QTime q;
     q.start();
     // 布线
-    routing();
-    qDebug("Route Time elapsed: %d ms", q.elapsed());
+    //aStarRouting();
+    qDebug("A* Route Time elapsed: %d ms", q.elapsed());
+
+    QTime l;
+    l.start();
+    // 布线
+    lineSearchRouting();
+    qDebug("LineSearch Route Time elapsed: %d ms", l.elapsed());
+    qDebug() << m_paths.size() << "Size_Path";
 }
 
 void PlaceAndRoute::dataConvert() {
@@ -46,15 +54,22 @@ void PlaceAndRoute::placing() {
     m_graphRowCount = p.getSchematicRowCount();
     m_graphColumnCount = p.getSchematicColumnCount();
 
+    qDebug()<<m_leftPortPos<<"LEFT_PORT_POS";
+    qDebug()<<m_rightPortPos<<"RIGHT_PORT_POS";
+
 }
 
-void PlaceAndRoute::routing() {
+void PlaceAndRoute::aStarRouting() {
     //qDebug() << m_graphRowCount << " " << m_graphColumnCount << "PLACE_AND_ROUTE_ROW_COLUMN";
     Router router(m_graphRowCount, m_graphColumnCount, m_modulePos, m_moduleSize);
     m_paths = QVector<QList<QPoint >>(m_connectData.size());
 
+    QTime q;
+    q.start();
     // 确定布线的顺序
     QList<WeightAndIndex> list = getRoutingOrder();
+
+    qDebug("A* Sort Time elapsed: %d ms", q.elapsed());
 
     /**/
     for (int i = 0; i < list.size(); ++i) {
@@ -176,6 +191,46 @@ void PlaceAndRoute::routing() {
     /**/
 }
 
+void PlaceAndRoute::lineSearchRouting() {
+    MikamiTabuchiAlgo mt(m_graphRowCount, m_graphColumnCount);
+    m_paths = QVector<QList<QPoint >>(m_connectData.size());
+    mt.addModulesToChannel(m_modulePos, m_moduleSize);
+    //qDebug() << m_graphRowCount << " " << m_graphColumnCount;
+
+    for (int i = 0; i < m_connectData.size(); ++i) {
+        //qDebug() << i << "----Index";
+        if (i == 8) {
+            int a = 10;
+            //qDebug() << a;
+        }
+
+        int startModule = m_connectData[i].startModuleIndex;
+        int startPort = m_connectData[i].startPortIndex;
+
+        int endModule = m_connectData[i].endModuleIndex;
+        int endPort = m_connectData[i].endPortIndex;
+
+        QPoint start, end;// 起点和终点 已扇出
+        // bug
+        //qDebug() << startModule << " " << startPort << "Start";
+        //qDebug() << endModule << " " << endPort << "End";
+        start = (startModule == -1) ? m_leftPortPos[startPort] : m_modulePortPos[startModule][startPort];
+        end = (endModule == -1) ? m_rightPortPos[endPort] : m_modulePortPos[endModule][endPort];
+
+        //qDebug() << start << " " << end << " Index" << i;
+
+        QList<QPoint> path;
+        //path = mt.routing(start, end);
+        path = mt.routingSort(start, end);
+        if (path.size() != 0) {
+            m_paths[i] = path;
+            //qDebug() << path << " Path";
+            mt.addPathToChannel(path);
+        }
+    }
+
+}
+
 QVector<QPoint> PlaceAndRoute::getModulePos() {
     return m_modulePos;
 }
@@ -237,3 +292,5 @@ QList<WeightAndIndex> PlaceAndRoute::getRoutingOrder() {
     qSort(list.begin(), list.end(), compareWeight);
     return list;
 }
+
+

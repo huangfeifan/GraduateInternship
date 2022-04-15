@@ -238,7 +238,7 @@ void Placement::computeSccsAbsolutePosition() {
     ComputeAbsolutePos absolutePos(m_sccsInfo[0].graph, moduleSize,
                                    m_sccsInfo[0].relativePos, 0, 0);
     m_sccsInfo[0].absolutePos = absolutePos.getAbsolutePos();
-    qDebug() << m_sccsInfo[0].absolutePos << "Absolute_Pos";
+    //qDebug() << m_sccsInfo[0].absolutePos << "Absolute_Pos";
     m_sccsInfo[0].sccSize = absolutePos.getSccBlockSize();
 
 }
@@ -341,7 +341,7 @@ void Placement::computeScc() {
     //qDebug() << m_moduleConnectData << "PLACEMENT_MODULE_CONNECT_DATA";
     GetGraphSccs tarjanAlgo(m_moduleConnectData);
     m_sccs = tarjanAlgo.getGraphAllScc();
-    qDebug() << m_sccs << "PLACEMENT_SCC";
+    //qDebug() << m_sccs << "PLACEMENT_SCC";
 }
 
 void Placement::computeModuleConnectData() { // pass
@@ -392,7 +392,7 @@ void Placement::computeModuleConnectData() { // pass
         //
     }   //qDebug() << m_moduleConnectData;// pass
 
-    qDebug() << "adjacency List" << m_moduleConnectData;
+    //qDebug() << "adjacencyList" << m_moduleConnectData;
 }
 
 Placement::Placement(QList<ConnectData> connectData) : m_connectData(connectData) {
@@ -426,7 +426,7 @@ void Placement::computeSccsRelativePosition() {
     PlaceSccs placeSccs(m_sccsInfo[0].graph);
     // 保存相对位置数据
     m_sccsInfo[0].relativePos = placeSccs.getRelativePos();
-    qDebug() << m_sccsInfo[0].relativePos << "SCCs_Relative_Pos";
+    //qDebug() << m_sccsInfo[0].relativePos << "SCCs_Relative_Pos";
 }
 
 void Placement::preHandleData() {
@@ -503,30 +503,30 @@ void Placement::computeModulePortPos() {
         qSort(right.begin(), right.end(), compareWeight);
         qSort(top.begin(), top.end(), compareWeight);
 
-        // 根据排序结果 计算摆放位置
+        // 根据排序结果 计算摆放位置  模块的port往相应方向扇出一个GRID距离
         for (int j = 0; j < left.size(); ++j) {// 从上往下摆放port
             int index = left[j].index;
             //qDebug() << index << "  --index";
             m_modulePort[i][index].orderIndex = j;
             //qDebug() << index << " " << j;
-            m_modulePortPos[i][index] = QPoint(0, j * GRID + GRID) + m_modulePos[i];
+            m_modulePortPos[i][index] = QPoint(-GRID, j * GRID + GRID) + m_modulePos[i];
         }
         for (int j = 0; j < bottom.size(); ++j) {
             int index = bottom[j].index;
             m_modulePort[i][index].orderIndex = j;
-            m_modulePortPos[i][index] = QPoint(j * GRID + GRID, m_moduleSize[i].y()) + m_modulePos[i];
+            m_modulePortPos[i][index] = QPoint(j * GRID + GRID, m_moduleSize[i].y() + GRID) + m_modulePos[i];
         }
 
         for (int j = 0; j < right.size(); ++j) {// 从上往下摆放port
             int index = right[j].index;
             m_modulePort[i][index].orderIndex = j;
-            m_modulePortPos[i][index] = QPoint(m_moduleSize[i].x(), j * GRID + GRID) + m_modulePos[i];
+            m_modulePortPos[i][index] = QPoint(m_moduleSize[i].x() + GRID, j * GRID + GRID) + m_modulePos[i];
         }
 
         for (int j = 0; j < top.size(); ++j) {
             int index = top[j].index;
             m_modulePort[i][index].orderIndex = j;
-            m_modulePortPos[i][index] = QPoint(0, j * GRID + GRID) + m_modulePos[i];
+            m_modulePortPos[i][index] = QPoint(j * GRID + GRID, -GRID) + m_modulePos[i];
         }
     }
 }

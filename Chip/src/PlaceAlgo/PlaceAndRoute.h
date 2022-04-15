@@ -29,8 +29,11 @@ public:
     // compute placing result
     void placing();
 
-    // compute routing result
-    void routing();
+    // compute aStarRouting result
+    void aStarRouting();
+
+    // line search
+    void lineSearchRouting();
 
     // get module pos
     QVector<QPoint> getModulePos();
@@ -50,6 +53,14 @@ public:
     // get all paths
     QVector<QList<QPoint>> getPaths();
 
+    int getRowCount() {
+        return m_graphRowCount;
+    }
+
+    int getColumnCount() {
+        return m_graphColumnCount;
+    }
+
     struct ModuleInfos {
         QPoint pos;//
         QPoint size;
@@ -61,13 +72,11 @@ private:
 
 private:
 
-
     /// 输入数据
     QList<ConnectData> m_connectData;// 连接数据
     QVector<QVector<int>> m_modulePortDirection;// 模块的port方向信息
     int m_leftPortNum;// 左侧输入port
     int m_rightPortNum;// 右侧输出port
-
 
     /// 布局布线结果
     QVector<QPoint> m_modulePos;// 模块的绝对位置

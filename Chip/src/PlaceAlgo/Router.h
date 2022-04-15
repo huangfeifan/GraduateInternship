@@ -52,7 +52,7 @@ public:
 
     void addRect(QPoint pos, QPoint size);
 
-    QList<QPoint> getPaths();// get the routing result
+    QList<QPoint> getPaths();// get the aStarRouting result
 
     bool isSuccessFindPaths();
 
@@ -89,7 +89,7 @@ private:
     int m_row;// row count
     int m_column;// column count
     bool m_foundDest = false;
-    QList<QPoint> m_path;// routing result //  m_paths[i].size()==0 means search path failed
+    QList<QPoint> m_path;// aStarRouting result //  m_paths[i].size()==0 means search path failed
     QVector<QVector<int>> m_rowGridInfo;// row Channel  同一行Y相同
     QVector<QVector<int>> m_columnGridInfo;// column Channel 同一列X相同
     QVector<QPoint> m_modulePos; // modulePos

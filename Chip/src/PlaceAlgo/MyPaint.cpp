@@ -74,31 +74,31 @@ void MyPaint::paintEvent(QPaintEvent *event) {
             //painter.setPen(Qt::darkBlue);
             painter.setPen(Qt::DashDotLine);
             painter.drawLine(startPoint * GRID, endPoint * GRID);
-            qDebug() << i << "  Index";
+            qDebug() << i << "  IndexMyPaint";
         }
         //qDebug() << m_paths[i].size();
     }
 
     /// 绘制端口
-    painter.setPen(Qt::blue);
-    //qDebug() << m_leftPortPos.size() << " LEFT_PORT_SIZE";
-    for (int i = 0; i < m_leftPortPos.size(); ++i) {
-        QPoint point = m_leftPortPos[i] * GRID;
-        //qDebug() << point;
-        painter.drawLine(point.x(), point.y(), point.x() + GRID, point.y());
-    }
-    //qDebug() << m_rightPortPos.size() << " LEFT_PORT_SIZE";
-    for (int i = 0; i < m_rightPortPos.size(); ++i) {
-        QPoint point = m_rightPortPos[i] * GRID;
-        //qDebug() << point;
-        painter.drawLine(point.x(), point.y(), point.x() + GRID, point.y());
-    }
-    for (int i = 0; i < m_modulePortPos.size(); ++i) {
-        for (int j = 0; j < m_modulePortPos[i].size(); ++j) {
-            QPoint point = m_modulePortPos[i][j] * GRID;
-            painter.drawLine(point.x(), point.y(), point.x() + GRID, point.y());
-        }
-    }
+    //painter.setPen(Qt::blue);
+    ////qDebug() << m_leftPortPos.size() << " LEFT_PORT_SIZE";
+    //for (int i = 0; i < m_leftPortPos.size(); ++i) {
+    //    QPoint point = m_leftPortPos[i] * GRID;
+    //    //qDebug() << point;
+    //    painter.drawLine(point.x(), point.y(), point.x() + GRID, point.y());
+    //}
+    ////qDebug() << m_rightPortPos.size() << " LEFT_PORT_SIZE";
+    //for (int i = 0; i < m_rightPortPos.size(); ++i) {
+    //    QPoint point = m_rightPortPos[i] * GRID;
+    //    //qDebug() << point;
+    //    painter.drawLine(point.x(), point.y(), point.x() + GRID, point.y());
+    //}
+    //for (int i = 0; i < m_modulePortPos.size(); ++i) {
+    //    for (int j = 0; j < m_modulePortPos[i].size(); ++j) {
+    //        QPoint point = m_modulePortPos[i][j] * GRID;
+    //        painter.drawLine(point.x(), point.y(), point.x() + GRID, point.y());
+    //    }
+    //}
 
     QWidget::paintEvent(event);
 }

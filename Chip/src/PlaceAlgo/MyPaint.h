@@ -39,12 +39,16 @@ private:
         // 初始化数据
         //qDebug() << Fake_ModulePortInfo.size();
 
-        RandomData r(10, 5, 4, 50);// 10个模块
-        m_placementAndRoute = PlaceAndRoute(Fake_ConnectData, LEFT_PORT_NUM, RIGHT_PORT_NUM, Fake_ModulePortInfo);
-        m_connectData = Fake_ConnectData;
+        RandomData r(MODULE_COUNT, LEFT_PORT_NUM, RIGHT_PORT_NUM, CONNECT_NUM);// 10个模块
+        if (isRandomData) {
+            m_connectData = r.m_randomConnectData;
+            m_placementAndRoute = PlaceAndRoute(r.m_randomConnectData, r.m_leftNum, r.m_rightNum,
+                                                r.m_randomModulePortInfo);
+        } else {
+            m_placementAndRoute = PlaceAndRoute(Fake_ConnectData, LEFT_PORT_NUM, RIGHT_PORT_NUM, Fake_ModulePortInfo);
+            m_connectData = Fake_ConnectData;
+        }
 
-        m_connectData = r.m_randomConnectData;
-        m_placementAndRoute = PlaceAndRoute(r.m_randomConnectData, r.m_leftNum, r.m_rightNum, r.m_randomModulePortInfo);
         m_pos = m_placementAndRoute.getModulePos();
         m_size = m_placementAndRoute.getModuleSize();
         m_paths = m_placementAndRoute.getPaths();

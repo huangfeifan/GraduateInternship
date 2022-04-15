@@ -22,7 +22,7 @@ public:
     PlaceSccs(const QVector<QList<int>> &connectData) : m_connectData(connectData) {
         //qDebug() << "________________________PlaceSccs________________________";
 
-        qDebug() << connectData << "PlaceSccs_Connect_Data";
+        //qDebug() << connectData << "PlaceSccs_Connect_Data";
         /// 初始化所有变量
         preHandleData();
 
@@ -151,7 +151,7 @@ private:
                 orderList[tSort[i][j]] = i;
             }
         }
-        qDebug() << orderList << "OrderList";
+        //qDebug() << orderList << "OrderList";
 
         // add sort ??  todo consider
         for (int i = 0; i < tSort.size(); ++i) {

@@ -4,7 +4,9 @@
 
 #include "LineSearch.h"
 
-bool LineSearch::routing(const QPoint &start, const QPoint &end, QList<QPoint> &path) {
+const int STEP = 1;
+
+bool LineSearch::routing(QPoint &start, const QPoint &end, QList<QPoint> &path) {
     if (start == end) {
         qDebug() << " Data Error";
         return false;
@@ -12,58 +14,290 @@ bool LineSearch::routing(const QPoint &start, const QPoint &end, QList<QPoint> &
     path.push_back(start);// 起点加入列表
 
     bool isFindPath = false;// 找到路径与否
-
-    routing(isFindPath, start, end, path);// 迭代地靠近目标
-
-    return isFindPath;// true 表明探索成功  false表示探索失败
-}
-
-void LineSearch::routing(bool &isFindPath, const QPoint &start, const QPoint &end,
-                         QList<QPoint> &path) {
-    if (start == end) {// 起点和终点相同 则探索结束
-        isFindPath = true;
-        return;
+    if (false) {// todo check startPoint and endPoint validity
+        return isFindPath;
     }
 
     // 判断探索方向
     const int directionCount = 4;// 有4种探索方向
     QVector<Direction> direction(directionCount);
     getPriorityDirections(direction, start, end);
-    QPoint point = start;// 备份
+    QVector<bool> isBlocked(4);
+    //qDebug() << isBlocked << "IsBlocked";
+    //isBlocked[2] = true;// 设置
+    //isBlocked[3] = true;
+    // direction 0 1 2 3 用来存储方向
+    // isBlocked 0 1 2 3 用来表示是否允许探索
+    // start和end的连线不是水平或者竖直的直线 说明需要从两个方向去探索 剩下两个是遇到阻碍时的备选方向
 
-    // 对四个方向进行探索 如果point修改了 说明前进了 否则考虑另外一个方向 todo modify
+    routing(isFindPath, start, end, path, direction, isBlocked);// 迭代地靠近目标
+
+    return isFindPath;// true 表明探索成功  false表示探索失败
+}
+
+void LineSearch::routing(bool &isFindPath, QPoint &start, const QPoint &end,
+                         QList<QPoint> &path, QVector<Direction> &direction, QVector<bool> &isBlocked) {
+    if (start == end) {// 起点和终点相同 则探索结束
+        isFindPath = true;
+        return;
+    }
+    int directionCount = 2;// 2 从起点向终点探索需要几个方向 1 表示起点和终点的连线为水平或者竖直
+    if (start.x() == end.x() || start.y() == end.y()) {// 在同一列 X相同   或者   在同一行 Y相同
+        directionCount = 1;
+    }
+    printDirection(direction);
+    bool searchFail = true;//directionCount个探索方向都被阻挡 则需要反方向探索
     for (int i = 0; i < directionCount; ++i) {
-        switch (direction[i]) {
-            case Direction::LEFT:     // left
-                leftSearching(point, end, path);// core
-                break;
-            case Direction::RIGHT :   // right
-                rightSearching(point, end, path);
-                break;
-            case Direction::TOP:      // top
-                topSearching(point, end, path);
-                break;
-            case Direction::BOTTOM:   // bottom
-                bottomSearching(point, end, path);
-                break;
-            default:
-                qDebug() << "Error!";
-                break;
+        if (!isBlocked[i]) {//
+            searchFail = false;
+            break;
         }
-        if (point == end) {// 成功探索
+    }
+    QPoint point = start;// 备份
+    while (!searchFail) {
+        for (int i = 0; i < directionCount; ++i) {
+            if (isBlocked[i]) {
+                continue;
+            }
+
+            if (direction[i] == Direction::TOP) {
+                // 允许向上探索
+                topSearching(isFindPath, point, end, path, direction, isBlocked);
+                if (start == point) {// 探索失败
+                    isBlocked[i] = true;
+                    continue;
+                } else if (point.y() == end.y()) {  // 一步到位
+                    // 重新探索
+                    //getPriorityDirections(direction, point, end);
+                    isBlocked = QVector<bool>(4);// 重置
+                } else {// 探索遇到了障碍 没能一步到位
+                    //getPriorityDirections(direction, point, end);
+                    //direction[0] = Direction::LEFT;// 左
+                    //direction[1] = Direction::RIGHT;// 右
+                    //direction[2] = Direction::BOTTOM;// 下
+                    //direction[3] = Direction::TOP;// 上
+                    isBlocked = QVector<bool>(4);// 重置
+                    isBlocked[i] = true;
+                }
+                path.push_back(point);
+                qDebug() << start << " --> " << point << " Top";
+                start = point;
+            } else if (direction[i] == Direction::BOTTOM) {
+                // 允许向下探索
+                bottomSearching(isFindPath, point, end, path, direction, isBlocked);
+                if (start == point) {// 探索失败
+                    isBlocked[i] = true;
+                    continue;
+                } else if (point.y() == end.y()) {// 一步到位
+                    // 重新探索
+                    //getPriorityDirections(direction, point, end);
+                    isBlocked = QVector<bool>(4);// 重置
+                } else {// 探索遇到了障碍  未能一步到位
+                    //getPriorityDirections(direction, point, end);
+                    //direction[0] = Direction::LEFT;// 左
+                    //direction[1] = Direction::RIGHT;// 右
+                    //direction[2] = Direction::BOTTOM;// 下
+                    //direction[3] = Direction::TOP;// 上
+                    isBlocked = QVector<bool>(4);// 重置
+                    isBlocked[i] = true;
+                }
+                path.push_back(point);
+                qDebug() << start << " --> " << point << " Bottom";
+                start = point;
+            } else if (direction[i] == Direction::LEFT) {
+                // 允许向左探索
+                leftSearching(isFindPath, point, end, path, direction, isBlocked);
+                if (start == point) {// 探索失败
+                    isBlocked[i] = true;
+                    continue;
+                } else if (point.x() == end.x()) {// 一步到位
+                    // 重新探索
+                    //getPriorityDirections(direction, point, end);
+                    isBlocked = QVector<bool>(4);// 重置
+                    path.push_back(point);
+                    qDebug() << start << " --> " << point << " Left";
+                    routing(isFindPath, point, end, path, direction, isBlocked);
+                } else {// 探索遇到了障碍
+                    //getPriorityDirections(direction, point, end);
+                    //direction[3] = Direction::LEFT;// 左
+                    //direction[2] = Direction::RIGHT;// 右
+                    //direction[0] = Direction::BOTTOM;// 下
+                    //direction[1] = Direction::TOP;// 上
+                    isBlocked = QVector<bool>(4);// 重置
+                    isBlocked[i] = true;
+                }
+                path.push_back(point);
+                qDebug() << start << " --> " << point << " Left";
+                start = point;
+            } else if (direction[i] == Direction::RIGHT) {
+                // 允许向右探索
+                rightSearching(isFindPath, point, end, path, direction, isBlocked);
+
+                if (start == point) {// 探索失败
+                    isBlocked[i] = true;
+                    continue;
+                } else if (point.x() == end.x()) {// 一步到位
+                    // 重新探索
+                    //getPriorityDirections(direction, point, end);
+                    isBlocked = QVector<bool>(4);// 重置
+                } else {// 探索遇到了障碍
+                    //getPriorityDirections(direction, point, end);
+                    //direction[2] = Direction::LEFT;// 左
+                    //direction[3] = Direction::RIGHT;// 右
+                    //direction[0] = Direction::BOTTOM;// 下
+                    //direction[1] = Direction::TOP;// 上
+                    isBlocked = QVector<bool>(4);// 重置
+                    isBlocked[i] = true;
+                }
+                path.push_back(point);
+                qDebug() << start << " --> " << point << " Right";
+                start = point;
+            }
+        }
+
+        if (point == end) {// 探索结束   路径成功找到 退出循环
             isFindPath = true;
             return;
         }
 
-        if (start == point) {// 探索的某一个方向被完全阻碍
-            continue;
+        qDebug() << start << " point " << point;
+        for (int i = 0; i < directionCount; ++i) {
+
         }
-        //getPriorityDirections(direction, point, end);// 判断探索方向
-        routing(isFindPath, point, end, path);
-        if (isFindPath) {// 路径成功找到 退出循环
+
+        if (start == point) {// 被阻碍 被阻碍方向可能为1 2
             break;
         }
+
+        if (start.x() == end.x() || start.y() == end.y()) {// 在同一列 X相同   或者   在同一行 Y相同
+            directionCount = 1;
+        }
+
+        searchFail = true;
+        for (int i = 0; i < directionCount; ++i) {
+            if (!isBlocked[i]) {//directionCount个探索方向都被阻挡 则需要反方向探索
+                searchFail = false;
+                break;
+            }
+        }
     }
+
+    // 从其他方向继续探索
+    qDebug() << start << " point " << end;
+    qDebug() << isBlocked << "isBlocked";
+    //getPriorityDirections(direction, start, end);
+    printDirection(direction);
+    qDebug() << directionCount << "DirectionCount";
+    /*
+
+    // 对四个方向进行探索 如果point修改了 说明前进了 否则考虑另外一个方向 todo modify  Bug -- 0407
+    for (int i = 0; i < 4; ++i) {// 根据优先级进行探索
+        if (!isBlocked[0] && direction[i] == Direction::TOP) {
+            // 允许向上探索
+            topSearching(isFindPath, point, end, path, direction, isBlocked);
+            if (start == point) {// 探索失败
+                isBlocked[0] = true;
+                continue;
+            } else if (point.y() == end.y()) {  // 一步到位
+                // 重新探索
+                //getPriorityDirections(direction, point, end);
+                isBlocked = QVector<bool>(4);// 重置
+            } else {// 探索遇到了障碍 没能一步到位
+                //getPriorityDirections(direction, point, end);
+                direction[0] = Direction::LEFT;// 左
+                direction[1] = Direction::RIGHT;// 右
+                direction[2] = Direction::BOTTOM;// 下
+                direction[3] = Direction::TOP;// 上
+                isBlocked = QVector<bool>(4);// 重置
+                isBlocked[0] = true;
+            }
+            path.push_back(point);
+            qDebug() << start << " --> " << point << " Top";
+            routing(isFindPath, point, end, path, direction, isBlocked);
+        } else if (!isBlocked[1] && direction[i] == Direction::BOTTOM) {
+            // 允许向下探索
+            bottomSearching(isFindPath, point, end, path, direction, isBlocked);
+            if (start == point) {// 探索失败
+                isBlocked[1] = true;
+                continue;
+            } else if (point.y() == end.y()) {// 一步到位
+                // 重新探索
+                //getPriorityDirections(direction, point, end);
+                isBlocked = QVector<bool>(4);// 重置
+            } else {// 探索遇到了障碍  未能一步到位
+                //getPriorityDirections(direction, point, end);
+                direction[0] = Direction::LEFT;// 左
+                direction[1] = Direction::RIGHT;// 右
+                direction[2] = Direction::BOTTOM;// 下
+                direction[3] = Direction::TOP;// 上
+                isBlocked = QVector<bool>(4);// 重置
+                isBlocked[1] = true;
+            }
+            path.push_back(point);
+            qDebug() << start << " --> " << point << " Bottom";
+            routing(isFindPath, point, end, path, direction, isBlocked);
+        } else if (!isBlocked[2] && direction[i] == Direction::LEFT) {
+            // 允许向左探索
+            leftSearching(isFindPath, point, end, path, direction, isBlocked);
+            if (start == point) {// 探索失败
+                isBlocked[2] = true;
+                continue;
+            } else if (point.x() == end.x()) {// 一步到位
+                // 重新探索
+                //getPriorityDirections(direction, point, end);
+                isBlocked = QVector<bool>(4);// 重置
+                path.push_back(point);
+                qDebug() << start << " --> " << point << " Left";
+                routing(isFindPath, point, end, path, direction, isBlocked);
+            } else {// 探索遇到了障碍
+                //getPriorityDirections(direction, point, end);
+                direction[3] = Direction::LEFT;// 左
+                direction[2] = Direction::RIGHT;// 右
+                direction[0] = Direction::BOTTOM;// 下
+                direction[1] = Direction::TOP;// 上
+                isBlocked = QVector<bool>(4);// 重置
+                isBlocked[2] = true;
+            }
+            path.push_back(point);
+            qDebug() << start << " --> " << point << " Left";
+            routing(isFindPath, point, end, path, direction, isBlocked);
+        } else if (!isBlocked[3] && direction[i] == Direction::RIGHT) {
+            // 允许向右探索
+            rightSearching(isFindPath, point, end, path, direction, isBlocked);
+
+            if (start == point) {// 探索失败
+                isBlocked[3] = true;
+                continue;
+            } else if (point.x() == end.x()) {// 一步到位
+                // 重新探索
+                //getPriorityDirections(direction, point, end);
+                isBlocked = QVector<bool>(4);// 重置
+            } else {// 探索遇到了障碍
+                //getPriorityDirections(direction, point, end);
+                direction[2] = Direction::LEFT;// 左
+                direction[3] = Direction::RIGHT;// 右
+                direction[0] = Direction::BOTTOM;// 下
+                direction[1] = Direction::TOP;// 上
+                isBlocked = QVector<bool>(4);// 重置
+                isBlocked[3] = true;
+            }
+            path.push_back(point);
+            qDebug() << start << " --> " << point << " Right";
+            routing(isFindPath, point, end, path, direction,
+                    isBlocked);// & isFindPath path direction isBlocked 可以删除 todo consider delete
+        }
+        if (point == end) {// 探索结束   路径成功找到 退出循环
+            isFindPath = true;
+            return;
+        }
+        //aStarRouting(isFindPath, point, end, path, direction, isBlocked);
+        //if (isFindPath) {
+        //    return;
+        //}
+    }
+
+    */
+
 }
 
 void LineSearch::getPriorityDirections(QVector<Direction> &direction, const QPoint &start, const QPoint &end) {
@@ -113,30 +347,55 @@ void LineSearch::getPriorityDirections(QVector<Direction> &direction, const QPoi
     }
 }
 
-void LineSearch::leftSearching(QPoint &start, const QPoint &end, QList<QPoint> &path) {
+void LineSearch::leftSearching(bool &isFindPath, QPoint &start, const QPoint &end, QList<QPoint> &path,
+                               QVector<Direction> &direction, QVector<bool> &isBlocked) {
     // 向左探索 能一步到位最好 不能则探索到*** todo consider
     // m_rowChannel
-    int index = start.y() / GRID;// 在哪个行通道上  todo check index validity index>=0&&index<row
-    auto list = m_rowChannel[index];
+    int min_x = end.x();
+    int max_x = start.x();// 向左探索 起点在终点右侧(起点的x坐标大于终点的x坐标)
+    if (max_x < min_x) {
+        return;
+    }
+    if (start.x() == end.x()) {
+        min_x = start.x() - STEP * GRID;
+    }
 
+    int index = start.y() / GRID;// 在哪个行通道上
+    auto list = m_rowChannel[index];
+    qDebug() << list << "LIST";
     // 特殊情况 列表为空 则直接插入
     if (list.size() == 0) {
-        start.setX(end.x());// 向左探索 x修改
-        path.push_back(start);// update point
+        start.setX(min_x);// 向左探索 x修改
         return;
     }
 
     // 列表不为空 则有三种插入情况 表头 表尾 中间
-    int min_x = end.x();
-    int max_x = start.x();
-    if (max_x < list[0] - GRID) {// 表头
-        start.setX(end.x());// 向左探索 x修改
-        path.push_back(start);// update point
+
+    if (max_x < list[0]) {// 表头 能一步到位
+        start.setX(min_x);// 向左探索 x修改
         return;
     }
-    if (min_x > list[list.size() - 1] + GRID) {// 表尾
-        start.setX(end.x());// 向左探索 x修改
-        path.push_back(start);// update point
+    if (max_x > list[list.size() - 1]) {// 表尾
+        if (min_x < list[list.size() - 1]) {// 能一步到位
+            start.setX(min_x);
+        } else {
+            start.setX(list[list.size() - 1] + GRID);// 不能一步到位
+            //isBlocked = QVector<bool>(4);
+            //isBlocked[2] = true;// 碰到障碍
+
+            //direction[3] = Direction::LEFT;// 左
+            //direction[2] = Direction::RIGHT;// 右
+            //
+            //if (start.y() > end.y()) {// 起点在终点下方
+            //    direction[1] = Direction::TOP;
+            //    direction[3] = Direction::BOTTOM;
+            //} else {
+            //    direction[0] = Direction::BOTTOM;// 下
+            //    direction[1] = Direction::TOP;// 上
+            //}
+            //path.push_back(start);// update point
+            //aStarRouting(isFindPath, start, end, path, direction);
+        }
         return;
     }
     // 列表中间
@@ -144,117 +403,197 @@ void LineSearch::leftSearching(QPoint &start, const QPoint &end, QList<QPoint> &
         if (i % 2 == 1) {// 奇数
             if (max_x < list[i + 1] - GRID) {// 找到插入位置
                 if (min_x > list[i] + GRID) {// 能一步到位
-                    start.setX(end.x());// 向左探索 x修改
+                    start.setX(min_x);// 向左探索 x修改
                 } else {
                     start.setX(list[i] + 1 * GRID);// 向左探索到尽头 todo consider
+                    //isBlocked = QVector<bool>(4);
+                    //isBlocked[2] = true;// 碰到障碍
+
+                    //direction[3] = Direction::LEFT;// 左
+                    //direction[2] = Direction::RIGHT;// 右
+                    //
+                    //if (start.y() > end.y()) {// 起点在终点下方
+                    //    direction[1] = Direction::TOP;
+                    //    direction[3] = Direction::BOTTOM;
+                    //} else {
+                    //    direction[0] = Direction::BOTTOM;// 下
+                    //    direction[1] = Direction::TOP;// 上
+                    //}
+                    //path.push_back(start);// update point
+                    //aStarRouting(isFindPath, start, end, path, direction);
                 }
-                path.push_back(start);// update point
                 return;
             }
         }
     }
 }
 
-void LineSearch::rightSearching(QPoint &start, const QPoint &end, QList<QPoint> &path) {
+void LineSearch::rightSearching(bool &isFindPath, QPoint &start, const QPoint &end, QList<QPoint> &path,
+                                QVector<Direction> &direction, QVector<bool> &isBlocked) {
     // 向右探索 能一步到位最好 不能则探索到*** todo consider
     // m_rowChannel
+    int min_x = start.x();// 向右探索 则起点在终点左侧(起点的x坐标小于终点的x坐标)
+    int max_x = end.x();
+    if (max_x < min_x) {
+        return;
+    }
+
+    if (start.x() == end.x()) {
+        max_x = start.x() + STEP * GRID;
+    }
+
     int index = start.y() / GRID;
     auto list = m_rowChannel[index];
-    if (list.size() == 0) {
-        start.setX(end.x());
-        path.push_back(start);
+    qDebug() << list << "LIST";
+    if (list.size() == 0) {// 一步到位
+        start.setX(max_x);
         return;
     }
 
-    int min_x = start.x();
-    int max_x = end.x();
-    // 表头或表尾可以插入
-    if (max_x < list[0] - GRID || min_x > list[list.size() - 1] + GRID) {
-        start.setX(end.x());
-        path.push_back(start);
+    if (min_x < list[0]) {    // 表头可以插入
+        if (max_x < list[0]) {      // 一步到位
+            start.setX(max_x);
+        } else {
+            start.setX(list[0] - GRID * 1);
+            //isBlocked = QVector<bool>(4);
+            //isBlocked[3] = true;// 碰到障碍
+            //
+            //direction[3] = Direction::LEFT;// 左
+            //direction[2] = Direction::RIGHT;// 右
+            //direction[1] = Direction::BOTTOM;// 下
+            //direction[0] = Direction::TOP;// 上
+        }
+        return;
+    }
+
+    if (min_x > list[list.size() - 1]) {    // 表尾可以插入 // 一步到位
+        start.setX(max_x);
         return;
     }
 
     // 插入到列表中间
-    for (int i = 0; i < list.size(); ++i) {
-        if (i % 2 == 1) {// 奇数
-            if (min_x > list[i] + GRID) {// 找到插入位置
-                if (max_x < list[i + 1] - GRID) {// 能一步到位
-                    start.setX(end.x());
-                } else {
-                    start.setX(list[i] + GRID * 1);
-                }
-                path.push_back(start);
-                return;
+    for (int i = 1; i < list.size(); i += 2) {// todo modify  int i=0 --> i=1;;i++ -->i+=2
+        // i 为 奇数
+        if (min_x > list[i]) {// 找到插入位置
+            if (max_x < list[i + 1]) {// 能一步到位
+                start.setX(max_x);
+            } else {
+                start.setX(list[i] + GRID * 1);
+                //isBlocked = QVector<bool>(4);
+                //isBlocked[3] = true;// 碰到障碍
             }
+            return;
         }
     }
 }
 
-void LineSearch::topSearching(QPoint &start, const QPoint &end, QList<QPoint> &path) {
+void LineSearch::topSearching(bool &isFindPath, QPoint &start, const QPoint &end, QList<QPoint> &path,
+                              QVector<Direction> &direction, QVector<bool> &isBlocked) {
     // 向上探索 能一步到位最好 不能则探索到*** todo consider
     // m_columnChannel
-    int index = start.x() / GRID;
-    auto list = m_columnChannel[index];
-    if (list.size() == 0) {// 一步到位
-        start.setY(end.y());
-        path.push_back(start);
+    int min_y = end.y();
+    int max_y = start.y();// 起点在终点下方 起点的y坐标大于终点的y坐标
+
+    if (max_y < min_y) {
         return;
     }
 
-    int min_y = end.y();
-    int max_y = start.y();
-    if (max_y < list[0] - GRID || min_y > list[list.size() - 1] + GRID) {// 一步到位
-        start.setY(end.y());
-        path.push_back(start);
+    if (start.y() == end.y()) {// 水平方向的探索被阻挡
+        // 被阻挡 设置每次探索的步长    1
+        min_y = start.x() - STEP * GRID;
+    }
+
+    int index = start.x() / GRID;
+    auto list = m_columnChannel[index];
+    qDebug() << list << "LIST";
+
+    if (list.size() == 0) {// 一步到位
+        start.setY(min_y);
         return;
     }
+
+    if (max_y < list[0]) {// 表头插入 能一步到位
+        start.setY(min_y);
+        return;
+    }
+    if (max_y > list[list.size() - 1]) {// 表尾插入
+        if (min_y > list[list.size() - 1]) { // 能一步到位
+            start.setY(min_y);
+            return;
+        } else {
+            start.setY(list[list.size() - 1] + GRID);
+            //isBlocked = QVector<bool>(4);
+            //isBlocked[0] = true;// 碰到障碍
+            return;
+        }
+    }
+
     // 插入到列表中间
-    for (int i = 0; i < list.size(); ++i) {
-        if (i % 2 == 1) {// 奇数
-            if (max_y < list[i + 1] - GRID) {
-                if (min_y > list[i] + GRID) {
-                    start.setY(end.y());
-                } else {
-                    start.setY(list[i] + GRID * 1);
-                }
-                path.push_back(start);
-                return;
+    for (int i = 1; i < list.size(); i += 2) {
+        // 奇数
+        if (max_y < list[i + 1]) {
+            if (min_y > list[i]) {// 能一步到位
+                start.setY(min_y);
+            } else {
+                start.setY(list[i] + GRID * 1);
+                //isBlocked = QVector<bool>(4);
+                //isBlocked[0] = true;// 碰到障碍
             }
+            return;
         }
     }
 }
 
-void LineSearch::bottomSearching(QPoint &start, const QPoint &end, QList<QPoint> &path) {
+void LineSearch::bottomSearching(bool &isFindPath, QPoint &start, const QPoint &end, QList<QPoint> &path,
+                                 QVector<Direction> &direction, QVector<bool> &isBlocked) {
     // 向下探索 能一步到位最好 不能则探索到*** todo consider
     // m_columnChannel
-    int index = start.x() / GRID;
-    auto list = m_columnChannel[index];
-    if (list.size() == 0) {// 一步到位
-        start.setY(end.y());
-        path.push_back(start);
+    int max_y = end.y();
+    int min_y = start.y();// 起点在终点上方 起点的y坐标小于终点的y坐标
+    if (max_y < min_y) {
         return;
     }
 
-    int max_y = end.y();
-    int min_y = start.y();
-    if (max_y < list[0] - GRID || min_y > list[list.size() - 1] + GRID) {// 一步到位
-        start.setY(end.y());
-        path.push_back(start);
+    if (start.y() == end.y()) {
+        max_y = start.y() + STEP * GRID;
+    }
+
+    int index = start.x() / GRID;
+    auto list = m_columnChannel[index];
+    qDebug() << list << "LIST";
+    if (list.size() == 0) {// 一步到位
+        start.setY(max_y);
         return;
     }
+
+    if (min_y < list[0]) {// 表头
+        if (max_y < list[0]) {// 能一步到位
+            start.setY(max_y);
+        } else {
+            start.setY(list[0] - GRID);
+            //isBlocked = QVector<bool>(4);
+            //isBlocked[1] = true;// 碰到障碍
+        }
+        return;
+    }
+
+    if (min_y > list[list.size() - 1]) {// 一步到位 表尾
+        start.setY(max_y);
+        return;
+    }
+
     // 插入到列表中间
-    for (int i = 0; i < list.size(); ++i) {
-        if (i % 2 == 1) {// 奇数
-            if (min_y > list[i] + GRID) {
-                if (max_y < list[i + 1] - GRID) {
-                    start.setY(end.y());
-                } else {
-                    start.setY(list[i] + GRID * 1);
-                }
-                path.push_back(start);
-                return;
+    for (int i = 1; i < list.size(); i += 2) {
+        // 奇数
+        if (min_y > list[i]) {
+            if (max_y < list[i + 1]) {
+                start.setY(max_y);
+            } else {
+                start.setY(list[i] + GRID * 1);
+                //isBlocked = QVector<bool>(4);
+                //isBlocked[1] = true;// 碰到障碍
             }
+            return;
         }
     }
 }
@@ -332,12 +671,10 @@ void LineSearch::removeModulesFromChannel(const QVector<QPoint> &poss, const QVe
 }
 
 void LineSearch::addLineToChannel(QVector<QList<int>> &channel, const int &index, const int &start, const int &end) {
-    auto list = channel[index];
     if (start == end) {
         qDebug() << " Error Start == End";
         return;
     }
-
     int max = end;
     int min = start;
     if (start > end) {
@@ -345,35 +682,37 @@ void LineSearch::addLineToChannel(QVector<QList<int>> &channel, const int &index
         min = end;
     }
 
-    int size = list.size();
+    int size = channel[index].size();
     if (size == 0) {
-        list.push_back(min);
-        list.push_back(max);
+        channel[index].push_back(min);
+        channel[index].push_back(max);
         return;
     }
 
     // size !=0  列表不为空 则存在头部 中间 尾部三种插入方式
-    if (max < list[0]) {// 头部
-        list.push_back(min);
-        list.push_back(max);
+    if (max < channel[index][0]) {// 头部
+        channel[index].push_back(min);
+        channel[index].push_back(max);
         return;
     }
 
-    if (min > list[size - 1]) {// 尾部
-        list.push_back(min);
-        list.push_back(max);
+    if (min > channel[index][size - 1]) {// 尾部
+        channel[index].push_back(min);
+        channel[index].push_back(max);
         return;
     }
 
     // 中间
-    for (int i = 0; i < size; ++i) {
-        if (i % 2 == 1) {// 奇数
-            if (min > list[i] && max < list[i + 1]) {
-                // 找到合适位置
-                list.insert(i, min);
-                list.insert(i + 1, max);
-                return;
-            }
+    int temp = getIndex(min, channel[index]);
+    if (temp == -1) {
+        return;
+    }
+    if (temp % 2 == 1) {// 奇数
+        if (min > channel[index][temp] && max < channel[index][temp + 1]) {
+            // 找到合适位置
+            channel[index].insert(temp, min);
+            channel[index].insert(temp + 1, max);
+            return;
         }
     }
 }
@@ -406,4 +745,55 @@ void LineSearch::addLineToRowChannel(const int &index, const int &start, const i
 void LineSearch::addLineToColumnChannel(const int &index, const int &start, const int &end) {
     // 竖直直线添加到列通道中  m_columnChannel
     addLineToChannel(m_columnChannel, index, start, end);
+}
+
+void LineSearch::printDirection(const QVector<Direction> &direction) {
+    QString str;// 探索方向优先级
+    for (int i = 0; i < 4; ++i) {
+        switch (direction[i]) {
+            case LEFT:
+                str += "Left ";
+                break;
+            case RIGHT:
+                str += "Right ";
+                break;
+            case TOP:
+                str += "Top ";
+                break;
+            case BOTTOM:
+                str += "Bottom ";
+                break;
+        }
+    }
+    qDebug() << str << "Direction";
+}
+
+void LineSearch::getPriorityDirections(QVector<Direction> &direction, const QPoint &start, const QPoint &end,
+                                       QVector<bool> &isBlocked) {
+    // todo delete
+    if (start.x() == end.x()) {// 在同一列 X相同
+        if (start.y() > end.y()) {// 起点在下方 先考虑向上探索
+            direction[0] = Direction::TOP;// 先考虑向上探索
+            direction[1] = Direction::BOTTOM;
+        } else {
+            direction[1] = Direction::TOP;
+            direction[0] = Direction::BOTTOM;// 先考虑向下探索
+        }
+        direction[2] = Direction::RIGHT;
+        direction[3] = Direction::LEFT;
+        return;
+    }
+
+    if (start.y() == end.y()) {// 在同一行 Y相同
+        if (start.x() > end.x()) {// 起点在右侧
+            direction[1] = Direction::RIGHT;
+            direction[0] = Direction::LEFT;// 先考虑向左探索
+        } else {
+            direction[0] = Direction::RIGHT;// 先考虑向右探索
+            direction[1] = Direction::LEFT;
+        }
+        direction[2] = Direction::TOP;
+        direction[3] = Direction::BOTTOM;
+        return;
+    }
 }

@@ -14,7 +14,7 @@ RandomData::RandomData(int moduleNum, int leftPortNum, int rightPortNum, int con
     for (int i = 0; i < moduleNum; ++i) {
         modulePortNum[i] = QRandomGenerator::global()->bounded(moduleNum) + 1;
     }
-    qDebug() << modulePortNum << "--modulePortNum";
+    //qDebug() << modulePortNum << "--modulePortNum";
 
     /// 随机生成modulePortInfo
     QVector<QVector<int>> modulePortInfo(moduleNum);
@@ -29,7 +29,17 @@ RandomData::RandomData(int moduleNum, int leftPortNum, int rightPortNum, int con
         //qDebug() << moduleLeftPortNum << "  --module" << i << "leftPortNum";
         //qDebug() << modulePortInfo[i] << "  --module" << i << "PortInfo";
     }
-    qDebug() << modulePortInfo << "--modulePortInfo";
+
+    QString str;
+    for (int i = 0; i < modulePortInfo.size(); ++i) {
+        str += "{";
+        for (int j = 0; j < modulePortInfo[i].size(); ++j) {
+            str += QString::number(modulePortInfo[i][j]);
+            str += ", ";
+        }
+        str += "},";
+    }
+    qDebug() << str << "ModulePortInfo\n\n";
 
     /// 随机生成ConnectData
     QList<ConnectData> myConnectData;

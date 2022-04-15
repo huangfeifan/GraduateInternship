@@ -13,7 +13,11 @@
 
 const int GRID = 5;
 const int LEFT_PORT_NUM = 6;// 左侧输入port个数
-const int RIGHT_PORT_NUM = 3;// 右侧输出port个数
+const int RIGHT_PORT_NUM = 6;// 右侧输出port个数
+const int MODULE_COUNT = 10;
+const int CONNECT_NUM = 50;
+
+const bool isRandomData = true;
 
 // 连接关系
 const static QList<ConnectData> Fake_ConnectData = {
@@ -86,6 +90,7 @@ const static QList<ConnectData> Fake_ConnectData = {
         {4,0,1,3},
         */
 
+        /*
         // example 5
         {0, 9, 6, 3},
         {9, -1, 1, 0},
@@ -105,7 +110,19 @@ const static QList<ConnectData> Fake_ConnectData = {
         { 6, 7, 8, 0 },
         { 2, 0, 0, 1 },
         { 4, 9, 2, 4 },
+        */
 
+
+        // example 6
+        {4,  2,  7, 0},
+        {3,  2,  0, 1},
+        {3,  1,  1, 0},
+        {-1, 0,  3, 1},
+        {-1, 9,  5, 0},
+        {7,  -1, 0, 2},
+        {5,  2,  1, 5},
+        {8,  2,  2, 6},
+        {7,  0,  1, 5},
 };
 
 // 模块信息  0表示leftInputPort 2表示rightOutputPort
@@ -153,7 +170,7 @@ const static QVector<QVector<int>> Fake_ModulePortInfo = {
         */
 
         // example 5
-        /**/
+        /*
         {0, 0, 0, 0, 0, 0, 0, 0, 2, 2},
         {0, 0, 0, 2, 2, 2},
         {0, 0, 0, 0, 0, 2},
@@ -164,6 +181,20 @@ const static QVector<QVector<int>> Fake_ModulePortInfo = {
         {0, 0, 0, 0, 0, 2, 2},
         {0},
         {0, 2, 2, 2, 2, 2, 2, 2},
+        */
+
+        // example 6
+        /**/
+        {0, 0, 0, 0, 2, 2, 2,},
+        {2,},
+        {0, 0, 0, 0, 0, 2, 2,},
+        {2, 2,},
+        {0, 0, 0, 0, 0, 2, 2, 2, 2, 2,},
+        {0, 0, 2,},
+        {0, 0, 2, 2, 2, 2, 2, 2,},
+        {2, 2,},
+        {0, 0, 0, 0, 0, 2,},
+        {0,}
         /**/
 };
 
