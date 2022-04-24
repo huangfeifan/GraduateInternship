@@ -12,41 +12,16 @@ RandomData::RandomData(int moduleNum, int leftPortNum, int rightPortNum, int con
     //int maxPortNum = 10;
     QVector<int> modulePortNum(moduleNum);
     for (int i = 0; i < moduleNum; ++i) {
-        modulePortNum[i] = QRandomGenerator::global()->bounded(moduleNum) + 1;
+        modulePortNum[i] = QRandomGenerator::global()->bounded(10) + 1;
     }
-    //qDebug() << modulePortNum << "--modulePortNum";
-
-    /// 随机生成modulePortInfo
-    QVector<QVector<int>> modulePortInfo(moduleNum);
-    for (int i = 0; i < modulePortInfo.size(); ++i) {
-        // 初始化，全为右边的port
-        modulePortInfo[i] = QVector<int>(modulePortNum[i], 2);
-        // 随机生成模块左边的port的数目
-        int moduleLeftPortNum = QRandomGenerator::global()->bounded(modulePortInfo[i].size() + 1);
-        for (int j = 0; j < moduleLeftPortNum; ++j) {
-            modulePortInfo[i][j] = 0;
-        }
-        //qDebug() << moduleLeftPortNum << "  --module" << i << "leftPortNum";
-        //qDebug() << modulePortInfo[i] << "  --module" << i << "PortInfo";
-    }
-
-    QString str;
-    for (int i = 0; i < modulePortInfo.size(); ++i) {
-        str += "{";
-        for (int j = 0; j < modulePortInfo[i].size(); ++j) {
-            str += QString::number(modulePortInfo[i][j]);
-            str += ", ";
-        }
-        str += "},";
-    }
-    qDebug() << str << "ModulePortInfo\n\n";
 
     /// 随机生成ConnectData
     QList<ConnectData> myConnectData;
 
     // 记录模块的端口是否被占用，QPair的t1表示模块序号，t2表示端口序号
     QHash<QPair<int, int>, QPair<int, int>> hash;
-    for (int i = 0; i < connectDataNum; ++i) {
+    int tempNum = 0;
+    while (tempNum < connectDataNum) {
         // 生成起始模块序号
         int startModuleIndex = QRandomGenerator::global()->bounded(moduleNum + 1);
         if (startModuleIndex == moduleNum) {
@@ -85,12 +60,43 @@ RandomData::RandomData(int moduleNum, int leftPortNum, int rightPortNum, int con
                 myConnectData.push_back(temp);
                 qDebug() << "{" << startModuleIndex << "," << endModuleIndex << "," << startPortIndex << ","
                          << endPortIndex << "},";
+                tempNum++;
                 hash.insert(pair1, pair1);
                 hash.insert(pair2, pair2);
             }
         }
     }
+    qDebug() << myConnectData.size() << "  --ConnectData Num";
+
+    QVector<QVector<int>> modulePortInfo(moduleNum);
+    for (int i = 0; i < modulePortInfo.size(); ++i) {
+        modulePortInfo[i] = QVector<int>(modulePortNum[i]);
+        for (int j = 0; j < modulePortInfo[i].size(); ++j) {
+            modulePortInfo[i][j] = 0;
+        }
+    }
+    for (int i = 0; i < myConnectData.size(); ++i) {
+        int portIndex = myConnectData[i].startPortIndex;
+        int moduleIndex = myConnectData[i].startModuleIndex;
+        if(moduleIndex==-1){
+            continue;
+        }
+        modulePortInfo[moduleIndex][portIndex] = 2;
+    }
+
+    QString str;
+    for (int i = 0; i < modulePortInfo.size(); ++i) {
+        str += "{";
+        for (int j = 0; j < modulePortInfo[i].size(); ++j) {
+            str += QString::number(modulePortInfo[i][j]);
+            str += ", ";
+        }
+        str += "},";
+    }
+    qDebug() << str << "ModulePortInfo\n\n";
+
 
     m_randomConnectData = myConnectData;
     m_randomModulePortInfo = modulePortInfo;
 }
+

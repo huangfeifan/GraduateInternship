@@ -2,9 +2,9 @@
 // Created by Huangff on 2022/3/28.
 //
 
-#include "Router.h"
+#include "AStarRouter.h"
 
-void Router::tracePath(QVector<QVector<cell>> cellDetails, Pair dest) {
+void AStarRouter::tracePath(QVector<QVector<cell>> cellDetails, Pair dest) {
     //printf("\nThe path is ");
     int row = dest.first;
     int col = dest.second;
@@ -28,21 +28,21 @@ void Router::tracePath(QVector<QVector<cell>> cellDetails, Pair dest) {
     return;
 }
 
-double Router::calculateHValue(int row, int col, Pair dest) {
+double AStarRouter::calculateHValue(int row, int col, Pair dest) {
     // Return using the distance formula
     return ((double) sqrt(
             (row - dest.first) * (row - dest.first)
             + (col - dest.second) * (col - dest.second)));
 }
 
-bool Router::isDestination(int row, int col, Pair dest) {
+bool AStarRouter::isDestination(int row, int col, Pair dest) {
     if (row == dest.first && col == dest.second)
         return (true);
     else
         return (false);
 }
 
-bool Router::isUnBlocked(int row, int col, QVector<QVector<int>> grid) {
+bool AStarRouter::isUnBlocked(int row, int col, QVector<QVector<int>> grid) {
     // Returns true if the cell is not blocked else false
     if (grid[row][col] == 1)
         return (true);
@@ -50,14 +50,14 @@ bool Router::isUnBlocked(int row, int col, QVector<QVector<int>> grid) {
         return (false);
 }
 
-bool Router::isValid(int row, int col) {
+bool AStarRouter::isValid(int row, int col) {
     // Returns true if row number and column number
     // is in range
     return (row >= 0) && (row < m_row) && (col >= 0)
            && (col < m_column);
 }
 
-void Router::updatePathInfo(QList<QPoint> list, int blockType) {
+void AStarRouter::updatePathInfo(QList<QPoint> list, int blockType) {
 
     // 注意行列 GridInfo 先行后列 行高列宽 行Y列X
     for (int i = 1; i < list.size(); ++i) {
@@ -90,7 +90,7 @@ void Router::updatePathInfo(QList<QPoint> list, int blockType) {
     }
 }
 
-void Router::initGridInfo() {
+void AStarRouter::initGridInfo() {
     // 初始化数组
     m_rowGridInfo = QVector<QVector<int>>(m_row);
     m_columnGridInfo = QVector<QVector<int>>(m_row);
@@ -108,14 +108,14 @@ void Router::initGridInfo() {
     }
 }
 
-void Router::updateRectInfo(QPoint pos, QPoint size, int blockType) {
-    const int gap = -2;// 线与模块的间距
+void AStarRouter::updateRectInfo(QPoint pos, QPoint size, int blockType) {
+    const int gap = -0;// 线与模块的间距
     int left = pos.x();// 列 x
     int top = pos.y();
     int width = size.x();//列 x
     int height = size.y();
-    for (int j = gap; j < width - gap; ++j) {// 列 x
-        for (int k = gap; k < height - gap; ++k) {
+    for (int j = gap; j <= width - gap; ++j) {// 列 x
+        for (int k = gap; k <= height - gap; ++k) {
             if ((top + k) >= 0 && (left + j) >= 0 && (top + k) < m_row && (left + j) < m_column) {
                 m_rowGridInfo[top + k][left + j] = blockType;
                 m_columnGridInfo[top + k][left + j] = blockType;
@@ -124,7 +124,7 @@ void Router::updateRectInfo(QPoint pos, QPoint size, int blockType) {
     }
 }
 
-void Router::aStarSearch(const Pair src, const Pair dest) {
+void AStarRouter::aStarSearch(const Pair src, const Pair dest) {
     // If the source is out of range
     if (isValid(src.first, src.second) == false) {
         printf("Source is invalid\n");
@@ -435,39 +435,39 @@ void Router::aStarSearch(const Pair src, const Pair dest) {
     return;
 }
 
-void Router::addPath(QList<QPoint> list) {
+void AStarRouter::addPath(QList<QPoint> list) {
     updatePathInfo(list, 0);
 }
 
-void Router::addRect(QPoint pos, QPoint size) {
+void AStarRouter::addRect(QPoint pos, QPoint size) {
     updateRectInfo(pos, size, 0);
 }
 
-void Router::removePath(QList<QPoint> list) {
+void AStarRouter::removePath(QList<QPoint> list) {
     updatePathInfo(list, 1);
 }
 
-void Router::removeRect(QPoint pos, QPoint size) {
+void AStarRouter::removeRect(QPoint pos, QPoint size) {
     updateRectInfo(pos, size, 1);
 }
 
-QList<QPoint> Router::getPaths() {
+QList<QPoint> AStarRouter::getPaths() {
     return m_path;
 }
 
-bool Router::isSuccessFindPaths() {
+bool AStarRouter::isSuccessFindPaths() {
     return m_foundDest;
 }
 
-void Router::setRowGridInfo(QVector<QVector<int>> rowGridInfo) {
+void AStarRouter::setRowGridInfo(QVector<QVector<int>> rowGridInfo) {
     m_rowGridInfo = rowGridInfo;
 }
 
-void Router::setColumnGridInfo(QVector<QVector<int>> rowGridInfo) {
+void AStarRouter::setColumnGridInfo(QVector<QVector<int>> rowGridInfo) {
     m_columnGridInfo = rowGridInfo;
 }
 
-void Router::addLine(QPoint start, QPoint end) {
+void AStarRouter::addLine(QPoint start, QPoint end) {
 
     if (start.x() == end.x()) {        // 修改列通道信息
         int minY = start.y();
@@ -496,6 +496,6 @@ void Router::addLine(QPoint start, QPoint end) {
     }
 }
 
-void Router::removeLine(QPoint start, QPoint end) {
+void AStarRouter::removeLine(QPoint start, QPoint end) {
 
 }

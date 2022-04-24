@@ -15,6 +15,7 @@ struct PointInfo {
     int distance;
 };
 
+const double rate = 0.2;
 
 struct LineInfo {
     QPoint start;
@@ -46,8 +47,7 @@ public:
     int m_row;
     int m_column;
 
-
-    static bool cmpDistance(const PointInfo &P, const PointInfo &Q) {
+    static bool cmpDistance(const PointInfo &P, const PointInfo &Q) {// todo modify PointInfo-->QPoint
         /// 按照 distance 从小到大排序
         if (P.distance < Q.distance) {
             return true;
@@ -199,7 +199,6 @@ public:
         if (start == end) {
             return QList<QPoint>();
         }
-
         //qDebug() << m_row << " <--row  col--> " << m_column;
 
         // 0级轨道
@@ -267,7 +266,7 @@ public:
                     QVector<PointInfo> points(right - left + 1);
                     for (int j = 0; j < points.size(); ++j) {
                         points[j].point = left + j;
-                        points[j].distance = qAbs(end.x() - points[j].point);
+                        points[j].distance = qAbs(end.x() - points[j].point)* rate;
                     }
 
                     qSort(points.begin(), points.end(), cmpDistance);
@@ -294,14 +293,12 @@ public:
                     int down = lineInfo.end.y();
                     //int temp = up;
                     int x = lineInfo.start.x();
-
                     QVector<PointInfo> points(down - up + 1);
                     for (int j = 0; j < points.size(); ++j) {
                         points[j].point = up + j;
-                        points[j].distance = qAbs(end.y() - points[j].point);
+                        points[j].distance = qAbs(end.y() - points[j].point) * rate;
                     }
                     qSort(points.begin(), points.end(), cmpDistance);
-
                     for (int j = 0; j < points.size(); ++j) {
                         if (!rowOccupy.contains(points[j].point)) {
                             // 增加轨道
@@ -330,7 +327,6 @@ public:
                 break;// while
             }
         }
-
         index = startList[iterateCount].size() - 1;
         //qDebug() << index << " Index";
         if (index == -1) {
@@ -338,7 +334,6 @@ public:
             QList<QPoint> path;
             return path;
         }
-
         //qDebug() << path << " Path----\n\n";
         // 计算path
         bool findPath = false;
@@ -347,9 +342,7 @@ public:
                 break;
             }
         }
-
         path.push_front(start);// 最终得到的list是从起点开始的bend最少的路径
-
         return path;
     }
 
@@ -401,33 +394,6 @@ public:
         }
 
         return false;
-    }
-
-    int isIntersected(const QList<LineInfo> &list, const QVector<LineInfo> &endZero) {
-        for (int i = 0; i < list.size(); ++i) {
-            // 默认是竖直的线
-            QPoint left = endZero[0].end;
-            QPoint right = endZero[0].start;// 计算line的时候都是 start<end
-            QPoint up = list[i].start;
-            QPoint down = list[i].end;
-
-            if (list[i].isHorizontal) {// 水平 start和end的Y坐标相同
-                up = endZero[1].start;
-                down = endZero[1].end;
-                left = list[i].start;
-                right = list[i].end;
-            }
-
-            if (left.x() <= up.x() && up.x() <= right.x() && left.y() >= up.y() && left.y() <= down.y()) {// 判断是否相交
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    LineInfo computeLine(QPoint point, bool isHorizontal) {// 给一个点 计算line
-        LineInfo lineInfo = isHorizontal ? computeHorizontalLine(point) : computeVerticalLine(point);
-        return lineInfo;
     }
 
     LineInfo computeHorizontalLine(QPoint point) {
@@ -544,20 +510,6 @@ public:
         return low;
     }
 
-    void addLineToChannel(LineInfo lineInfo) {
-
-        if (lineInfo.isHorizontal) {
-            QPoint left = lineInfo.start;
-            QPoint right = lineInfo.end;
-            int row = left.y();
-
-        } else {
-            QPoint up = lineInfo.start;
-            QPoint down = lineInfo.end;
-            int column = up.x();
-        }
-    }
-
     void addHLineToChannel(int left, int right, int row) {// left < right
         auto channel = m_rowChannel[row];
         if (channel.empty()) {
@@ -581,20 +533,6 @@ public:
         int index = getIndex(down, channel);// index是channel中第一个比down大的数字对应的下标减一
         m_columnChannel[column].insert(index, down);
         m_columnChannel[column].insert(index, up);
-    }
-
-    void removeHLineFromChannel(int left, int right, int row) {// todo add
-        auto channel = m_rowChannel[row];
-        int index = getIndex(right, channel) - 2;
-        m_rowChannel[row].removeAt(index);
-        m_rowChannel[row].removeAt(index);
-    }
-
-    void removeVLineFromChannel(int up, int down, int column) {// todo add
-        auto channel = m_columnChannel[column];
-        int index = getIndex(down, channel) - 2;
-        m_columnChannel[column].removeAt(index);
-        m_columnChannel[column].removeAt(index);
     }
 
     void addPathToChannel(const QList<QPoint> &path) {
@@ -651,6 +589,61 @@ public:
 
     void removePathFromChannel(const QList<QPoint> &path) {
         // todo something
+    }
+
+    void removeHLineFromChannel(int left, int right, int row) {// todo add
+        auto channel = m_rowChannel[row];
+        int index = getIndex(right, channel) - 2;
+        m_rowChannel[row].removeAt(index);
+        m_rowChannel[row].removeAt(index);
+    }
+
+    void removeVLineFromChannel(int up, int down, int column) {// todo add
+        auto channel = m_columnChannel[column];
+        int index = getIndex(down, channel) - 2;
+        m_columnChannel[column].removeAt(index);
+        m_columnChannel[column].removeAt(index);
+    }
+
+    void addLineToChannel(LineInfo lineInfo) {
+
+        if (lineInfo.isHorizontal) {
+            QPoint left = lineInfo.start;
+            QPoint right = lineInfo.end;
+            int row = left.y();
+
+        } else {
+            QPoint up = lineInfo.start;
+            QPoint down = lineInfo.end;
+            int column = up.x();
+        }
+    }
+
+    int isIntersected(const QList<LineInfo> &list, const QVector<LineInfo> &endZero) {
+        for (int i = 0; i < list.size(); ++i) {
+            // 默认是竖直的线
+            QPoint left = endZero[0].end;
+            QPoint right = endZero[0].start;// 计算line的时候都是 start<end
+            QPoint up = list[i].start;
+            QPoint down = list[i].end;
+
+            if (list[i].isHorizontal) {// 水平 start和end的Y坐标相同
+                up = endZero[1].start;
+                down = endZero[1].end;
+                left = list[i].start;
+                right = list[i].end;
+            }
+
+            if (left.x() <= up.x() && up.x() <= right.x() && left.y() >= up.y() && left.y() <= down.y()) {// 判断是否相交
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    LineInfo computeLine(QPoint point, bool isHorizontal) {// 给一个点 计算line
+        LineInfo lineInfo = isHorizontal ? computeHorizontalLine(point) : computeVerticalLine(point);
+        return lineInfo;
     }
 
     QVector<QList<int>> m_rowChannel;// 行通道  从小到大的顺序存储

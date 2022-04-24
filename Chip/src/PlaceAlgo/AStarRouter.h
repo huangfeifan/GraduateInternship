@@ -27,10 +27,10 @@ struct cell {
     double h = FLT_MAX;
 };
 
-class Router {
+class AStarRouter {
 public:
     // Constructor Function
-    Router(int row, int column, QVector<QPoint> pos, QVector<QPoint> size)
+    AStarRouter(int row, int column, QVector<QPoint> pos, QVector<QPoint> size)
             : m_row(row), m_column(column), m_modulePos(pos), m_moduleSize(size) {
         initGridInfo();
     }

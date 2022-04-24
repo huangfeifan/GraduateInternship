@@ -5,7 +5,7 @@
 #pragma once
 
 //#include "MyWidget/Data.h"
-#include "Router.h"
+#include "AStarRouter.h"
 #include "PlaceSccs.h"
 #include "PlaceAScc.h"
 #include "GetGraphSccs.h"

@@ -25,7 +25,7 @@ add_executable(
         ${DIR_SRCS}
         images.qrc
         main.cpp
-        src/PlaceAlgo/PlaceAndRoute.cpp src/PlaceAlgo/PlaceAndRoute.h)
+)
 
 if (NOT CMAKE_PREFIX_PATH)
     message(WARNING "CMAKE_PREFIX_PATH is not defined, you may need to set it "

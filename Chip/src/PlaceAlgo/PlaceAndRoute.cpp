@@ -61,7 +61,7 @@ void PlaceAndRoute::placing() {
 
 void PlaceAndRoute::aStarRouting() {
     //qDebug() << m_graphRowCount << " " << m_graphColumnCount << "PLACE_AND_ROUTE_ROW_COLUMN";
-    Router router(m_graphRowCount, m_graphColumnCount, m_modulePos, m_moduleSize);
+    AStarRouter router(m_graphRowCount, m_graphColumnCount, m_modulePos, m_moduleSize);
     m_paths = QVector<QList<QPoint >>(m_connectData.size());
 
     QTime q;

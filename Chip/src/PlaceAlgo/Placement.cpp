@@ -504,29 +504,30 @@ void Placement::computeModulePortPos() {
         qSort(top.begin(), top.end(), compareWeight);
 
         // 根据排序结果 计算摆放位置  模块的port往相应方向扇出一个GRID距离
+        const int fanoutDistant = 1;
         for (int j = 0; j < left.size(); ++j) {// 从上往下摆放port
             int index = left[j].index;
             //qDebug() << index << "  --index";
             m_modulePort[i][index].orderIndex = j;
             //qDebug() << index << " " << j;
-            m_modulePortPos[i][index] = QPoint(-GRID, j * GRID + GRID) + m_modulePos[i];
+            m_modulePortPos[i][index] = QPoint(-GRID*fanoutDistant, j * GRID + GRID) + m_modulePos[i];
         }
         for (int j = 0; j < bottom.size(); ++j) {
             int index = bottom[j].index;
             m_modulePort[i][index].orderIndex = j;
-            m_modulePortPos[i][index] = QPoint(j * GRID + GRID, m_moduleSize[i].y() + GRID) + m_modulePos[i];
+            m_modulePortPos[i][index] = QPoint(j * GRID + GRID, m_moduleSize[i].y() + GRID*fanoutDistant) + m_modulePos[i];
         }
 
         for (int j = 0; j < right.size(); ++j) {// 从上往下摆放port
             int index = right[j].index;
             m_modulePort[i][index].orderIndex = j;
-            m_modulePortPos[i][index] = QPoint(m_moduleSize[i].x() + GRID, j * GRID + GRID) + m_modulePos[i];
+            m_modulePortPos[i][index] = QPoint(m_moduleSize[i].x() + GRID*fanoutDistant, j * GRID + GRID) + m_modulePos[i];
         }
 
         for (int j = 0; j < top.size(); ++j) {
             int index = top[j].index;
             m_modulePort[i][index].orderIndex = j;
-            m_modulePortPos[i][index] = QPoint(j * GRID + GRID, -GRID) + m_modulePos[i];
+            m_modulePortPos[i][index] = QPoint(j * GRID + GRID, -GRID*fanoutDistant) + m_modulePos[i];
         }
     }
 }

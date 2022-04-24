@@ -12,7 +12,7 @@
 #include "PlaceAlgo/ComputeAbsolutePos.h"
 #include "PlaceAlgo/Placement.h"
 #include "PlaceAlgo/MyStruct.h"
-#include "PlaceAlgo/Router.h"
+#include "PlaceAlgo/AStarRouter.h"
 #include "PlaceAlgo/FakeData.h"
 #include "PlaceAlgo/PlaceAndRoute.h"
 #include "PlaceAlgo/RandomData.h"
@@ -25,9 +25,9 @@ class MyPaint : public QWidget {
 Q_OBJECT
 
 public:
-    MyPaint() {
+    MyPaint(QWidget *parent = nullptr) {
         initData();
-        setFixedSize(1200, 1000);
+        //setFixedSize(1200, 1000);
         //m_moduleSize = size;
     }
 
